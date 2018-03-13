@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using SSMS.Users;
 
 namespace SSMS.Models
 {
@@ -11,5 +13,17 @@ namespace SSMS.Models
         public bool? IsActive { get; set; }
         public DateTime? SubscribeDate { get; set; }
         public DateTime? LastLogin { get; set; }
-    }
+
+        public static User Map(SignUp signup)
+        {
+            return new User()
+            {
+                UserId= signup.UserId,
+                UserPassword= signup.UserPassword,
+                UserType= signup.UserType, 
+                SubscribeDate = DateTime.UtcNow.AddHours(3),
+                IsActive= false
+            };
+        }
+    }  
 }
