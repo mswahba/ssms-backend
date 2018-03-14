@@ -58,5 +58,29 @@ namespace SSMS.Users
                 return BadRequest(ex);
             }
         }
+        public IActionResult ChangePassword([FromBody]ChangedPassword changedpassword)
+        {
+            //(1)check if MS is valid 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            //(2) Get user Data from DB 
+            var user = db.Users
+                        .Where(u => u.UserId == changedpassword.UserId && u.UserPassword == changedpassword.OldPassword)
+                        .SingleOrDefault();  //this function executes the where
+            try
+            {
+                if (user == null)
+                    return BadRequest("Invalid User.");
+                //(3) Update statement and saving new pwd 
+                user.UserPassword = changedpassword.NewPassword;
+                db.SaveChanges();
+
+                return Ok(user);  //if everything is ok, return the full user obj with all inserted values  
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }
