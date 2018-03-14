@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace SSMS.EntityModels
+{
+    public partial class Major
+    {
+        public byte MajorId { get; set; }
+        public string MajorNameAr { get; set; }
+        public string MajorNameEn { get; set; }
+    }
+}

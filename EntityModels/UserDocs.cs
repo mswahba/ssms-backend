@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SSMS.Models
+namespace SSMS.EntityModels
 {
     public partial class UserDocs
     {

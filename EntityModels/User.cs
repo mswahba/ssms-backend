@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using SSMS.Users;
 
-namespace SSMS.Models
+namespace SSMS.EntityModels
 {
     public partial class User
     {
@@ -13,7 +12,6 @@ namespace SSMS.Models
         public bool? IsActive { get; set; }
         public DateTime? SubscribeDate { get; set; }
         public DateTime? LastLogin { get; set; }
-
         public static User Map(SignUp signup)
         {
             return new User()
@@ -25,5 +23,5 @@ namespace SSMS.Models
                 IsActive= false
             };
         }
-    }  
+    }
 }

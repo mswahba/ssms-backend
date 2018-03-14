@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SSMS.Models
+namespace SSMS.EntityModels
 {
-    public partial class DocTypes
+    public partial class DocType
     {
         public byte DocTypeId { get; set; }
         public string DocTypeAr { get; set; }

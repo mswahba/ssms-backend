@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SSMS.Models;
+using SSMS.EntityModels;
 
 namespace SSMS
 {
@@ -25,7 +25,7 @@ namespace SSMS
         {
             services.AddMvc();
             //Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
-            services.AddDbContext<test1Context>();
+            services.AddDbContext<SSMSContext>();
             /*
             services.AddDbContext<test1Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("constr")));

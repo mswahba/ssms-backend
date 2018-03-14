@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SSMS.Models;
+using SSMS.EntityModels;
 
 namespace SSMS.Users
 {
@@ -12,8 +12,8 @@ namespace SSMS.Users
     {
         //Store the dbContext object that comes 
         //from DependencyInjection DI which injects it in the constructor
-        private test1Context db { get; }
-        public UsersController(test1Context _db)
+        private SSMSContext db { get; }
+        public UsersController(SSMSContext _db)
         {
             db = _db;    //DI inject DBContext object here from startup Class
         }
@@ -24,7 +24,7 @@ namespace SSMS.Users
                 return BadRequest(ModelState);
             //2) Mapping between view Model to entity Model  (user is Entity -- signup is the View)
             // here we fill in all data not entered by the user 
-            User user = Models.User.Map(signup);
+            User user = EntityModels.User.Map(signup);
             try
             {
                 db.Users.Add(user);    // attach user object to the DB Set collection of Users and change its state to (Added)
