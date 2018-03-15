@@ -8,15 +8,19 @@ using SSMS.EntityModels;
 
 namespace SSMS.Users
 {
-    public class UsersController : Controller
+    //Inherit from BaseCOntroller to get all the actions inside it in the derived controller
+    public class UsersController : BaseController<User>
     {
-        //Store the dbContext object that comes 
+        //Store the usersService object that comes 
         //from DependencyInjection DI which injects it in the constructor
-        private SSMSContext db { get; }
-        public UsersController(SSMSContext _db)
+        private UsersService _UserSrv { get; }
+        //Give the BaseConstructor the dependency it needs which is DB contect
+        //To get Db Context, we receive it from DI then pass it to Base constructor
+        public UsersController(UsersService usersService, SSMSContext DB):base(DB)
         {
-            db = _db;    //DI inject DBContext object here from startup Class
+            _UserSrv = usersService;    //DI inject usersService object here from startup Class
         }
+
         public IActionResult SignUp([FromBody]SignUp signup)
         {
             //(1)check if MS is valid 
@@ -24,11 +28,10 @@ namespace SSMS.Users
                 return BadRequest(ModelState);
             //2) Mapping between view Model to entity Model  (user is Entity -- signup is the View)
             // here we fill in all data not entered by the user 
-            User user = EntityModels.User.Map(signup);
+            User user = Extensions.Map(signup);
             try
             {
-                db.Users.Add(user);    // attach user object to the DB Set collection of Users and change its state to (Added)
-                db.SaveChanges();      //Generate the appropriate sql statement based on the object state  
+                _UserSrv.AddUser(user);
             }
             catch (System.Exception ex)
             {
@@ -41,14 +44,11 @@ namespace SSMS.Users
             //(1)check if MS is valid 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var user = db.Users
-                        .Where(u => u.UserId == signin.UserId && u.UserPassword == signin.UserPassword)
-                        .SingleOrDefault();  //this function executes the where
+            var user = _UserSrv.GetUser(u => u.UserId == signin.UserId && u.UserPassword == signin.UserPassword);
             try
             {
                 if (user == null)
                     return BadRequest("Invalid User.");
-
                 if (user.IsActive == false)
                     return BadRequest("This account hasn't been activated Yet.");
                 return Ok(user);  //if everything is ok, return the full user obj with all inserted values  
@@ -64,17 +64,14 @@ namespace SSMS.Users
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             //(2) Get user Data from DB 
-            var user = db.Users
-                        .Where(u => u.UserId == changedpassword.UserId && u.UserPassword == changedpassword.OldPassword)
-                        .SingleOrDefault();  //this function executes the where
+            var user = _UserSrv.GetUser(u => u.UserId == changedpassword.UserId && u.UserPassword == changedpassword.OldPassword);
             try
             {
                 if (user == null)
                     return BadRequest("Invalid User.");
                 //(3) Update statement and saving new pwd 
                 user.UserPassword = changedpassword.NewPassword;
-                db.SaveChanges();
-
+                _UserSrv.Save();
                 return Ok(user);  //if everything is ok, return the full user obj with all inserted values  
             }
             catch (System.Exception ex)
@@ -82,5 +79,6 @@ namespace SSMS.Users
                 return BadRequest(ex);
             }
         }
+        
     }
 }

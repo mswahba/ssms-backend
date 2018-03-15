@@ -701,7 +701,7 @@ namespace SSMS.EntityModels
 
                 entity.Property(e => e.SubscribeDate)
                     .HasColumnName("subscribeDate")
-                    .HasColumnType("date");
+                    .HasColumnType("smalldatetime");
 
                 entity.Property(e => e.UserPassword)
                     .HasColumnName("userPassword")
