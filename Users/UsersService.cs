@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using SSMS.EntityModels;
 /// <summary>
-/// ALl services that deals with DB functions (save- query - add - update - delete)
+/// ALl services that deal with DB functions (save- query - add - update - delete)
 /// </summary>
 namespace SSMS.Users
 {

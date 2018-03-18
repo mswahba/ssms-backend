@@ -6,28 +6,33 @@ using System;
 
 namespace SSMS
 {
-    public class BaseController<TEntity> : Controller where TEntity : class
+    [Route("[controller]")]
+    public class BaseController<TEntity, TKey> : Controller where TEntity : class
     {
-        private SSMSContext db { get; }
-        public BaseController(SSMSContext _db)
+        private BaseService<TEntity, TKey> _service { get; }
+        public BaseController(BaseService<TEntity,TKey> service)
         {
-            db = _db;
+            _service = service;
         }
+        [HttpGet ("list")]
         public IActionResult list()
         {
-            return Ok(db.Set<TEntity>().AsQueryable().ToList());
+            return Ok(_service.GetAll());
         }
+        [HttpGet ("{id}")]
+        public IActionResult Find(TKey id)
+        {
+            return Ok(_service.Find(id));
+        }
+               
         //Get Specific page in a GridView based on pageSize and Page Number 
         // returns anonymous object that contains :  
         //(pageItems : array of items, Number of TotalItems,Number of TotalPages)
+        [HttpGet ("Page")]
         public IActionResult GetPage(int pageSize, int pageNumber)
         {
-            var result = new {
-                PageItems = db.Set<TEntity>().Skip(pageSize*(pageNumber-1)).Take(pageSize), 
-                TotalItems = db.Set<TEntity>().Count(),
-                TotalPages=(int) Math.Ceiling((decimal)db.Set<TEntity>().Count() / pageSize),
-            };
-          return Ok(result); 
+            var result = _service.GetPage(pageSize, pageNumber);
+            return Ok(result);
         }
     }
 }

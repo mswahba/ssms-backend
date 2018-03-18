@@ -8,10 +8,10 @@ using SSMS.EntityModels;
 
 namespace SSMS.Users.Parents  
 {
-    public class ParentsController : BaseController<Parent>
+    public class ParentsController : BaseController<Parent,String>
     {
-        private ParentsService _ParentSrv { get; }
-        public ParentsController(ParentsService ParentsService , SSMSContext DB):base(DB)
+        private BaseService<Parent,String> _ParentSrv { get; }
+        public ParentsController(BaseService<Parent,String> ParentsService):base(ParentsService)
         {
             _ParentSrv = ParentsService;    
         }
@@ -21,7 +21,7 @@ namespace SSMS.Users.Parents
                 return BadRequest(ModelState);
             try
             {
-                _ParentSrv.AddParent(parent);                 
+                _ParentSrv.Add(parent);                 
             }
             catch (System.Exception ex)
             {
@@ -36,7 +36,7 @@ namespace SSMS.Users.Parents
                 return BadRequest(ModelState);
             try
             {
-                _ParentSrv.UpdateParent(parent); 
+                _ParentSrv.Update(parent); 
             }
             catch (System.Exception ex)
             {
@@ -51,13 +51,13 @@ namespace SSMS.Users.Parents
                 return BadRequest(ModelState);
             try
             {
-                _ParentSrv.UpdateParentId(changedParentId.ParentNewId, changedParentId.ParentOldId); 
+                _ParentSrv.UpdateKey("parents", "parentId" , changedParentId.ParentNewId, changedParentId.ParentOldId); 
             }
             catch (System.Exception ex)
             {
                return BadRequest(ex); 
             }    
-            return Ok(_ParentSrv.GetParent(p=> p.ParentId == changedParentId.ParentNewId));  //if everything is ok, return the full user obj with all inserted values  
+            return Ok(_ParentSrv.GetOne(p=> p.ParentId == changedParentId.ParentNewId));  //if everything is ok, return the full user obj with all inserted values  
         }
 
     }

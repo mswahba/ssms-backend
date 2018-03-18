@@ -21,7 +21,7 @@ namespace SSMS
         }
 
         public IConfiguration Configuration { get; }
-
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -29,8 +29,10 @@ namespace SSMS
             //Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
             services.AddDbContext<SSMSContext>();
             //AddScoped configues settings to create new instance of this type per http request
-            services.AddScoped<UsersService>(); 
-            services.AddScoped<ParentsService>(); 
+            services.AddScoped<BaseService<User,String>>(); 
+            services.AddScoped<BaseService<Parent,String>>(); 
+            services.AddScoped<BaseService<Student,String>>(); 
+
             /*
             services.AddDbContext<test1Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("constr")));

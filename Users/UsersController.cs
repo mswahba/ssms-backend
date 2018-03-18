@@ -9,14 +9,14 @@ using SSMS.EntityModels;
 namespace SSMS.Users
 {
     //Inherit from BaseCOntroller to get all the actions inside it in the derived controller
-    public class UsersController : BaseController<User>
+    public class UsersController : BaseController<User, String>
     {
         //Store the usersService object that comes 
         //from DependencyInjection DI which injects it in the constructor
-        private UsersService _UserSrv { get; }
+        private BaseService<User,String> _UserSrv { get; }
         //Give the BaseConstructor the dependency it needs which is DB contect
         //To get Db Context, we receive it from DI then pass it to Base constructor
-        public UsersController(UsersService usersService, SSMSContext DB):base(DB)
+        public UsersController(BaseService<User,String> usersService):base(usersService)
         {
             _UserSrv = usersService;    //DI inject usersService object here from startup Class
         }
@@ -31,7 +31,7 @@ namespace SSMS.Users
             User user = Extensions.Map(signup);
             try
             {
-                _UserSrv.AddUser(user);
+                _UserSrv.Add(user);
             }
             catch (System.Exception ex)
             {
@@ -44,7 +44,7 @@ namespace SSMS.Users
             //(1)check if MS is valid 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var user = _UserSrv.GetUser(u => u.UserId == signin.UserId && u.UserPassword == signin.UserPassword);
+            var user = _UserSrv.GetOne(u => u.UserId == signin.UserId && u.UserPassword == signin.UserPassword);
             try
             {
                 if (user == null)
@@ -64,7 +64,7 @@ namespace SSMS.Users
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             //(2) Get user Data from DB 
-            var user = _UserSrv.GetUser(u => u.UserId == changedpassword.UserId && u.UserPassword == changedpassword.OldPassword);
+            var user = _UserSrv.GetOne(u => u.UserId == changedpassword.UserId && u.UserPassword == changedpassword.OldPassword);
             try
             {
                 if (user == null)
