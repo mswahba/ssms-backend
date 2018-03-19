@@ -11,54 +11,57 @@ namespace SSMS.Users.Parents
     public class ParentsController : BaseController<Parent,String>
     {
         private BaseService<Parent,String> _ParentSrv { get; }
+        //in ctor take parent service from DI and pass it to the base controller
+        //when sending this entity type and its key type, 
+        //we tranform the Base service to this entity service (parent)
         public ParentsController(BaseService<Parent,String> ParentsService):base(ParentsService)
         {
             _ParentSrv = ParentsService;    
         }
-        public IActionResult Add([FromBody]Parent parent)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
-            {
-                _ParentSrv.Add(parent);                 
-            }
-            catch (System.Exception ex)
-            {
-               return BadRequest(ex); 
-            }    
-            return Ok(parent);  //if everything is ok, return the full user obj with all inserted values  
-        }
-        //Update all parent Data -- used either by Parent or Admin 
-        public IActionResult Update([FromBody]Parent parent)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
-            {
-                _ParentSrv.Update(parent); 
-            }
-            catch (System.Exception ex)
-            {
-               return BadRequest(ex); 
-            }    
-            return Ok(parent);  //if everything is ok, return the full user obj with all inserted values  
-        }
-        //update Only ParentId --Used by Admins Only 
-        public IActionResult UpdateId([FromBody] ChangedParentId changedParentId)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
-            {
-                _ParentSrv.UpdateKey("parents", "parentId" , changedParentId.ParentNewId, changedParentId.ParentOldId); 
-            }
-            catch (System.Exception ex)
-            {
-               return BadRequest(ex); 
-            }    
-            return Ok(_ParentSrv.GetOne(p=> p.ParentId == changedParentId.ParentNewId));  //if everything is ok, return the full user obj with all inserted values  
-        }
 
+        // public IActionResult Add([FromBody]Parent parent)
+        // {
+        //     if (!ModelState.IsValid)
+        //         return BadRequest(ModelState);
+        //     try
+        //     {
+        //         _ParentSrv.Add(parent);                 
+        //     }
+        //     catch (System.Exception ex)
+        //     {
+        //        return BadRequest(ex); 
+        //     }    
+        //     return Ok(parent);  //if everything is ok, return the full user obj with all inserted values  
+        // }
+        // //Update all parent Data -- used either by Parent or Admin 
+        // public IActionResult Update([FromBody]Parent parent)
+        // {
+        //     if (!ModelState.IsValid)
+        //         return BadRequest(ModelState);
+        //     try
+        //     {
+        //         _ParentSrv.Update(parent); 
+        //     }
+        //     catch (System.Exception ex)
+        //     {
+        //        return BadRequest(ex); 
+        //     }    
+        //     return Ok(parent);  //if everything is ok, return the full user obj with all inserted values  
+        // }
+        // //update Only ParentId --Used by Admins Only 
+        // public IActionResult UpdateId([FromBody] ChangedParentId changedParentId)
+        // {
+        //     if (!ModelState.IsValid)
+        //         return BadRequest(ModelState);
+        //     try
+        //     {
+        //         _ParentSrv.UpdateKey("parents", "parentId" , changedParentId.ParentNewId, changedParentId.ParentOldId); 
+        //     }
+        //     catch (System.Exception ex)
+        //     {
+        //        return BadRequest(ex); 
+        //     }    
+        //     return Ok(_ParentSrv.GetOne(p=> p.ParentId == changedParentId.ParentNewId));  //if everything is ok, return the full user obj with all inserted values  
+        // }
     }
 }

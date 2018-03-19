@@ -57,12 +57,11 @@ namespace SSMS
             db.Entry(entity).State = EntityState.Modified;
             return db.SaveChanges();
         }
-        public int UpdateKey(string tableName, string keyName, string newKey, string oldKey)
+        public int UpdateKey(string tableName, string keyName, TKey newKey, TKey oldKey)
         {
-            string sql = $"update {tableName} set {keyName} = {newKey} where {keyName} = {oldKey}"; 
+            string sql = $"update {tableName} set {keyName} = {newKey.ToString()} where {keyName} = {oldKey.ToString()}"; 
             return db.Database.ExecuteSqlCommand(sql); 
         }
-
         public int Save()
         {
             return db.SaveChanges();
