@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SSMS.EntityModels;
 using System.Collections.Generic;
-using System.Reflection; 
+using System.Reflection;
 using System.Linq;
 using System;
 
@@ -15,10 +15,29 @@ namespace SSMS
         {
             _service = service;
         }
-        [HttpGet("list")]
-        public IActionResult list()
+        //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table besed on route param- 
+        //we send the list type as Route parameter ("all OR "deleted" OR "Existing")
+        [HttpGet("List/{listType}")]
+        public IActionResult list(string listType)
         {
-            return Ok(_service.GetAll());
+            List<TEntity> result = new List<TEntity>();
+            if (listType.ToLower() == "existing")
+                result = _service.GetList(item =>
+                   item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                              ? true
+                              : false
+               );
+            else if (listType.ToLower() == "deleted")
+                result = _service.GetList(item =>
+                   item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                              ? false
+                              : true
+               );
+            else if (listType.ToLower() == "all")
+                result = _service.GetAll();
+            else
+                return BadRequest("Unknow List Type.[all] OR [deleted] OR [existing] only acceptable");
+            return Ok(result);
         }
         [HttpGet("{id}")]
         public IActionResult Find(TKey id)
@@ -82,7 +101,7 @@ namespace SSMS
             {
                 return BadRequest(ex);
             }
-            //Use Reflection : When we have a string OF property and want to access a property value during runtime
+            //Use Reflection : When we have a string OF property and want to access a property value in runtime
             //Get type, 
             //Get Property (binding Flags: ignore case sensitive, instance (not static), public) , 
             //Get Value 
@@ -93,50 +112,50 @@ namespace SSMS
         //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
         // Then call the appropriate function from the BaseService class to execute operation
         // the param (deleteType) will come from queryString
-        public IActionResult Delete( [FromQuery] string deleteType, [FromBody] TEntity entity)
+        public IActionResult Delete([FromQuery] string deleteType, [FromBody] TEntity entity)
         {
             if (deleteType == null)
-                return BadRequest ("Can't identify The type of the Delete operation"); 
+                return BadRequest("Can't identify The type of the Delete operation");
             if (!ModelState.IsValid)
-                return BadRequest(ModelState); 
-            int res; 
+                return BadRequest(ModelState);
+            int res;
             if (deleteType == "logical")
             {
                 _service.Attach(entity);
-                res = _service.DeleteLogical(entity); 
+                res = _service.DeleteLogical(entity);
                 return Ok($"{res} Item(s) Deleted successfully...");
             }
             else if (deleteType == "physical")
             {
-                res = _service.Delete(entity); 
+                res = _service.Delete(entity);
                 return Ok($"{res} Item(s) Deleted successfully...");
             }
-            return BadRequest("Unknow Delete Type"); 
+            return BadRequest("Unknow Delete Type");
         }
         [HttpGet("Delete-ById")]
         //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
         // Then call the appropriate function from the BaseService class to execute operation
         // the param (deleteType) will come from queryString
-        public IActionResult Delete( [FromQuery] string deleteType, [FromQuery] TKey key)
+        public IActionResult Delete([FromQuery] string deleteType, [FromQuery] TKey key)
         {
             if (deleteType == null)
-                return BadRequest ("Can't identify The type of the Delete operation"); 
+                return BadRequest("Can't identify The type of the Delete operation");
             if (!ModelState.IsValid)
-                return BadRequest(ModelState); 
-            int res; 
+                return BadRequest(ModelState);
+            int res;
             //First get the entity using its key to send it to delete 
             TEntity entity = _service.Find(key);
             if (deleteType == "logical")
             {
-                res = _service.DeleteLogical(entity); 
+                res = _service.DeleteLogical(entity);
                 return Ok($"{res} Item(s) Deleted successfully...");
             }
             else if (deleteType == "physical")
             {
-                res = _service.Delete(entity); 
+                res = _service.Delete(entity);
                 return Ok($"{res} Item(s) Deleted successfully...");
             }
-            return BadRequest("Unknow Delete Type"); 
+            return BadRequest("Unknow Delete Type");
         }
 
     }
