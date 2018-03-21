@@ -21,6 +21,8 @@ namespace SSMS
         }
         public int Add(TEntity entity)
         {
+            // Use db.Set<TEntity> to access db set collection (tables) 
+            // instead of using db.Parents or db.users  to be generic    
             db.Set<TEntity>().Add(entity);
             return db.SaveChanges();
         }
@@ -40,7 +42,6 @@ namespace SSMS
         {
             return db.Set<TEntity>().Find(id);
         }
-
         public PageResult<TEntity> GetPage(int pageSize, int pageNumber)
         {
             return new PageResult<TEntity>
@@ -57,14 +58,49 @@ namespace SSMS
             db.Entry(entity).State = EntityState.Modified;
             return db.SaveChanges();
         }
+        //update the primary key of any given table 
         public int UpdateKey(string tableName, string keyName, TKey newKey, TKey oldKey)
         {
-            string sql = $"update {tableName} set {keyName} = {newKey.ToString()} where {keyName} = {oldKey.ToString()}"; 
-            return db.Database.ExecuteSqlCommand(sql); 
+            string sql = $"update {tableName} set {keyName} = {newKey.ToString()} where {keyName} = {oldKey.ToString()}";
+            return db.Database.ExecuteSqlCommand(sql);
         }
+        /// <summary>
+        /// takes entity to be deleted, get the 'isDeleted' property value , if exists get  its value 
+        /// if isDeleted is 'true'  return , if not change its value to true 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public int DeleteLogical(TEntity entity)
+        {
+            string propName = "IsDeleted";
+            if (entity.GetProperty(propName) == null)
+                return 0;
+            bool value = false;
+            if (entity.GetValue(propName) != null)
+                value = (bool)entity.GetValue(propName);
+            if (value == true)
+                return 0;
+            entity.SetValue("IsDeleted", true);
+            return db.SaveChanges();
+        }
+        //takes entity to be deleted physically from DB, get the 'isDeleted' property , if exists delete the whole row from table
+        public int Delete(TEntity entity)
+        {
+            db.Set<TEntity>().Remove(entity);
+            return db.SaveChanges();
+        }
+        //to attach the entity to the DBCOntext so that the change tracker is aware of it
+        //Behind the scenes, many other function can call attach like (add, remove..)
+        //Also any entity returned from a query (find, firstOrDefault ....) will call Attach be Default
+        //We use it only in cases where Attach won't be called by default (by Add() or Remove() or Change entity state)
+        public void Attach(TEntity entity)
+        {
+            db.Set<TEntity>().Attach(entity); 
+        } 
         public int Save()
         {
             return db.SaveChanges();
         }
+
     }
 }

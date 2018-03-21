@@ -82,8 +82,61 @@ namespace SSMS
             {
                 return BadRequest(ex);
             }
-            var result = _service.GetOne(item => item.GetType().GetProperty(keyName,BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(item).Equals(newKey));  //if everything is ok, return the full user obj with all inserted values  
+            //Use Reflection : When we have a string OF property and want to access a property value during runtime
+            //Get type, 
+            //Get Property (binding Flags: ignore case sensitive, instance (not static), public) , 
+            //Get Value 
+            var result = _service.GetOne(item => item.GetValue(keyName).Equals(newKey));  //if everything is ok, return the full user obj with all inserted values  
             return Ok(result);
+        }
+        [HttpPost("Delete")]
+        //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
+        // Then call the appropriate function from the BaseService class to execute operation
+        // the param (deleteType) will come from queryString
+        public IActionResult Delete( [FromQuery] string deleteType, [FromBody] TEntity entity)
+        {
+            if (deleteType == null)
+                return BadRequest ("Can't identify The type of the Delete operation"); 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState); 
+            int res; 
+            if (deleteType == "logical")
+            {
+                _service.Attach(entity);
+                res = _service.DeleteLogical(entity); 
+                return Ok($"{res} Item(s) Deleted successfully...");
+            }
+            else if (deleteType == "physical")
+            {
+                res = _service.Delete(entity); 
+                return Ok($"{res} Item(s) Deleted successfully...");
+            }
+            return BadRequest("Unknow Delete Type"); 
+        }
+        [HttpGet("Delete-ById")]
+        //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
+        // Then call the appropriate function from the BaseService class to execute operation
+        // the param (deleteType) will come from queryString
+        public IActionResult Delete( [FromQuery] string deleteType, [FromQuery] TKey key)
+        {
+            if (deleteType == null)
+                return BadRequest ("Can't identify The type of the Delete operation"); 
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState); 
+            int res; 
+            //First get the entity using its key to send it to delete 
+            TEntity entity = _service.Find(key);
+            if (deleteType == "logical")
+            {
+                res = _service.DeleteLogical(entity); 
+                return Ok($"{res} Item(s) Deleted successfully...");
+            }
+            else if (deleteType == "physical")
+            {
+                res = _service.Delete(entity); 
+                return Ok($"{res} Item(s) Deleted successfully...");
+            }
+            return BadRequest("Unknow Delete Type"); 
         }
 
     }

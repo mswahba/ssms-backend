@@ -79,7 +79,6 @@ namespace SSMS.Users
             {
                 return BadRequest(ex);
             }
-        }
-        
+        }        
     }
 }

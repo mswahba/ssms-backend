@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SSMS.Users;
 
 namespace SSMS.EntityModels
 {
@@ -11,6 +10,7 @@ namespace SSMS.EntityModels
         public byte? UserType { get; set; }
         public bool? IsActive { get; set; }
         public DateTime? SubscribeDate { get; set; }
-        public DateTime? LastLogin { get; set; }        
+        public DateTime? LastLogin { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

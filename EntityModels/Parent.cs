@@ -31,5 +31,6 @@ namespace SSMS.EntityModels
         public string RelativePhone { get; set; }
         public string RelativeAddress { get; set; }
         public string RelativeRelation { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

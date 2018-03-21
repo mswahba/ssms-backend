@@ -22,5 +22,6 @@ namespace SSMS.EntityModels
         public string BirthDateH { get; set; }
         public string BirthPlace { get; set; }
         public string SpecialNeeds { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

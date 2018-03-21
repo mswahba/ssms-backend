@@ -35,7 +35,6 @@ namespace SSMS.EntityModels
                 optionsBuilder.UseSqlServer(@"Server=DESKTOP-8GK916E;Database=SSMS;Integrated Security=true;");
             }
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcademicSemester>(entity =>
@@ -311,6 +310,9 @@ namespace SSMS.EntityModels
                     .HasMaxLength(15);
 
                 entity.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
+
+            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
             });
 
             modelBuilder.Entity<EmployeeFinance>(entity =>
@@ -508,6 +510,7 @@ namespace SSMS.EntityModels
                 entity.Property(e => e.WorkPhone)
                     .HasColumnName("workPhone")
                     .HasMaxLength(15);
+                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");                    
             });
 
             modelBuilder.Entity<School>(entity =>
@@ -637,6 +640,7 @@ namespace SSMS.EntityModels
                     .HasColumnType("char(10)");
 
                 entity.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
+                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
             });
 
             modelBuilder.Entity<StudentEdu>(entity =>
@@ -708,6 +712,7 @@ namespace SSMS.EntityModels
                     .HasMaxLength(25);
 
                 entity.Property(e => e.UserType).HasColumnName("userType");
+                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");                
             });
 
             modelBuilder.Entity<UserDocs>(entity =>

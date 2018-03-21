@@ -44,5 +44,6 @@ namespace SSMS.EntityModels
         public bool? HasDrivingLicense { get; set; }
         public bool? IsHandicapped { get; set; }
         public string SpecialNeeds { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }
