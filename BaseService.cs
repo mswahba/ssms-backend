@@ -30,10 +30,18 @@ namespace SSMS
         {
             return db.Set<TEntity>().Where(expression).SingleOrDefault();
         }
+        //takes a labmda expression and executes it (using .ToList()) and returns result as list  
         public List<TEntity> GetList(Func<TEntity, bool> expression)
         {
             return db.Set<TEntity>().Where(expression).ToList();
         }
+        //takes a labmda expression (and doesn't execute it) and returns result as enumerable  
+        //so that I can reuse it and add more linq operators (count() or take())  
+        public IEnumerable<TEntity> GetQuery(Func<TEntity, bool> expression)
+        {
+            return db.Set<TEntity>().Where(expression);
+        }
+
         public List<TEntity> GetAll()
         {
             return db.Set<TEntity>().ToList();
@@ -42,14 +50,57 @@ namespace SSMS
         {
             return db.Set<TEntity>().Find(id);
         }
-        public PageResult<TEntity> GetPage(int pageSize, int pageNumber)
+        public PageResult<TEntity> GetPage(string listType, int pageSize, int pageNumber)
         {
-            return new PageResult<TEntity>
+            //create a generic delegate of type <TEntity> and returns a bool 
+            //so that it will be used with linq Where() function to get the following: 
+            // 1) get total items based on this expression  
+            // 2) calculate the count of items based on the expression 
+            // 3) calculate the number of pages  based on the expression 
+            Func<TEntity, bool> expression;
+
+            switch (listType.ToLower())
             {
-                PageItems = db.Set<TEntity>().Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList(),
-                TotalItems = db.Set<TEntity>().Count(),
-                TotalPages = (int)Math.Ceiling((decimal)db.Set<TEntity>().Count() / pageSize),
-            };
+                case "all":
+                    return new PageResult<TEntity>
+                    {
+                        PageItems = db.Set<TEntity>().Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList(),
+                        TotalItems = db.Set<TEntity>().Count(),
+                        //Ceiling is a math function that adjusts any decimal fraction to the next integer 
+                        TotalPages = (int)Math.Ceiling((decimal)db.Set<TEntity>().Count() / pageSize),
+                    };
+                case "deleted":
+                    expression = item =>
+                                        item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                                        ? false
+                                        : true;
+                    return new PageResult<TEntity>
+                    {
+                        PageItems = GetQuery(expression)
+                                    .Skip(pageSize * (pageNumber - 1))
+                                    .Take(pageSize).ToList(),
+                        TotalItems = GetQuery(expression)
+                                    .Count(),
+                        TotalPages = (int)Math.Ceiling((decimal)GetQuery(expression).Count() / pageSize),
+                    };
+                case "existing":
+                    expression = item =>
+                                item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                                ? true
+                                : false;
+                    return new PageResult<TEntity>
+                    {
+                        PageItems = GetQuery(expression)
+                                    .Skip(pageSize * (pageNumber - 1))
+                                    .Take(pageSize).ToList(),
+                        TotalItems = GetQuery(expression)
+                                    .Count(),
+                        TotalPages = (int)Math.Ceiling((decimal)GetQuery(expression).Count() / pageSize),
+                    };
+                default:
+                    return null;
+            }
+
         }
         public int Update(TEntity entity)
         {
@@ -95,8 +146,8 @@ namespace SSMS
         //We use it only in cases where Attach won't be called by default (by Add() or Remove() or Change entity state)
         public void Attach(TEntity entity)
         {
-            db.Set<TEntity>().Attach(entity); 
-        } 
+            db.Set<TEntity>().Attach(entity);
+        }
         public int Save()
         {
             return db.SaveChanges();

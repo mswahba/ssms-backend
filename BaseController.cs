@@ -17,42 +17,55 @@ namespace SSMS
         }
         //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table besed on route param- 
         //we send the list type as Route parameter ("all OR "deleted" OR "Existing")
+        //we receive pagesize and page number (optional) if exists we return pageResult 
+        // which is a complex type that contains :  
+        //(pageItems : List of items, Number of TotalItems,Number of TotalPages)
+        // if they aren't , return regular list of entity 
+        // [controller]/list/all?pagesize=25&pageNumber=4
         [HttpGet("List/{listType}")]
-        public IActionResult list(string listType)
+        public IActionResult list([FromRoute]string listType,[FromQuery] int? pageSize, [FromQuery]int? pageNumber)
         {
-            List<TEntity> result = new List<TEntity>();
-            if (listType.ToLower() == "existing")
-                result = _service.GetList(item =>
-                   item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
-                              ? true
-                              : false
-               );
-            else if (listType.ToLower() == "deleted")
-                result = _service.GetList(item =>
-                   item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
-                              ? false
-                              : true
-               );
-            else if (listType.ToLower() == "all")
-                result = _service.GetAll();
-            else
+            //if list type doesn't match these three acceptable values (all/deleted/existing)
+            //return bad request   
+            if (listType.ToLower() != "existing" && 
+                listType.ToLower() != "deleted" && 
+                listType.ToLower() != "all")
                 return BadRequest("Unknow List Type.[all] OR [deleted] OR [existing] only acceptable");
+            // if page size and number are provided, return page result  (from GetPage())
+            if (pageSize != null && pageNumber != null)
+            {
+                var res = _service.GetPage(listType, (int)pageSize, (int)pageNumber);
+                return Ok(res);
+            }
+            //If page size & number aren't provided from the query string
+            //then return regular result based on list type.  
+            List<TEntity> result = new List<TEntity>();
+            switch (listType.ToLower())
+            {
+                case "existing":
+                    result = _service.GetList(item =>
+                       item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                                  ? true
+                                  : false
+                   );
+                    break;
+                case "deleted":
+                    result = _service.GetList(item =>
+                       item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                                  ? false
+                                  : true
+                   );
+                    break;
+                case "all":
+                    result = _service.GetAll();
+                    break;
+            }
             return Ok(result);
         }
         [HttpGet("{id}")]
         public IActionResult Find(TKey id)
         {
             return Ok(_service.Find(id));
-        }
-
-        //Get Specific page in a GridView based on pageSize and Page Number 
-        // returns anonymous object that contains :  
-        //(pageItems : array of items, Number of TotalItems,Number of TotalPages)
-        [HttpGet("Page")]
-        public IActionResult GetPage(int pageSize, int pageNumber)
-        {
-            var result = _service.GetPage(pageSize, pageNumber);
-            return Ok(result);
         }
         [HttpPost("Add")]
         public IActionResult Add([FromBody] TEntity entity)
