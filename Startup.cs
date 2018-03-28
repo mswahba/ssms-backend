@@ -32,7 +32,7 @@ namespace SSMS
             services.AddScoped<BaseService<User,String>>(); 
             services.AddScoped<BaseService<Parent,String>>(); 
             services.AddScoped<BaseService<Student,String>>(); 
-
+            services.AddScoped<BaseService<Employee,String>>(); 
             /*
             services.AddDbContext<test1Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("constr")));

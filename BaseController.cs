@@ -23,12 +23,12 @@ namespace SSMS
         // if they aren't , return regular list of entity 
         // [controller]/list/all?pagesize=25&pageNumber=4
         [HttpGet("List/{listType}")]
-        public IActionResult list([FromRoute]string listType,[FromQuery] int? pageSize, [FromQuery]int? pageNumber)
+        public IActionResult list([FromRoute]string listType, [FromQuery] int? pageSize, [FromQuery]int? pageNumber)
         {
             //if list type doesn't match these three acceptable values (all/deleted/existing)
             //return bad request   
-            if (listType.ToLower() != "existing" && 
-                listType.ToLower() != "deleted" && 
+            if (listType.ToLower() != "existing" &&
+                listType.ToLower() != "deleted" &&
                 listType.ToLower() != "all")
                 return BadRequest("Unknow List Type.[all] OR [deleted] OR [existing] only acceptable");
             // if page size and number are provided, return page result  (from GetPage())
@@ -61,6 +61,31 @@ namespace SSMS
                     break;
             }
             return Ok(result);
+        }
+        //Make it as default action for the controller
+        [HttpGet("")]
+        //'filters' is a comma separated "string" and 
+        //one filter is like this [field;operator;value] 
+        // operators must be one of (= , != , > , < , >=, <=, % [contains], @ [contains whole word])
+        // Route : Users?filters=userName|=|Mohammad , age| > |20, isActive|=|false 
+        public IActionResult Filter([FromQuery] string filters)
+        {
+            //split filters and add every filter as an item in an array 
+            string[] filtersArr = filters.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            //list to hold every filter as an arry with 3 item 
+            List<string[]> filterArr = new List<string[]>();
+            foreach (var item in filtersArr)
+                filterArr.Add(item.Split('|', StringSplitOptions.RemoveEmptyEntries));
+            try
+            {
+                var res = _service.ApplyFilter(filterArr);
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+            //service func to  
         }
         [HttpGet("{id}")]
         public IActionResult Find(TKey id)
