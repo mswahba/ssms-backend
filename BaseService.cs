@@ -42,6 +42,10 @@ namespace SSMS
         {
             return db.Set<TEntity>().Where(expression);
         }
+        public IEnumerable<TEntity> GetQuery()
+        {
+            return db.Set<TEntity>().AsQueryable(); 
+        }
 
         public List<TEntity> GetAll()
         {

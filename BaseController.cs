@@ -87,6 +87,39 @@ namespace SSMS
             }
             //service func to  
         }
+        //'fields' is a comma separated string of entity fields we want to select 
+        //return entity that contains only these fields
+        //  [controller]/Select?fileds=empId, empName
+        [HttpGet("Select")]
+        public IActionResult Select([FromQuery] string fields)
+        {
+            if (fields == null)
+                return BadRequest("Must supply fields");
+            string[] fieldsArr = fields.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            fieldsArr = fieldsArr.Where(field => !string.IsNullOrWhiteSpace(field)).ToArray();
+            //dict to hold anonymous obj ..... 
+            Dictionary<string, object> obj;
+            //Get collection of all fileds(columns) and items(rows)
+            var items = _service.GetQuery().ToList();
+            //filter the collection of items to return only the required fields 
+            // Select creates an empty array of type the same as that returns from its inside block 
+            // then iterates all items and adds the returned value to the newly created array  
+            // after Select() iterates all items , it returns the array of items to result variable
+            var result = items.Select(item =>
+            {
+                // Create empty dictionary that takes (string field name , object value )
+                // each dictionary represents a record (row) as object 
+                obj = new Dictionary<string, object>();
+                // fill the dictionary dynamically by setting the field name and its value) 
+                // we use for each because weh have many fields
+                foreach (var field in fieldsArr)
+                    obj.Add(field, item.GetValue(field));
+                // return the new dynamically created row to the Select() function , 
+                // so that the select() will loop to the next item  
+                return obj;
+            });
+            return Ok(result);
+        }
         [HttpGet("{id}")]
         public IActionResult Find(TKey id)
         {

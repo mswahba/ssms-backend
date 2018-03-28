@@ -13,14 +13,13 @@ namespace SSMS.Users
     {
         //Store the usersService object that comes 
         //from DependencyInjection DI which injects it in the constructor
-        private BaseService<User,String> _UserSrv { get; }
+        private BaseService<User, String> _UserSrv { get; }
         //Give the BaseConstructor the dependency it needs which is DB contect
         //To get Db Context, we receive it from DI then pass it to Base constructor
-        public UsersController(BaseService<User,String> usersService):base(usersService)
+        public UsersController(BaseService<User, String> usersService) : base(usersService)
         {
             _UserSrv = usersService;    //DI inject usersService object here from startup Class
         }
-
         public IActionResult SignUp([FromBody]SignUp signup)
         {
             //(1)check if MS is valid 
@@ -39,7 +38,7 @@ namespace SSMS.Users
             }
             return Ok(user);  //if everything is ok, return the full user obj with all inserted values  
         }
-          [HttpGet ("SignIn")]
+        [HttpGet("SignIn")]
         public IActionResult SignIn([FromBody]SignIn signin)
         {
             //(1)check if MS is valid 
@@ -79,6 +78,6 @@ namespace SSMS.Users
             {
                 return BadRequest(ex);
             }
-        }        
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace SSMS
         public static object GetValue(this object obj, string propName)
         {
             //Get property info  
-            var prop = obj.GetProperty(propName);
+            var prop = obj.GetProperty(propName.Trim());
             if (prop == null)
                 return null;
             return prop.GetValue(obj);
