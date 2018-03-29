@@ -65,7 +65,7 @@ namespace SSMS
         //Make it as default action for the controller
         [HttpGet("")]
         //'filters' is a comma separated "string" and 
-        //one filter is like this [field;operator;value] 
+        //one filter is like this [field|operator|value] 
         // operators must be one of (= , != , > , < , >=, <=, % [contains], @ [contains whole word])
         // Route : Users?filters=userName|=|Mohammad , age| > |20, isActive|=|false 
         public IActionResult Filter([FromQuery] string filters)
@@ -85,7 +85,6 @@ namespace SSMS
             {
                 return BadRequest(ex);
             }
-            //service func to  
         }
         //'fields' is a comma separated string of entity fields we want to select 
         //return entity that contains only these fields
@@ -111,7 +110,7 @@ namespace SSMS
                 // each dictionary represents a record (row) as object 
                 obj = new Dictionary<string, object>();
                 // fill the dictionary dynamically by setting the field name and its value) 
-                // we use for each because weh have many fields
+                // we use for each because we have many fields
                 foreach (var field in fieldsArr)
                     obj.Add(field, item.GetValue(field));
                 // return the new dynamically created row to the Select() function , 
@@ -172,11 +171,12 @@ namespace SSMS
             {
                 return BadRequest(ex);
             }
-            //Use Reflection : When we have a string OF property and want to access a property value in runtime
+            //Use Reflection : When we have a string OF a property and want to access a property value in runtime
             //Get type, 
             //Get Property (binding Flags: ignore case sensitive, instance (not static), public) , 
             //Get Value 
-            var result = _service.GetOne(item => item.GetValue(keyName).Equals(newKey));  //if everything is ok, return the full user obj with all inserted values  
+            var result = _service.GetOne(item => item.GetValue(keyName).Equals(newKey));  
+            //if everything is ok, return the full user obj with all inserted values  
             return Ok(result);
         }
         [HttpPost("Delete")]

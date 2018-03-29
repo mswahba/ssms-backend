@@ -36,6 +36,11 @@ namespace SSMS
         {
             return db.Set<TEntity>().Where(expression).ToList();
         }
+        //returns all entities without applying any filter expression 
+        public List<TEntity> GetAll()
+        {
+            return db.Set<TEntity>().ToList();
+        }
         //takes a labmda expression (and doesn't execute it) and returns result as enumerable  
         //so that I can reuse it and add more linq operators (count() or take())  
         public IEnumerable<TEntity> GetQuery(Func<TEntity, bool> expression)
@@ -44,14 +49,10 @@ namespace SSMS
         }
         public IEnumerable<TEntity> GetQuery()
         {
-            return db.Set<TEntity>().AsQueryable(); 
+            return db.Set<TEntity>().AsQueryable();
         }
-
-        public List<TEntity> GetAll()
-        {
-            return db.Set<TEntity>().ToList();
-        }
-
+        //takes item(entity or record) and filter ([0] field [1] operator [2] value)
+        //applies filter on item and returns result (true/false) to where() in ApplyFilter() function
         public bool CheckFilter(object item, string[] filter)
         {
             string _field = filter[0].Trim();
@@ -311,6 +312,8 @@ namespace SSMS
                     return false;
             }
         }
+        //this function uses checkFilter , sends it (item {record} , filter {filed|operator|value})
+        // receives list of filters (each filter is string array [0] field [1] operator [2] value) 
         public List<TEntity> ApplyFilter(List<string[]> filters)
         {
             //use no tracking so that db context won't track changes on this dbset 
@@ -324,13 +327,14 @@ namespace SSMS
         {
             return db.Set<TEntity>().Find(id);
         }
+        //Does the following: 
+        // 1) get total items  based on ListType string (all/existing/deleted) 
+        // 2) calculate the count of items  based on ListType
+        // 3) calculate the number of pages based on page size and count of items
         public PageResult<TEntity> GetPage(string listType, int pageSize, int pageNumber)
         {
             // create a generic delegate of type <TEntity> and returns a bool 
-            // so that it will be used with linq Where() function to get the following: 
-            // 1) get total items based on this expression  
-            // 2) calculate the count of items based on the expression 
-            // 3) calculate the number of pages  based on the expression 
+            // so that it will be used with linq Where() function 
             Func<TEntity, bool> expression;
 
             switch (listType.ToLower())
@@ -372,7 +376,7 @@ namespace SSMS
                         TotalPages = (int)Math.Ceiling((decimal)GetQuery(expression).Count() / pageSize),
                     };
                 default:
-                    return null;
+                    return null;    //if no List Type provided
             }
 
         }
@@ -422,10 +426,34 @@ namespace SSMS
         {
             db.Set<TEntity>().Attach(entity);
         }
+        //sets entity state , 4 cases 
+        // added > executes insert statement   
+        // Modified > update 
+        // Deleted > delete    
+        // unchanged > do nothing  
+        //db.Entry function checkis if entity is attached or not, 
+        //if not, it attaches it to dbSet , then changes its state 
+        public void SetState(TEntity entity, string state)
+        {
+            switch (state)
+            {
+                case "Added":
+                    db.Entry(entity).State = EntityState.Added;
+                    break;
+                case "Modified":
+                    db.Entry(entity).State = EntityState.Modified;
+                    break;
+                case "Deleted":
+                    db.Entry(entity).State = EntityState.Deleted;
+                    break;
+                default:
+                    db.Entry(entity).State = EntityState.Unchanged;
+                    break;
+            }
+        }
         public int Save()
         {
             return db.SaveChanges();
         }
-
     }
 }

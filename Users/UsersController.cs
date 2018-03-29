@@ -23,7 +23,7 @@ namespace SSMS.Users
         public IActionResult SignUp([FromBody]SignUp signup)
         {
             //(1)check if MS is valid 
-            if (!ModelState.IsValid)
+            if (!ModelState .IsValid)
                 return BadRequest(ModelState);
             //2) Mapping between view Model to entity Model  (user is Entity -- signup is the View)
             // here we fill in all data not entered by the user 
