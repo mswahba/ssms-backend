@@ -64,7 +64,34 @@ namespace SSMS
             return Ok(result);
         }
         //Make it as default action for the controller
+        // [controller]?filters=.....&fileds=.....&orderby=....
+        //[controller]?fileds=.....&orderby=....
+        //[controller]?orderby=....
+
         [HttpGet("")]
+        public IActionResult Query([FromQuery] string filters, [FromQuery] string fields, [FromQuery] string orderBy)
+        {
+            if (filters == null && fields == null && orderBy == null)
+                return BadRequest("Must supply at least one of the following : [Filters] and/or [Fileds] and/or [Order By]");
+            IQueryable<TEntity> query = _service.GetQuery().AsQueryable(); 
+            IQueryable result ; 
+            //if filters provided, apply filters and get the query after applying (where) on it
+            if (filters != null)
+              query=  _service.ApplyFilter(filters); 
+            //if orderBy provided, Give it the previous query (either filtered or not ) 
+            //then apply sort and get the query after applying (orderBy) on it
+            if (orderBy != null)
+                query= _service.ApplySort(orderBy, query); 
+            //put query value (whether filtered and ordered, filtered only, ordered only, nothing applied) in result   
+            result = query; 
+            //if select fields provided, apply dynamic select on the previous query 
+            if(fields != null)  
+                result = _service.ApplySelect(fields, query);   
+            //Ok() takes the result (Linq query) , executes it , gets the data, convert it to JSON
+            return Ok(result);
+        }
+
+        [HttpGet("Filter")]
         //'filters' is a comma separated "string" and 
         //one filter is like this [field|operator|value] 
         // operators must be one of (= , != , > , < , >=, <=, % [contains], @ [contains whole word])
@@ -92,7 +119,7 @@ namespace SSMS
             // string[] fieldsArr = fields.Split(',', StringSplitOptions.RemoveEmptyEntries);
             // fieldsArr = fieldsArr.Where(field => !string.IsNullOrWhiteSpace(field)).ToArray();
             //dict to hold anonymous obj ..... 
-           var fieldsArr = fields.RemoveEmptyElementsArr(); 
+            var fieldsArr = fields.RemoveEmptyElementsArr();
             Dictionary<string, object> obj;
             //Get collection of all fileds(columns) and items(rows)
             var items = _service.GetQuery().ToList();
@@ -123,12 +150,9 @@ namespace SSMS
         {
             if (fields == null)
                 return BadRequest("Must supply fields");
-            fields = fields.RemoveEmptyElements(); 
             try
             {
-                var res = _service.GetQuery()
-                                  .AsQueryable()  //this is just conversion from enumerable to iqueriable
-                                  .Select($"new({fields})");  //use linq.dynamic.core to generate the 
+                var res = _service.ApplySelect(fields, null);  //use linq.dynamic.core to generate the 
                 return Ok(res);
             }
             catch (System.Exception ex)
@@ -136,18 +160,15 @@ namespace SSMS
                 return BadRequest(ex.Message);
             }
         }
-        //A function 
-        //Users/sort?orderby= userId desc
+        //Users/sort?orderby= userId desc, userPassword
         [HttpGet("Sort")]
         public IActionResult Sort([FromQuery] string orderBy)
         {
             if (orderBy == null)
                 return BadRequest("Must supply 'Order By' statement");
-            // convert comma separated list to array so that we can remove empty items                 
-            orderBy = orderBy.RemoveEmptyElements(); 
             try
             {
-                var res = _service.GetQuery().AsQueryable().OrderBy(orderBy);
+                var res = _service.ApplySort(orderBy, null);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -155,6 +176,7 @@ namespace SSMS
                 return BadRequest(ex);
             }
         }
+
         [HttpGet("{id}")]
         public IActionResult Find(TKey id)
         {

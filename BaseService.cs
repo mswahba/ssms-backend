@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using SSMS.EntityModels;
@@ -313,9 +314,11 @@ namespace SSMS
                     return false;
             }
         }
-        //this function uses checkFilter , sends it (item {record} , filter {filed|operator|value})
-        // receives list of filters (each filter is string array [0] field [1] operator [2] value) 
-        public List<TEntity> ApplyFilter(string filters)
+        // receives a comma separated string of filters 
+        // and converts it to array of filters, 
+        // each filter is string array [0] field [1] operator [2] value) 
+        //It uses checkFilter() , sends it (item {record} , filter {filed|operator|value})
+        public IQueryable<TEntity> ApplyFilter(string filters)
         {
             //split filters and add every filter as an item in an array 
             string[] filtersArr = filters.Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -327,7 +330,25 @@ namespace SSMS
             var query = db.Set<TEntity>().AsNoTracking();
             foreach (var filter in filtersList)
                 query = query.Where(item => CheckFilter(item, filter));
-            return query.ToList();
+            return query;
+        }
+        public IQueryable<TEntity> ApplySort(string orderBy, IQueryable<TEntity> query)
+        {
+            //if query is not provide, we start querying on the whole entity from the beginning
+            // if we get the query, we continue working on it  
+            query= (query == null) ? db.Set<TEntity>().AsNoTracking() : query ; 
+            // convert comma separated list to array so that we can remove empty items                             
+            orderBy = orderBy.RemoveEmptyElements();
+            //use Linq.Dynamic.Core library to apply orderby using sql-like string not expression 
+            return query.OrderBy(orderBy);
+        }
+        public IQueryable ApplySelect(string fields, IQueryable<TEntity> query)
+        {
+            //if query is not provide, we start querying on the whole entity from the beginning
+            // if we get the query, we continue working on it  
+            query= (query == null) ? db.Set<TEntity>().AsNoTracking() : query ; 
+            fields = fields.RemoveEmptyElements();
+            return query.Select($"new({fields})");   
         }
         public TEntity Find(TKey id)
         {
