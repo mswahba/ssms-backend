@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using System;
+using System.Linq.Dynamic.Core;
 
 namespace SSMS
 {
@@ -70,15 +71,9 @@ namespace SSMS
         // Route : Users?filters=userName|=|Mohammad , age| > |20, isActive|=|false 
         public IActionResult Filter([FromQuery] string filters)
         {
-            //split filters and add every filter as an item in an array 
-            string[] filtersArr = filters.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            //list to hold every filter as an arry with 3 item 
-            List<string[]> filterArr = new List<string[]>();
-            foreach (var item in filtersArr)
-                filterArr.Add(item.Split('|', StringSplitOptions.RemoveEmptyEntries));
             try
             {
-                var res = _service.ApplyFilter(filterArr);
+                var res = _service.ApplyFilter(filters);
                 return Ok(res);
             }
             catch (Exception ex)
@@ -88,15 +83,16 @@ namespace SSMS
         }
         //'fields' is a comma separated string of entity fields we want to select 
         //return entity that contains only these fields
-        //  [controller]/Select?fileds=empId, empName
+        // [controller]/Select?fileds=empId, empName
         [HttpGet("Select")]
         public IActionResult Select([FromQuery] string fields)
         {
             if (fields == null)
                 return BadRequest("Must supply fields");
-            string[] fieldsArr = fields.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            fieldsArr = fieldsArr.Where(field => !string.IsNullOrWhiteSpace(field)).ToArray();
+            // string[] fieldsArr = fields.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            // fieldsArr = fieldsArr.Where(field => !string.IsNullOrWhiteSpace(field)).ToArray();
             //dict to hold anonymous obj ..... 
+           var fieldsArr = fields.RemoveEmptyElementsArr(); 
             Dictionary<string, object> obj;
             //Get collection of all fileds(columns) and items(rows)
             var items = _service.GetQuery().ToList();
@@ -118,6 +114,46 @@ namespace SSMS
                 return obj;
             });
             return Ok(result);
+        }
+        //Dynamic Select using System.Linq.Dynamic.core
+        // Select() takes a comma separated list of fields, 
+        //and generates the select statement which will be exectued in SQL and return the result
+        [HttpGet("Select-Dynamic")]
+        public IActionResult SelectDynamic([FromQuery] string fields)
+        {
+            if (fields == null)
+                return BadRequest("Must supply fields");
+            fields = fields.RemoveEmptyElements(); 
+            try
+            {
+                var res = _service.GetQuery()
+                                  .AsQueryable()  //this is just conversion from enumerable to iqueriable
+                                  .Select($"new({fields})");  //use linq.dynamic.core to generate the 
+                return Ok(res);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        //A function 
+        //Users/sort?orderby= userId desc
+        [HttpGet("Sort")]
+        public IActionResult Sort([FromQuery] string orderBy)
+        {
+            if (orderBy == null)
+                return BadRequest("Must supply 'Order By' statement");
+            // convert comma separated list to array so that we can remove empty items                 
+            orderBy = orderBy.RemoveEmptyElements(); 
+            try
+            {
+                var res = _service.GetQuery().AsQueryable().OrderBy(orderBy);
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
         [HttpGet("{id}")]
         public IActionResult Find(TKey id)
@@ -175,7 +211,7 @@ namespace SSMS
             //Get type, 
             //Get Property (binding Flags: ignore case sensitive, instance (not static), public) , 
             //Get Value 
-            var result = _service.GetOne(item => item.GetValue(keyName).Equals(newKey));  
+            var result = _service.GetOne(item => item.GetValue(keyName).Equals(newKey));
             //if everything is ok, return the full user obj with all inserted values  
             return Ok(result);
         }

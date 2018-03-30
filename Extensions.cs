@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using SSMS.EntityModels;
 using SSMS.Users;
@@ -38,7 +39,7 @@ namespace SSMS
             if (prop == null)
                 return;
             //check if type is nullable, if so return its underlying type , if not, return type                 
-            var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;                 
+            var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
             TypeCode typeCode = System.Type.GetTypeCode(propertyType);
             switch (typeCode)
             {
@@ -102,6 +103,30 @@ namespace SSMS
         {
             return obj.GetType()
                     .GetProperty(propName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        }
+        //a func that takes a comma separated string, 
+        // removes any empty elements (white spaces or empty strings)
+        public static string RemoveEmptyElements(this string str)
+        {
+            // convert comma separated list to array so that we can remove empty items 
+            string[] strArr = str.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            //Remove empty items from array using where() 
+            //and trim each element using select()
+            strArr = strArr.Where(item => !string.IsNullOrWhiteSpace(item))
+                            .Select(item => item.Trim())
+                            .ToArray();
+            //convert fieldsArr array to a string with ',' separator 
+            return string.Join(',', strArr);
+        }
+        public static string[] RemoveEmptyElementsArr(this string str)
+        {
+            // convert comma separated list to array so that we can remove empty items 
+            string[] strArr = str.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            //Remove empty items from array using where() 
+            //and trim each element using select(), then return it 
+            return strArr.Where(item => !string.IsNullOrWhiteSpace(item))
+                            .Select(item => item.Trim())
+                            .ToArray();
         }
     }
 }

@@ -47,6 +47,7 @@ namespace SSMS
         {
             return db.Set<TEntity>().Where(expression);
         }
+        //returns all rows of an entity, AsQuerable to chain it later   
         public IEnumerable<TEntity> GetQuery()
         {
             return db.Set<TEntity>().AsQueryable();
@@ -314,12 +315,17 @@ namespace SSMS
         }
         //this function uses checkFilter , sends it (item {record} , filter {filed|operator|value})
         // receives list of filters (each filter is string array [0] field [1] operator [2] value) 
-        public List<TEntity> ApplyFilter(List<string[]> filters)
+        public List<TEntity> ApplyFilter(string filters)
         {
+            //split filters and add every filter as an item in an array 
+            string[] filtersArr = filters.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            //list to hold every filter as an arry with 3 item 
+            List<string[]> filtersList = filtersArr.Select(item => item.Split('|', StringSplitOptions.RemoveEmptyEntries))
+                                                    .ToList();
             //use no tracking so that db context won't track changes on this dbset 
             //better performance that AsQueriable -- used in read only queries 
             var query = db.Set<TEntity>().AsNoTracking();
-            foreach (var filter in filters)
+            foreach (var filter in filtersList)
                 query = query.Where(item => CheckFilter(item, filter));
             return query.ToList();
         }
