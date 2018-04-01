@@ -10,7 +10,7 @@ namespace SSMS
 {
     public class PageResult<TEntity> where TEntity : class
     {
-        public List<TEntity> PageItems { get; set; }
+        public List<dynamic> PageItems { get; set; }
         public int TotalItems { get; set; }
         public int TotalPages { get; set; }
     }
@@ -336,7 +336,7 @@ namespace SSMS
         {
             //if query is not provide, we start querying on the whole entity from the beginning
             // if we get the query, we continue working on it  
-            query= (query == null) ? db.Set<TEntity>().AsNoTracking() : query ; 
+            query = (query == null) ? db.Set<TEntity>().AsNoTracking() : query;
             // convert comma separated list to array so that we can remove empty items                             
             orderBy = orderBy.RemoveEmptyElements();
             //use Linq.Dynamic.Core library to apply orderby using sql-like string not expression 
@@ -346,9 +346,9 @@ namespace SSMS
         {
             //if query is not provide, we start querying on the whole entity from the beginning
             // if we get the query, we continue working on it  
-            query= (query == null) ? db.Set<TEntity>().AsNoTracking() : query ; 
+            query = (query == null) ? db.Set<TEntity>().AsNoTracking() : query;
             fields = fields.RemoveEmptyElements();
-            return query.Select($"new({fields})");   
+            return query.Select($"new({fields})");
         }
         public TEntity Find(TKey id)
         {
@@ -369,7 +369,7 @@ namespace SSMS
                 case "all":
                     return new PageResult<TEntity>
                     {
-                        PageItems = db.Set<TEntity>().Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList(),
+                        PageItems = db.Set<TEntity>().Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(), 
                         TotalItems = db.Set<TEntity>().Count(),
                         //Ceiling is a math function that adjusts any decimal fraction to the next integer 
                         TotalPages = (int)Math.Ceiling((decimal)db.Set<TEntity>().Count() / pageSize),
@@ -383,7 +383,7 @@ namespace SSMS
                     {
                         PageItems = GetQuery(expression)
                                     .Skip(pageSize * (pageNumber - 1))
-                                    .Take(pageSize).ToList(),
+                                    .Take(pageSize).ToDynamicList(),
                         TotalItems = GetQuery(expression)
                                     .Count(),
                         TotalPages = (int)Math.Ceiling((decimal)GetQuery(expression).Count() / pageSize),
@@ -397,7 +397,7 @@ namespace SSMS
                     {
                         PageItems = GetQuery(expression)
                                     .Skip(pageSize * (pageNumber - 1))
-                                    .Take(pageSize).ToList(),
+                                    .Take(pageSize).ToDynamicList(),
                         TotalItems = GetQuery(expression)
                                     .Count(),
                         TotalPages = (int)Math.Ceiling((decimal)GetQuery(expression).Count() / pageSize),
@@ -407,6 +407,17 @@ namespace SSMS
             }
 
         }
+        public PageResult<TEntity> GetPageResult(IQueryable query, int pageSize, int pageNumber)
+        {
+            return new PageResult<TEntity>
+            {
+                PageItems =query.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(),
+                TotalItems =query.Count(),
+                //Ceiling is a math function that adjusts any decimal fraction to the next integer 
+                TotalPages = (int)Math.Ceiling((decimal)query.Count() / pageSize),
+            };
+        }
+
         public int Update(TEntity entity)
         {
             //Attach the coming object to the db COntext 

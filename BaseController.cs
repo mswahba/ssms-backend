@@ -32,36 +32,47 @@ namespace SSMS
                 listType.ToLower() != "deleted" &&
                 listType.ToLower() != "all")
                 return BadRequest("Unknow List Type.[all] OR [deleted] OR [existing] only acceptable");
-            // if page size and number are provided, return page result  (from GetPage())
-            if (pageSize != null && pageNumber != null)
-            {
-                var res = _service.GetPage(listType, (int)pageSize, (int)pageNumber);
-                return Ok(res);
-            }
             //If page size & number aren't provided from the query string
             //then return regular result based on list type.  
-            List<TEntity> result = new List<TEntity>();
-            switch (listType.ToLower())
+            IEnumerable<TEntity> result;
+            try
             {
-                case "existing":
-                    result = _service.GetList(item =>
-                       item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
-                                  ? true
-                                  : false
-                   );
-                    break;
-                case "deleted":
-                    result = _service.GetList(item =>
-                       item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
-                                  ? false
-                                  : true
-                   );
-                    break;
-                case "all":
-                    result = _service.GetAll();
-                    break;
+                switch (listType.ToLower())
+                {
+                    case "existing":
+                        result = _service.GetQuery(item =>
+                           item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                                      ? true
+                                      : false
+                       );
+                        break;
+                    case "deleted":
+                        result =  _service.GetQuery(item =>
+                           item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                                      ? false
+                                      : true
+                       );
+                        break;
+                    case "all":
+                        result = _service.GetQuery();
+                        break;
+                    default:
+                        result = _service.GetQuery();
+                        break;
+                }
+                // if page size and number are provided, return page result  (from GetPage())
+                if (pageSize != null && pageNumber != null)
+                {
+                    var pageResult = _service.GetPageResult((IQueryable)result, (int)pageSize, (int)pageNumber);
+                    return Ok(pageResult);
+                }
+                return Ok(result);
+
             }
-            return Ok(result);
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
         //Make it as default action for the controller
         // [controller]?filters=.....&fileds=.....&orderby=....
@@ -69,26 +80,42 @@ namespace SSMS
         //[controller]?orderby=....
 
         [HttpGet("")]
-        public IActionResult Query([FromQuery] string filters, [FromQuery] string fields, [FromQuery] string orderBy)
+        public IActionResult Query([FromQuery] string filters,
+                                    [FromQuery] string fields,
+                                    [FromQuery] string orderBy,
+                                    [FromQuery] int? pageSize,
+                                    [FromQuery] int? pageNumber)
         {
             if (filters == null && fields == null && orderBy == null)
                 return BadRequest("Must supply at least one of the following : [Filters] and/or [Fileds] and/or [Order By]");
-            IQueryable<TEntity> query = _service.GetQuery().AsQueryable(); 
-            IQueryable result ; 
-            //if filters provided, apply filters and get the query after applying (where) on it
-            if (filters != null)
-              query=  _service.ApplyFilter(filters); 
-            //if orderBy provided, Give it the previous query (either filtered or not ) 
-            //then apply sort and get the query after applying (orderBy) on it
-            if (orderBy != null)
-                query= _service.ApplySort(orderBy, query); 
-            //put query value (whether filtered and ordered, filtered only, ordered only, nothing applied) in result   
-            result = query; 
-            //if select fields provided, apply dynamic select on the previous query 
-            if(fields != null)  
-                result = _service.ApplySelect(fields, query);   
-            //Ok() takes the result (Linq query) , executes it , gets the data, convert it to JSON
-            return Ok(result);
+            IQueryable<TEntity> query = _service.GetQuery().AsQueryable();
+            IQueryable result;
+            try
+            {
+                //if filters provided, apply filters and get the query after applying (where) on it
+                if (filters != null)
+                    query = _service.ApplyFilter(filters);
+                //if orderBy provided, Give it the previous query (either filtered or not ) 
+                //then apply sort and get the query after applying (orderBy) on it
+                if (orderBy != null)
+                    query = _service.ApplySort(orderBy, query);
+                //put query value (whether filtered and ordered, filtered only, ordered only, nothing applied) in result   
+                result = query;
+                //if select fields provided, apply dynamic select on the previous query 
+                if (fields != null)
+                    result = _service.ApplySelect(fields, query);
+                if (pageSize != null && pageNumber != null)
+                {
+                    var PageResult = _service.GetPageResult(result, (int)pageSize, (int)pageNumber);
+                    return Ok(PageResult);
+                }
+                //Ok() takes the result (Linq query) , executes it , gets the data, convert it to JSON
+                return Ok(result);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpGet("Filter")]
