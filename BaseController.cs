@@ -11,9 +11,12 @@ namespace SSMS
     [Route("[controller]")]
     public class BaseController<TEntity, TKey> : Controller where TEntity : class
     {
+        public string _tableName { get; }
         private BaseService<TEntity, TKey> _service { get; }
-        public BaseController(BaseService<TEntity, TKey> service)
+        //receive the service (to deal with db) and the table name of the entity (from entity Controller)
+        public BaseController(BaseService<TEntity, TKey> service, string tableName)
         {
+            _tableName= tableName; 
             _service = service;
         }
         //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table besed on route param- 
@@ -135,6 +138,21 @@ namespace SSMS
                 return BadRequest(ex);
             }
         }
+        // [controller]/sql-where?filters=
+        [HttpGet("Sql-Where")]        
+        public IActionResult SqlWhere([FromQuery] string filters)
+        {
+            try
+            {
+                var res = _service.ApplySqlWhere(filters, _tableName);
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+        
         //'fields' is a comma separated string of entity fields we want to select 
         //return entity that contains only these fields
         // [controller]/Select?fileds=empId, empName
@@ -146,7 +164,7 @@ namespace SSMS
             // string[] fieldsArr = fields.Split(',', StringSplitOptions.RemoveEmptyEntries);
             // fieldsArr = fieldsArr.Where(field => !string.IsNullOrWhiteSpace(field)).ToArray();
             //dict to hold anonymous obj ..... 
-            var fieldsArr = fields.RemoveEmptyElementsArr();
+            var fieldsArr = fields.SplitAndRemoveEmpty(',');
             Dictionary<string, object> obj;
             //Get collection of all fileds(columns) and items(rows)
             var items = _service.GetQuery().ToList();

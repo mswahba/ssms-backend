@@ -11,7 +11,8 @@ namespace SSMS.Students
     public class StudentsController : BaseController<Student, String>
     {
         private BaseService<Student, String> _StudentSrv { get; }
-        public StudentsController(BaseService<Student, String> StudentsService) : base(StudentsService)
+        public StudentsController(BaseService<Student, String> StudentsService) 
+                            : base(StudentsService, "students")
         {
             _StudentSrv = StudentsService;
         }

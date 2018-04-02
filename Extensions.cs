@@ -150,10 +150,10 @@ namespace SSMS
         }
         //a func that takes a comma separated string, 
         // removes any empty elements (white spaces or empty strings)
-        public static string RemoveEmptyElements(this string str)
+        public static string RemoveEmptyElements(this string str, Char separator)
         {
             // convert comma separated list to array so that we can remove empty items 
-            string[] strArr = str.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            string[] strArr = str.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             //Remove empty items from array using where() 
             //and trim each element using select()
             strArr = strArr.Where(item => !string.IsNullOrWhiteSpace(item))
@@ -162,10 +162,10 @@ namespace SSMS
             //convert fieldsArr array to a string with ',' separator 
             return string.Join(',', strArr);
         }
-        public static string[] RemoveEmptyElementsArr(this string str)
+        public static string[] SplitAndRemoveEmpty(this string str, Char separator)
         {
             // convert comma separated list to array so that we can remove empty items 
-            string[] strArr = str.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            string[] strArr = str.Split( separator, StringSplitOptions.RemoveEmptyEntries);
             //Remove empty items from array using where() 
             //and trim each element using select(), then return it 
             return strArr.Where(item => !string.IsNullOrWhiteSpace(item))

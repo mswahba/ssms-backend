@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using SSMS.EntityModels;
@@ -52,6 +53,96 @@ namespace SSMS
         public IEnumerable<TEntity> GetQuery()
         {
             return db.Set<TEntity>().AsQueryable();
+        }
+        //takes array of filters (each : field|operator|value) 
+        //formats it .... and generates the conditions of the sql where clause 
+        public string GetCondition( string[] filter, string prefix)
+        {
+            string _field = filter[0].Trim();
+            string _operator = filter[1].Trim();
+            string _value = filter[2].Trim();
+            
+            var prop = typeof(TEntity).GetProperty(_field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            //if field not found or null , return emtpy string 
+            if (prop == null)
+                return "";  
+            var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+            TypeCode typeCode = System.Type.GetTypeCode(propertyType);  
+            switch (typeCode)
+            {
+                case TypeCode.Boolean:
+                    switch (_operator)
+                    {
+                        case "=":
+                            return $"{prefix} {_field} = {_value} ";   
+                        case "!=":
+                            return $"{prefix} {_field} != {_value} ";   
+                        default:
+                            return "";
+                    }
+                case TypeCode.String:
+                    switch (_operator)
+                    {
+                        case "=":
+                            return $"{prefix} {_field} = '{_value}' ";                           
+                        case "!=":
+                            return $"{prefix} {_field} != '{_value}' ";   
+                        case "%":
+                            return $"{prefix} {_field} like '%{_value}%' ";   
+                        case "@":
+                            return $"{prefix} CONTAINS({_field} , '{_value}') ";   
+                        default:
+                            return "";
+                    }
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Single:
+                case TypeCode.Double:
+                case TypeCode.Decimal:
+                    switch (_operator)
+                    {
+                        case "=":
+                            return $"{prefix} {_field} = {_value} ";                           
+                        case "!=":
+                            return $"{prefix} {_field} != {_value} ";                           
+                        case ">":
+                            return $"{prefix} {_field} > {_value} ";                           
+                        case "<":
+                            return $"{prefix} {_field} < {_value} ";                           
+                        case ">=":
+                            return $"{prefix} {_field} >= {_value} ";                           
+                        case "<=":
+                            return $"{prefix} {_field} <= {_value} ";                           
+                        default:
+                            return "";
+                    }
+                case TypeCode.DateTime:
+                    switch (_operator)
+                    {
+                        case "=":
+                            return $"{prefix} {_field} = '{_value}' ";                           
+                        case "!=":
+                            return $"{prefix} {_field} != '{_value}' ";                           
+                        case ">":
+                            return $"{prefix} {_field} > '{_value}' ";                           
+                        case "<":
+                            return $"{prefix} {_field} < '{_value}' ";                           
+                        case ">=":
+                            return $"{prefix} {_field} >= '{_value}' ";                           
+                        case "<=":
+                            return $"{prefix} {_field} <= '{_value}' ";                           
+                        default:
+                            return "";
+                    }
+                default:
+                    return "";
+            }            
         }
         //takes item(entity or record) and filter ([0] field [1] operator [2] value)
         //applies filter on item and returns result (true/false) to where() in ApplyFilter() function
@@ -332,13 +423,31 @@ namespace SSMS
                 query = query.Where(item => CheckFilter(item, filter));
             return query;
         }
+        public IQueryable<TEntity> ApplySqlWhere(string filters, string tableName)
+        {
+            //split filters and add every filter as an item in an array 
+            string[] filtersArr = filters.SplitAndRemoveEmpty(','); 
+            //list to hold every filter as an arry with 3 item 
+            List<string[]> filtersList = filtersArr.Select(item => item.SplitAndRemoveEmpty('|'))
+                                                   .ToList();
+            //use no tracking so that db context won't track changes on this dbset 
+            //better performance than AsQueriable -- used in read only queries 
+            var query = db.Set<TEntity>().AsNoTracking();
+            string sqlQuery = $"select * from {tableName} ";
+            foreach (var filter in filtersList)
+                sqlQuery += (filtersList.First()== filter)
+                                ? GetCondition(filter,"where") 
+                                : GetCondition(filter,"and") ;
+            return query.FromSql(sqlQuery);
+        }
+
         public IQueryable<TEntity> ApplySort(string orderBy, IQueryable<TEntity> query)
         {
             //if query is not provide, we start querying on the whole entity from the beginning
             // if we get the query, we continue working on it  
             query = (query == null) ? db.Set<TEntity>().AsNoTracking() : query;
             // convert comma separated list to array so that we can remove empty items                             
-            orderBy = orderBy.RemoveEmptyElements();
+            orderBy = orderBy.RemoveEmptyElements(',');
             //use Linq.Dynamic.Core library to apply orderby using sql-like string not expression 
             return query.OrderBy(orderBy);
         }
@@ -347,7 +456,7 @@ namespace SSMS
             //if query is not provide, we start querying on the whole entity from the beginning
             // if we get the query, we continue working on it  
             query = (query == null) ? db.Set<TEntity>().AsNoTracking() : query;
-            fields = fields.RemoveEmptyElements();
+            fields = fields.RemoveEmptyElements(',');
             return query.Select($"new({fields})");
         }
         public TEntity Find(TKey id)
@@ -358,61 +467,12 @@ namespace SSMS
         // 1) get total items  based on ListType string (all/existing/deleted) 
         // 2) calculate the count of items  based on ListType
         // 3) calculate the number of pages based on page size and count of items
-        public PageResult<TEntity> GetPage(string listType, int pageSize, int pageNumber)
-        {
-            // create a generic delegate of type <TEntity> and returns a bool 
-            // so that it will be used with linq Where() function 
-            Func<TEntity, bool> expression;
-
-            switch (listType.ToLower())
-            {
-                case "all":
-                    return new PageResult<TEntity>
-                    {
-                        PageItems = db.Set<TEntity>().Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(), 
-                        TotalItems = db.Set<TEntity>().Count(),
-                        //Ceiling is a math function that adjusts any decimal fraction to the next integer 
-                        TotalPages = (int)Math.Ceiling((decimal)db.Set<TEntity>().Count() / pageSize),
-                    };
-                case "deleted":
-                    expression = item =>
-                                        item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
-                                        ? false
-                                        : true;
-                    return new PageResult<TEntity>
-                    {
-                        PageItems = GetQuery(expression)
-                                    .Skip(pageSize * (pageNumber - 1))
-                                    .Take(pageSize).ToDynamicList(),
-                        TotalItems = GetQuery(expression)
-                                    .Count(),
-                        TotalPages = (int)Math.Ceiling((decimal)GetQuery(expression).Count() / pageSize),
-                    };
-                case "existing":
-                    expression = item =>
-                                item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
-                                ? true
-                                : false;
-                    return new PageResult<TEntity>
-                    {
-                        PageItems = GetQuery(expression)
-                                    .Skip(pageSize * (pageNumber - 1))
-                                    .Take(pageSize).ToDynamicList(),
-                        TotalItems = GetQuery(expression)
-                                    .Count(),
-                        TotalPages = (int)Math.Ceiling((decimal)GetQuery(expression).Count() / pageSize),
-                    };
-                default:
-                    return null;    //if no List Type provided
-            }
-
-        }
         public PageResult<TEntity> GetPageResult(IQueryable query, int pageSize, int pageNumber)
         {
             return new PageResult<TEntity>
             {
-                PageItems =query.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(),
-                TotalItems =query.Count(),
+                PageItems = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(),
+                TotalItems = query.Count(),
                 //Ceiling is a math function that adjusts any decimal fraction to the next integer 
                 TotalPages = (int)Math.Ceiling((decimal)query.Count() / pageSize),
             };
