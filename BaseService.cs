@@ -17,66 +17,36 @@ namespace SSMS
     }
     public class BaseService<TEntity, TKey> where TEntity : class
     {
-        private SSMSContext db { get; }
         public BaseService(SSMSContext _db)
         {
             db = _db;
         }
-        public int Add(TEntity entity)
-        {
-            // Use db.Set<TEntity> to access db set collection (tables) 
-            // instead of using db.Parents or db.users  to be generic    
-            db.Set<TEntity>().Add(entity);
-            return db.SaveChanges();
-        }
-        public TEntity GetOne(Func<TEntity, bool> expression)
-        {
-            return db.Set<TEntity>().Where(expression).SingleOrDefault();
-        }
-        //takes a labmda expression and executes it (using .ToList()) and returns result as list  
-        public List<TEntity> GetList(Func<TEntity, bool> expression)
-        {
-            return db.Set<TEntity>().Where(expression).ToList();
-        }
-        //returns all entities without applying any filter expression 
-        public List<TEntity> GetAll()
-        {
-            return db.Set<TEntity>().ToList();
-        }
-        //takes a labmda expression (and doesn't execute it) and returns result as enumerable  
-        //so that I can reuse it and add more linq operators (count() or take())  
-        public IEnumerable<TEntity> GetQuery(Func<TEntity, bool> expression)
-        {
-            return db.Set<TEntity>().Where(expression);
-        }
-        //returns all rows of an entity, AsQuerable to chain it later   
-        public IEnumerable<TEntity> GetQuery()
-        {
-            return db.Set<TEntity>().AsQueryable();
-        }
+  
+        #region Privates 
+        private SSMSContext db { get; }
         //takes array of filters (each : field|operator|value) 
         //formats it .... and generates the conditions of the sql where clause 
-        public string GetCondition( string[] filter, string prefix)
+        private string _GetCondition(string[] filter, string prefix)
         {
             string _field = filter[0].Trim();
             string _operator = filter[1].Trim();
             string _value = filter[2].Trim();
-            
+
             var prop = typeof(TEntity).GetProperty(_field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
             //if field not found or null , return emtpy string 
             if (prop == null)
-                return "";  
+                return "";
             var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-            TypeCode typeCode = System.Type.GetTypeCode(propertyType);  
+            TypeCode typeCode = System.Type.GetTypeCode(propertyType);
             switch (typeCode)
             {
                 case TypeCode.Boolean:
                     switch (_operator)
                     {
                         case "=":
-                            return $"{prefix} {_field} = {_value} ";   
+                            return $"{prefix} {_field} = {_value} ";
                         case "!=":
-                            return $"{prefix} {_field} != {_value} ";   
+                            return $"{prefix} {_field} != {_value} ";
                         default:
                             return "";
                     }
@@ -84,13 +54,13 @@ namespace SSMS
                     switch (_operator)
                     {
                         case "=":
-                            return $"{prefix} {_field} = '{_value}' ";                           
+                            return $"{prefix} {_field} = '{_value}' ";
                         case "!=":
-                            return $"{prefix} {_field} != '{_value}' ";   
+                            return $"{prefix} {_field} != '{_value}' ";
                         case "%":
-                            return $"{prefix} {_field} like '%{_value}%' ";   
+                            return $"{prefix} {_field} like '%{_value}%' ";
                         case "@":
-                            return $"{prefix} CONTAINS({_field} , '{_value}') ";   
+                            return $"{prefix} CONTAINS({_field} , '{_value}') ";
                         default:
                             return "";
                     }
@@ -108,17 +78,17 @@ namespace SSMS
                     switch (_operator)
                     {
                         case "=":
-                            return $"{prefix} {_field} = {_value} ";                           
+                            return $"{prefix} {_field} = {_value} ";
                         case "!=":
-                            return $"{prefix} {_field} != {_value} ";                           
+                            return $"{prefix} {_field} != {_value} ";
                         case ">":
-                            return $"{prefix} {_field} > {_value} ";                           
+                            return $"{prefix} {_field} > {_value} ";
                         case "<":
-                            return $"{prefix} {_field} < {_value} ";                           
+                            return $"{prefix} {_field} < {_value} ";
                         case ">=":
-                            return $"{prefix} {_field} >= {_value} ";                           
+                            return $"{prefix} {_field} >= {_value} ";
                         case "<=":
-                            return $"{prefix} {_field} <= {_value} ";                           
+                            return $"{prefix} {_field} <= {_value} ";
                         default:
                             return "";
                     }
@@ -126,27 +96,27 @@ namespace SSMS
                     switch (_operator)
                     {
                         case "=":
-                            return $"{prefix} {_field} = '{_value}' ";                           
+                            return $"{prefix} {_field} = '{_value}' ";
                         case "!=":
-                            return $"{prefix} {_field} != '{_value}' ";                           
+                            return $"{prefix} {_field} != '{_value}' ";
                         case ">":
-                            return $"{prefix} {_field} > '{_value}' ";                           
+                            return $"{prefix} {_field} > '{_value}' ";
                         case "<":
-                            return $"{prefix} {_field} < '{_value}' ";                           
+                            return $"{prefix} {_field} < '{_value}' ";
                         case ">=":
-                            return $"{prefix} {_field} >= '{_value}' ";                           
+                            return $"{prefix} {_field} >= '{_value}' ";
                         case "<=":
-                            return $"{prefix} {_field} <= '{_value}' ";                           
+                            return $"{prefix} {_field} <= '{_value}' ";
                         default:
                             return "";
                     }
                 default:
                     return "";
-            }            
+            }
         }
         //takes item(entity or record) and filter ([0] field [1] operator [2] value)
         //applies filter on item and returns result (true/false) to where() in ApplyFilter() function
-        public bool CheckFilter(object item, string[] filter)
+        private bool _CheckFilter(object item, string[] filter)
         {
             string _field = filter[0].Trim();
             string _operator = filter[1].Trim();
@@ -405,6 +375,52 @@ namespace SSMS
                     return false;
             }
         }
+        #endregion
+  
+        #region Query Services
+        public TEntity GetOne(TKey id)
+        {
+            return db.Set<TEntity>().Find(id);
+        }
+        public TEntity GetOne(Func<TEntity, bool> expression)
+        {
+            return db.Set<TEntity>().Where(expression).SingleOrDefault();
+        }
+        //takes a labmda expression and executes it (using .ToList()) and returns result as list  
+        public List<TEntity> GetList(Func<TEntity, bool> expression)
+        {
+            return db.Set<TEntity>().Where(expression).ToList();
+        }
+        //returns all entities without applying any filter expression 
+        public List<TEntity> GetList()
+        {
+            return db.Set<TEntity>().ToList();
+        }
+        //Does the following: 
+        // 1) get total items  based on ListType string (all/existing/deleted) 
+        // 2) calculate the count of items  based on ListType
+        // 3) calculate the number of pages based on page size and count of items
+        public PageResult<TEntity> GetPageResult(IQueryable query, int pageSize, int pageNumber)
+        {
+            return new PageResult<TEntity>
+            {
+                PageItems = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(),
+                TotalItems = query.Count(),
+                //Ceiling is a math function that adjusts any decimal fraction to the next integer 
+                TotalPages = (int)Math.Ceiling((decimal)query.Count() / pageSize),
+            };
+        }
+        //takes a labmda expression (and doesn't execute it) and returns result as enumerable  
+        //so that I can reuse it and add more linq operators (count() or take())  
+        public IEnumerable<TEntity> GetQuery(Func<TEntity, bool> expression)
+        {
+            return db.Set<TEntity>().Where(expression);
+        }
+        //returns all rows of an entity, AsQuerable to chain it later   
+        public IEnumerable<TEntity> GetQuery()
+        {
+            return db.Set<TEntity>().AsQueryable();
+        }
         // receives a comma separated string of filters 
         // and converts it to array of filters, 
         // each filter is string array [0] field [1] operator [2] value) 
@@ -420,13 +436,13 @@ namespace SSMS
             //better performance that AsQueriable -- used in read only queries 
             var query = db.Set<TEntity>().AsNoTracking();
             foreach (var filter in filtersList)
-                query = query.Where(item => CheckFilter(item, filter));
+                query = query.Where(item => _CheckFilter(item, filter));
             return query;
         }
         public IQueryable<TEntity> ApplySqlWhere(string filters, string tableName)
         {
             //split filters and add every filter as an item in an array 
-            string[] filtersArr = filters.SplitAndRemoveEmpty(','); 
+            string[] filtersArr = filters.SplitAndRemoveEmpty(',');
             //list to hold every filter as an arry with 3 item 
             List<string[]> filtersList = filtersArr.Select(item => item.SplitAndRemoveEmpty('|'))
                                                    .ToList();
@@ -435,9 +451,9 @@ namespace SSMS
             var query = db.Set<TEntity>().AsNoTracking();
             string sqlQuery = $"select * from {tableName} ";
             foreach (var filter in filtersList)
-                sqlQuery += (filtersList.First()== filter)
-                                ? GetCondition(filter,"where") 
-                                : GetCondition(filter,"and") ;
+                sqlQuery += (filtersList.First() == filter)
+                                ? _GetCondition(filter, "where")
+                                : _GetCondition(filter, "and");
             return query.FromSql(sqlQuery);
         }
 
@@ -459,25 +475,16 @@ namespace SSMS
             fields = fields.RemoveEmptyElements(',');
             return query.Select($"new({fields})");
         }
-        public TEntity Find(TKey id)
+        #endregion
+      
+        #region Data Manipulation (Add-Update-Delete)
+        public int Add(TEntity entity)
         {
-            return db.Set<TEntity>().Find(id);
+            // Use db.Set<TEntity> to access db set collection (tables) 
+            // instead of using db.Parents or db.users  to be generic    
+            db.Set<TEntity>().Add(entity);
+            return db.SaveChanges();
         }
-        //Does the following: 
-        // 1) get total items  based on ListType string (all/existing/deleted) 
-        // 2) calculate the count of items  based on ListType
-        // 3) calculate the number of pages based on page size and count of items
-        public PageResult<TEntity> GetPageResult(IQueryable query, int pageSize, int pageNumber)
-        {
-            return new PageResult<TEntity>
-            {
-                PageItems = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(),
-                TotalItems = query.Count(),
-                //Ceiling is a math function that adjusts any decimal fraction to the next integer 
-                TotalPages = (int)Math.Ceiling((decimal)query.Count() / pageSize),
-            };
-        }
-
         public int Update(TEntity entity)
         {
             //Attach the coming object to the db COntext 
@@ -553,5 +560,6 @@ namespace SSMS
         {
             return db.SaveChanges();
         }
+        #endregion
     }
 }
