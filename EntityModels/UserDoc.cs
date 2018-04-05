@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SSMS.EntityModels
 {
-    public partial class UserDocs
+    public partial class UserDoc
     {
         public int UserId { get; set; }
         public byte DocTypeId { get; set; }

@@ -10,13 +10,16 @@ namespace SSMS.EntityModels
         public virtual DbSet<AcademicWeek> AcademicWeeks { get; set; }
         public virtual DbSet<AcademicYear> AcademicYears { get; set; }
         public virtual DbSet<Classroom> Classrooms { get; set; }
+        public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<DocType> DocTypes { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<EmployeeFinance> EmployeesFinance { get; set; }
+        public virtual DbSet<EmployeeHR> EmployeesHR { get; set; }
         public virtual DbSet<Grade> Grades { get; set; }
         public virtual DbSet<GradeSubject> GradeSubjects { get; set; }
         public virtual DbSet<Major> Majors { get; set; }
         public virtual DbSet<Parent> Parents { get; set; }
+        public virtual DbSet<Positio> Positions { get; set; }
         public virtual DbSet<School> Schools { get; set; }
         public virtual DbSet<Section> Sections { get; set; }
         public virtual DbSet<Stage> Stages { get; set; }
@@ -24,7 +27,8 @@ namespace SSMS.EntityModels
         public virtual DbSet<StudentEdu> StudentsEdu { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserDocs> UsersDocs { get; set; }
+        public virtual DbSet<UserDoc> UsersDocs { get; set; }
+        public virtual DbSet<UserPosition> UsersPositions { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -32,9 +36,10 @@ namespace SSMS.EntityModels
             if (!optionsBuilder.IsConfigured)
             {
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Server=DESKTOP-8GK916E;Database=SSMS;Integrated Security=true;");
+                optionsBuilder.UseSqlServer(@"Server=DESKTOP-8GK916E;Database=ssms;Trusted_Connection=True;");
             }
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcademicSemester>(entity =>
@@ -161,6 +166,23 @@ namespace SSMS.EntityModels
                 entity.Property(e => e.StageId).HasColumnName("stageId");
             });
 
+            modelBuilder.Entity<Department>(entity =>
+            {
+                entity.HasKey(e => e.DepartmentId);
+
+                entity.ToTable("departments");
+
+                entity.Property(e => e.DepartmentId).HasColumnName("departmentId");
+
+                entity.Property(e => e.DepartmentNameAr)
+                    .HasColumnName("departmentNameAr")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.DepartmentNameEn)
+                    .HasColumnName("departmentNameEn")
+                    .HasMaxLength(100);
+            });
+
             modelBuilder.Entity<DocType>(entity =>
             {
                 entity.HasKey(e => e.DocTypeId);
@@ -245,6 +267,8 @@ namespace SSMS.EntityModels
 
                 entity.Property(e => e.IdIssuePlace).HasMaxLength(50);
 
+                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
                 entity.Property(e => e.IsHandicapped).HasColumnName("isHandicapped");
 
                 entity.Property(e => e.LName)
@@ -310,9 +334,6 @@ namespace SSMS.EntityModels
                     .HasMaxLength(15);
 
                 entity.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
-
-            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-
             });
 
             modelBuilder.Entity<EmployeeFinance>(entity =>
@@ -369,6 +390,60 @@ namespace SSMS.EntityModels
                 entity.Property(e => e.TransportAllowance)
                     .HasColumnName("transportAllowance")
                     .HasColumnType("smallmoney");
+            });
+
+            modelBuilder.Entity<EmployeeHR>(entity =>
+            {
+                entity.HasKey(e => e.EmpId);
+
+                entity.ToTable("EmployeesHR");
+
+                entity.Property(e => e.EmpId)
+                    .HasColumnName("empId")
+                    .HasColumnType("char(10)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CeoApproval)
+                    .HasColumnName("ceoApproval")
+                    .HasColumnType("smalldatetime");
+
+                entity.Property(e => e.ContractType)
+                    .HasColumnName("contractType")
+                    .HasMaxLength(15);
+
+                entity.Property(e => e.DepartmentId).HasColumnName("departmentId");
+
+                entity.Property(e => e.HrNotes).HasColumnName("hrNotes");
+
+                entity.Property(e => e.JobInId)
+                    .HasColumnName("jobInId")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.JobInSchool)
+                    .HasColumnName("jobInSchool")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NoorRegistered).HasColumnName("noorRegistered");
+
+                entity.Property(e => e.SalahiaDateG).HasColumnType("date");
+
+                entity.Property(e => e.SalahiaDateH).HasColumnType("nchar(10)");
+
+                entity.Property(e => e.SchoolGender).HasColumnName("schoolGender");
+
+                entity.Property(e => e.SocialSecurityNum).HasColumnName("socialSecurityNum");
+
+                entity.Property(e => e.SocialSecuritySubscription).HasColumnName("socialSecuritySubscription");
+
+                entity.Property(e => e.WorkStartDateH)
+                    .HasColumnName("workStartDateH")
+                    .HasColumnType("nchar(10)");
+
+                entity.Property(e => e.WorkStatus).HasColumnName("workStatus");
+
+                entity.Property(e => e.WrokStartDateG)
+                    .HasColumnName("wrokStartDateG")
+                    .HasColumnType("date");
             });
 
             modelBuilder.Entity<Grade>(entity =>
@@ -459,6 +534,8 @@ namespace SSMS.EntityModels
 
                 entity.Property(e => e.IdIssuePlace).HasMaxLength(50);
 
+                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
                 entity.Property(e => e.Job).HasColumnName("job");
 
                 entity.Property(e => e.LName)
@@ -510,7 +587,21 @@ namespace SSMS.EntityModels
                 entity.Property(e => e.WorkPhone)
                     .HasColumnName("workPhone")
                     .HasMaxLength(15);
-                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");                    
+            });
+
+            modelBuilder.Entity<Positio>(entity =>
+            {
+                entity.HasKey(e => e.PositionId);
+
+                entity.ToTable("positions");
+
+                entity.Property(e => e.PositionId)
+                    .HasColumnName("positionId")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.PositionName)
+                    .HasColumnName("positionName")
+                    .HasMaxLength(100);
             });
 
             modelBuilder.Entity<School>(entity =>
@@ -623,6 +714,8 @@ namespace SSMS.EntityModels
 
                 entity.Property(e => e.IdIssuePlace).HasMaxLength(50);
 
+                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
                 entity.Property(e => e.LName)
                     .HasColumnName("lName")
                     .HasMaxLength(20);
@@ -640,7 +733,6 @@ namespace SSMS.EntityModels
                     .HasColumnType("char(10)");
 
                 entity.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
-                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
             });
 
             modelBuilder.Entity<StudentEdu>(entity =>
@@ -699,6 +791,8 @@ namespace SSMS.EntityModels
 
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
 
+                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
                 entity.Property(e => e.LastLogin)
                     .HasColumnName("lastLogin")
                     .HasColumnType("datetime");
@@ -712,10 +806,9 @@ namespace SSMS.EntityModels
                     .HasMaxLength(25);
 
                 entity.Property(e => e.UserType).HasColumnName("userType");
-                entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");                
             });
 
-            modelBuilder.Entity<UserDocs>(entity =>
+            modelBuilder.Entity<UserDoc>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.DocTypeId });
 
@@ -730,6 +823,31 @@ namespace SSMS.EntityModels
                     .HasMaxLength(15);
             });
 
+            modelBuilder.Entity<UserPosition>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.PositionId });
+
+                entity.ToTable("usersPositions");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("userId")
+                    .HasColumnType("char(10)");
+
+                entity.Property(e => e.PositionId).HasColumnName("positionId");
+
+                entity.Property(e => e.DepartmentId).HasColumnName("departmentId");
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnName("endDate")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.SectionId).HasColumnName("sectionId");
+
+                entity.Property(e => e.StartDate)
+                    .HasColumnName("startDate")
+                    .HasColumnType("date");
+            });
+
             modelBuilder.Entity<UserType>(entity =>
             {
                 entity.HasKey(e => e.UserTypeId);
@@ -739,7 +857,7 @@ namespace SSMS.EntityModels
                 entity.Property(e => e.UserTypeId).HasColumnName("userTypeId");
 
                 entity.Property(e => e.UserTypeName)
-                    .HasColumnName("userType")
+                    .HasColumnName("userTypeName")
                     .HasMaxLength(25);
             });
         }

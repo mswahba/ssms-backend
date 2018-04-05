@@ -476,7 +476,7 @@ namespace SSMS
             return query.Select($"new({fields})");
         }
         #endregion
-      
+     
         #region Data Manipulation (Add-Update-Delete)
         public int Add(TEntity entity)
         {
