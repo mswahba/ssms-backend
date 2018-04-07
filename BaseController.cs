@@ -37,7 +37,7 @@ namespace SSMS
                 return BadRequest("Unknow List Type.[all] OR [deleted] OR [existing] only acceptable");
             //If page size & number aren't provided from the query string
             //then return regular result based on list type.  
-            IEnumerable<TEntity> result;
+            IQueryable<TEntity> result;
             try
             {
                 switch (listType.ToLower())
@@ -66,7 +66,7 @@ namespace SSMS
                 // if page size and number are provided, return page result  (from GetPage())
                 if (pageSize != null && pageNumber != null)
                 {
-                    var pageResult = _service.GetPageResult((IQueryable)result, (int)pageSize, (int)pageNumber);
+                    var pageResult = _service.GetPageResult(result, (int)pageSize, (int)pageNumber);
                     return Ok(pageResult);
                 }
                 return Ok(result);

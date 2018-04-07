@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
@@ -382,12 +383,12 @@ namespace SSMS
         {
             return db.Set<TEntity>().Find(id);
         }
-        public TEntity GetOne(Func<TEntity, bool> expression)
+        public TEntity GetOne(Expression<Func<TEntity, bool>> expression)
         {
             return db.Set<TEntity>().Where(expression).SingleOrDefault();
         }
         //takes a labmda expression and executes it (using .ToList()) and returns result as list  
-        public List<TEntity> GetList(Func<TEntity, bool> expression)
+        public List<TEntity> GetList(Expression<Func<TEntity, bool>> expression)
         {
             return db.Set<TEntity>().Where(expression).ToList();
         }
@@ -412,12 +413,12 @@ namespace SSMS
         }
         //takes a labmda expression (and doesn't execute it) and returns result as enumerable  
         //so that I can reuse it and add more linq operators (count() or take())  
-        public IEnumerable<TEntity> GetQuery(Func<TEntity, bool> expression)
+        public IQueryable<TEntity> GetQuery(Expression<Func<TEntity, bool>> expression)
         {
             return db.Set<TEntity>().Where(expression);
         }
         //returns all rows of an entity, AsQuerable to chain it later   
-        public IEnumerable<TEntity> GetQuery()
+        public IQueryable<TEntity> GetQuery()
         {
             return db.Set<TEntity>().AsQueryable();
         }
