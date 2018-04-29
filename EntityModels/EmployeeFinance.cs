@@ -17,5 +17,7 @@ namespace SSMS.EntityModels
         public decimal? TotalSalary { get; set; }
         public decimal? Loans { get; set; }
         public decimal? Debts { get; set; }
+
+        public Employee Emp { get; set; }
     }
 }

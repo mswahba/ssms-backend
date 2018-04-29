@@ -5,7 +5,12 @@ namespace SSMS.EntityModels
 {
     public partial class Employee
     {
-        public string EmptId { get; set; }
+        public Employee()
+        {
+            EmployeesJobs = new HashSet<EmployeeJob>();
+        }
+
+        public string EmpId { get; set; }
         public string FName { get; set; }
         public string MName { get; set; }
         public string GName { get; set; }
@@ -45,5 +50,10 @@ namespace SSMS.EntityModels
         public bool? IsHandicapped { get; set; }
         public string SpecialNeeds { get; set; }
         public bool? IsDeleted { get; set; }
+
+        public User Emp { get; set; }
+        public EmployeeFinance EmployeesFinance { get; set; }
+        public EmployeeHr EmployeesHr { get; set; }
+        public ICollection<EmployeeJob> EmployeesJobs { get; set; }
     }
 }

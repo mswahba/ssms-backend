@@ -3,13 +3,10 @@ using System.Collections.Generic;
 
 namespace SSMS.EntityModels
 {
-    public partial class EmployeeHR
+    public partial class EmployeeHr
     {
         public string EmpId { get; set; }
         public string JobInId { get; set; }
-        public string JobInSchool { get; set; }
-        public byte? SchoolGender { get; set; }
-        public byte? DepartmentId { get; set; }
         public string ContractType { get; set; }
         public bool? SocialSecuritySubscription { get; set; }
         public int? SocialSecurityNum { get; set; }
@@ -22,5 +19,7 @@ namespace SSMS.EntityModels
         public bool? NoorRegistered { get; set; }
         public byte? WorkStatus { get; set; }
         public string HrNotes { get; set; }
+
+        public Employee Emp { get; set; }
     }
 }

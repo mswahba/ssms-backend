@@ -5,6 +5,11 @@ namespace SSMS.EntityModels
 {
     public partial class Parent
     {
+        public Parent()
+        {
+            Students = new HashSet<Student>();
+        }
+
         public string ParentId { get; set; }
         public string FName { get; set; }
         public string MName { get; set; }
@@ -32,5 +37,8 @@ namespace SSMS.EntityModels
         public string RelativeAddress { get; set; }
         public string RelativeRelation { get; set; }
         public bool? IsDeleted { get; set; }
+
+        public User _Parent { get; set; }
+        public ICollection<Student> Students { get; set; }
     }
 }

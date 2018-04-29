@@ -58,7 +58,7 @@ namespace SSMS
             {
                 UserId = signup.UserId,
                 UserPassword = signup.UserPassword,
-                UserType = signup.UserType,
+                UserTypeId = signup.UserType,
                 SubscribeDate = DateTime.UtcNow.AddHours(3),
                 IsActive = false
             };

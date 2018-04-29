@@ -5,6 +5,11 @@ namespace SSMS.EntityModels
 {
     public partial class School
     {
+        public School()
+        {
+            Branches = new HashSet<Branch>();
+        }
+
         public byte SchoolId { get; set; }
         public string SchoolName { get; set; }
         public string SchoolNameEn { get; set; }
@@ -12,5 +17,7 @@ namespace SSMS.EntityModels
         public string Address { get; set; }
         public string ComNum { get; set; }
         public bool? IsActive { get; set; }
+
+        public ICollection<Branch> Branches { get; set; }
     }
 }

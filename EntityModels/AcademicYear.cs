@@ -5,6 +5,12 @@ namespace SSMS.EntityModels
 {
     public partial class AcademicYear
     {
+        public AcademicYear()
+        {
+            AcademicSemesters = new HashSet<AcademicSemester>();
+            ClassesStudents = new HashSet<ClassStudent>();
+        }
+
         public byte YearId { get; set; }
         public string YearNameG { get; set; }
         public string YearNameH { get; set; }
@@ -12,5 +18,8 @@ namespace SSMS.EntityModels
         public string YearStartDateH { get; set; }
         public DateTime? YearEndDateG { get; set; }
         public string YearEndDateH { get; set; }
+
+        public ICollection<AcademicSemester> AcademicSemesters { get; set; }
+        public ICollection<ClassStudent> ClassesStudents { get; set; }
     }
 }

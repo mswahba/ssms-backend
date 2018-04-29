@@ -77,11 +77,18 @@ namespace SSMS
                 return BadRequest(ex);
             }
         }
-        //Make it as default action for the controller
-        // [controller]?filters=.....&fileds=.....&orderby=....
-        //[controller]?fileds=.....&orderby=....
-        //[controller]?orderby=....
-
+        /// <summary>
+        ///Make it as default action for the controller
+        ///    [controller]?filters=.....&fileds=.....&orderby=....
+        ///    [controller]?fileds=.....&orderby=....
+        ///    [controller]?orderby=....
+        /// </summary>
+        /// <param name="filters">one filter is like this [field|operator|value] </param>
+        /// <param name="fields">a comma separated string of entity fields we want to select </param>
+        /// <param name="orderBy">Users/sort?orderby= userId desc, userPassword</param>
+        /// <param name="pageSize">Number of items per page</param>
+        /// <param name="pageNumber">Number of page to get </param>
+        /// <returns></returns>
         [HttpGet("")]
         public IActionResult Query([FromQuery] string filters,
                                     [FromQuery] string fields,

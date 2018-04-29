@@ -5,6 +5,13 @@ namespace SSMS.EntityModels
 {
     public partial class Student
     {
+        public Student()
+        {
+            ClassesStudents = new HashSet<ClassStudent>();
+            PeriodsDetails = new HashSet<PeriodDetails>();
+            StudentsViolations = new HashSet<StudentViolation>();
+        }
+
         public string StudentId { get; set; }
         public string ParentId { get; set; }
         public string FName { get; set; }
@@ -22,6 +29,13 @@ namespace SSMS.EntityModels
         public string BirthDateH { get; set; }
         public string BirthPlace { get; set; }
         public string SpecialNeeds { get; set; }
+        public string PreviousSchool { get; set; }
         public bool? IsDeleted { get; set; }
+
+        public Parent Parent { get; set; }
+        public User _Student { get; set; }
+        public ICollection<ClassStudent> ClassesStudents { get; set; }
+        public ICollection<PeriodDetails> PeriodsDetails { get; set; }
+        public ICollection<StudentViolation> StudentsViolations { get; set; }
     }
 }

@@ -457,7 +457,6 @@ namespace SSMS
                                 : _GetCondition(filter, "and");
             return query.FromSql(sqlQuery);
         }
-
         public IQueryable<TEntity> ApplySort(string orderBy, IQueryable<TEntity> query)
         {
             //if query is not provide, we start querying on the whole entity from the beginning

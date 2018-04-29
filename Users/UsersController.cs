@@ -21,6 +21,7 @@ namespace SSMS.Users
         {
             _UserSrv = usersService;    //DI inject usersService object here from startup Class
         }
+        [HttpPost("Signup")]        
         public IActionResult SignUp([FromBody]SignUp signup)
         {
             //(1)check if MS is valid 
@@ -59,6 +60,7 @@ namespace SSMS.Users
                 return BadRequest(ex);
             }
         }
+        [HttpPost("ChangePassword")]                
         public IActionResult ChangePassword([FromBody]ChangedPassword changedpassword)
         {
             //(1)check if MS is valid 

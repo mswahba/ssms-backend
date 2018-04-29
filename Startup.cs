@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SSMS.EntityModels;
 using SSMS.Users;
 using SSMS.Users.Parents;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace SSMS
 {
@@ -21,7 +22,7 @@ namespace SSMS
         }
 
         public IConfiguration Configuration { get; }
-        
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -29,10 +30,14 @@ namespace SSMS
             //Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
             services.AddDbContext<SSMSContext>();
             //AddScoped configues settings to create new instance of this type per http request
-            services.AddScoped<BaseService<User,String>>(); 
-            services.AddScoped<BaseService<Parent,String>>(); 
-            services.AddScoped<BaseService<Student,String>>(); 
-            services.AddScoped<BaseService<Employee,String>>(); 
+            services.AddScoped<BaseService<User, String>>();
+            services.AddScoped<BaseService<Parent, String>>();
+            services.AddScoped<BaseService<Student, String>>();
+            services.AddScoped<BaseService<Employee, String>>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
             /*
             services.AddDbContext<test1Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("constr")));
@@ -50,8 +55,16 @@ namespace SSMS
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
             app.UseStaticFiles();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.  
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.  
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseMvc(routes =>
             {
