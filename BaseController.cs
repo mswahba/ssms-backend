@@ -13,11 +13,13 @@ namespace SSMS
     {
         public string _tableName { get; }
         private BaseService<TEntity, TKey> _service { get; }
+        private Ado _ado { get; set; }
         //receive the service (to deal with db) and the table name of the entity (from entity Controller)
-        public BaseController(BaseService<TEntity, TKey> service, string tableName)
+        public BaseController(BaseService<TEntity, TKey> service, string tableName, Ado ado)
         {
             _tableName = tableName;
             _service = service;
+            _ado = ado;
         }
         //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table besed on route param- 
         //we send the list type as Route parameter ("all OR "deleted" OR "Existing")
@@ -322,6 +324,19 @@ namespace SSMS
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("Select-Ado")]
+        public IActionResult SelectAdo([FromQuery] string sqlQuery)
+        {
+            try
+            {
+                var result = _ado.ExecuteQuery(sqlQuery);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
         //Users/sort?orderby= userId desc, userPassword

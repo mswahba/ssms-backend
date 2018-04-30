@@ -15,7 +15,7 @@ namespace SSMS.Users.Parents
         //when sending this entity type and its key type, 
         //we tranform the Base service to this entity service (parent)
         public ParentsController(BaseService<Parent,String> ParentsService)
-                                :base(ParentsService, "parents")
+                                :base(ParentsService, "parents", null)
         {
             _ParentSrv = ParentsService;    
         }

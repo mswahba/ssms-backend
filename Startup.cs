@@ -29,11 +29,14 @@ namespace SSMS
             services.AddMvc();
             //Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
             services.AddDbContext<SSMSContext>();
+            //AddSingleton configues settings to create only one instance of this type             
+            services.AddSingleton<Ado>();
             //AddScoped configues settings to create new instance of this type per http request
             services.AddScoped<BaseService<User, String>>();
             services.AddScoped<BaseService<Parent, String>>();
             services.AddScoped<BaseService<Student, String>>();
             services.AddScoped<BaseService<Employee, String>>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });

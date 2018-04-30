@@ -1,10 +1,12 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using Newtonsoft.Json;
 using Remotion.Linq.Parsing.Structure;
 using SSMS.EntityModels;
 using SSMS.Users;
@@ -21,6 +23,17 @@ namespace SSMS
         private static readonly MethodInfo CreateQueryParserMethod = QueryCompilerTypeInfo.DeclaredMethods.First(x => x.Name == "CreateQueryParser");
         private static readonly FieldInfo DataBaseField = QueryCompilerTypeInfo.DeclaredFields.Single(x => x.Name == "_database");
         private static readonly PropertyInfo DatabaseDependenciesField = typeof(Database).GetTypeInfo().DeclaredProperties.Single(x => x.Name == "Dependencies");
+        //A function that takes A JSON file Path, reads it 
+        //and returns the value of specific key (Connection string) 
+        public static string GetJsonValue(this string filePath)
+        {
+            string json = File.ReadAllText(filePath);
+            //Takes JSON string and converts it to an instance of (Appsettings) class 
+            // And sets Values from JSOn file to Matching properties in (Appsettings) class 
+            var obj = JsonConvert.DeserializeObject<AppSettings>(json);
+            //Return the value of Key 'ConStr' which contain THe ConStr
+            return obj.ConStr;
+        }
         public static string ToSql<TEntity>(this IQueryable<TEntity> query) where TEntity : class
         {
             if (!(query is EntityQueryable<TEntity>) && !(query is InternalDbSet<TEntity>))
@@ -36,7 +49,7 @@ namespace SSMS
             modelVisitor.CreateQueryExecutor<TEntity>(queryModel);
             return modelVisitor.Queries.First().ToString();
         }
-        public static string ToSql(this IQueryable query) 
+        public static string ToSql(this IQueryable query)
         {
             var queryCompiler = (QueryCompiler)QueryCompilerField.GetValue(query.Provider);
             var nodeTypeProvider = (INodeTypeProvider)NodeTypeProviderField.GetValue(queryCompiler);
@@ -165,7 +178,7 @@ namespace SSMS
         public static string[] SplitAndRemoveEmpty(this string str, Char separator)
         {
             // convert comma separated list to array so that we can remove empty items 
-            string[] strArr = str.Split( separator, StringSplitOptions.RemoveEmptyEntries);
+            string[] strArr = str.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             //Remove empty items from array using where() 
             //and trim each element using select(), then return it 
             return strArr.Where(item => !string.IsNullOrWhiteSpace(item))
