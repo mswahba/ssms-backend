@@ -40,7 +40,7 @@ namespace SSMS.Users
             }
             return Ok(user);  //if everything is ok, return the full user obj with all inserted values  
         }
-        [HttpGet("SignIn")]
+        [HttpPost("SignIn")]
         public IActionResult SignIn([FromBody]SignIn signin)
         {
             //(1)check if MS is valid 

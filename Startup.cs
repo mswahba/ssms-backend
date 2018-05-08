@@ -26,6 +26,13 @@ namespace SSMS
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    }));
+
             services.AddMvc();
             //Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
             services.AddDbContext<SSMSContext>();
@@ -59,7 +66,6 @@ namespace SSMS
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-
             // Enable middleware to serve generated Swagger as a JSON endpoint.  
             app.UseSwagger();
 
@@ -68,6 +74,10 @@ namespace SSMS
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            // Shows UseCors with CorsPolicyBuilder.
+            app.UseCors("MyPolicy");
+
 
             app.UseMvc(routes =>
             {
