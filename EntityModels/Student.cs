@@ -24,16 +24,19 @@ namespace SSMS.EntityModels
         public DateTime? IdExpireDateG { get; set; }
         public string IdExpireDateH { get; set; }
         public string Mobile { get; set; }
+        public string MobileMother { get; set; }
         public string Email { get; set; }
         public DateTime? BirthDateG { get; set; }
         public string BirthDateH { get; set; }
         public string BirthPlace { get; set; }
         public string SpecialNeeds { get; set; }
         public string PreviousSchool { get; set; }
+        public byte CountryId { get; set; }
         public bool? IsDeleted { get; set; }
 
         public Parent Parent { get; set; }
         public User _Student { get; set; }
+        public Country Country { get; set; }
         public ICollection<ClassStudent> ClassesStudents { get; set; }
         public ICollection<PeriodDetails> PeriodsDetails { get; set; }
         public ICollection<StudentViolation> StudentsViolations { get; set; }

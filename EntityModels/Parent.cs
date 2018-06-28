@@ -21,7 +21,7 @@ namespace SSMS.EntityModels
         public string IdExpireDateH { get; set; }
         public string Mobile1 { get; set; }
         public string Mobile2 { get; set; }
-        public string MobileMother { get; set; }
+        public byte CountryId { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
         public string HouseNum { get; set; }
@@ -39,6 +39,7 @@ namespace SSMS.EntityModels
         public bool? IsDeleted { get; set; }
 
         public User _Parent { get; set; }
+        public Country Country { get; set; }
         public ICollection<Student> Students { get; set; }
     }
 }

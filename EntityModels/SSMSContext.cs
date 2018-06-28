@@ -24,6 +24,7 @@ namespace SSMS.EntityModels
         public virtual DbSet<Grade> Grades { get; set; }
         public virtual DbSet<GradesSubjects> GradesSubjects { get; set; }
         public virtual DbSet<Job> Jobs { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<JobAction> JobsActions { get; set; }
         public virtual DbSet<Lesson> Lessons { get; set; }
         public virtual DbSet<LessonFile> LessonsFiles { get; set; }
@@ -52,7 +53,7 @@ namespace SSMS.EntityModels
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer(@"Server=DESKTOP-8GK916E;Database=ssms;Trusted_Connection=True;");
             }
         }
@@ -482,6 +483,12 @@ namespace SSMS.EntityModels
                     .HasForeignKey<Employee>(d => d.EmpId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_employees_users");
+
+                entity.HasOne(d => d.Country)
+                    .WithMany(c => c.Employees)
+                    .HasForeignKey(d => d.CountryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_employees_countries");
             });
 
             modelBuilder.Entity<EmployeeAction>(entity =>
@@ -746,6 +753,25 @@ namespace SSMS.EntityModels
                     .HasMaxLength(100);
             });
 
+            modelBuilder.Entity<Country>(entity =>
+            {
+                entity.HasKey(e => e.CountryId);
+
+                entity.ToTable("countries");
+
+                entity.Property(e => e.CountryId)
+                    .HasColumnName("countryId")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CountryAr)
+                    .HasColumnName("countryAr")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CountryEn)
+                    .HasColumnName("countryEn")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<JobAction>(entity =>
             {
                 entity.HasKey(e => new { e.JobId, e.ActionId });
@@ -901,8 +927,8 @@ namespace SSMS.EntityModels
                     .HasColumnName("mobile2")
                     .HasMaxLength(15);
 
-                entity.Property(e => e.MobileMother)
-                    .HasColumnName("mobileMother")
+                entity.Property(e => e.CountryId)
+                    .HasColumnName("countryId")
                     .HasMaxLength(15);
 
                 entity.Property(e => e.Phone)
@@ -940,6 +966,12 @@ namespace SSMS.EntityModels
                     .HasForeignKey<Parent>(d => d.ParentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_parents_users");
+
+                entity.HasOne(d => d.Country)
+                    .WithMany(c => c.Parents)
+                    .HasForeignKey(d => d.CountryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_parents_countries");
             });
 
             modelBuilder.Entity<Period>(entity =>
@@ -1243,6 +1275,10 @@ namespace SSMS.EntityModels
                     .HasColumnName("mobile")
                     .HasMaxLength(15);
 
+                entity.Property(e => e.MobileMother)
+                    .HasColumnName("mobileMother")
+                    .HasMaxLength(15);
+
                 entity.Property(e => e.ParentId)
                     .HasColumnName("parentId")
                     .HasColumnType("char(10)");
@@ -1252,6 +1288,8 @@ namespace SSMS.EntityModels
                     .HasMaxLength(100);
 
                 entity.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
+
+                entity.Property(e => e.CountryId).HasColumnName("countryId");
 
                 entity.HasOne(d => d.Parent)
                     .WithMany(p => p.Students)
@@ -1263,6 +1301,12 @@ namespace SSMS.EntityModels
                     .HasForeignKey<Student>(d => d.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_students_users");
+
+                entity.HasOne(d => d.Country)
+                    .WithMany(c => c.Students)
+                    .HasForeignKey(d => d.CountryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_students_countries");
             });
 
             modelBuilder.Entity<StudentProcedure>(entity =>

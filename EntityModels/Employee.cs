@@ -54,6 +54,7 @@ namespace SSMS.EntityModels
         public User Emp { get; set; }
         public EmployeeFinance EmployeesFinance { get; set; }
         public EmployeeHr EmployeesHr { get; set; }
+        public Country Country { get; set; }
         public ICollection<EmployeeJob> EmployeesJobs { get; set; }
     }
 }
