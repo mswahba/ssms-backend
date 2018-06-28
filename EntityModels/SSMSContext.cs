@@ -478,15 +478,15 @@ namespace SSMS.EntityModels
 
                 entity.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
 
-                entity.HasOne(d => d.Emp)
-                    .WithOne(p => p.Employees)
-                    .HasForeignKey<Employee>(d => d.EmpId)
+                entity.HasOne(e => e.Emp)
+                    .WithOne(u => u.Employees)
+                    .HasForeignKey<Employee>(e => e.EmpId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_employees_users");
 
-                entity.HasOne(d => d.Country)
+                entity.HasOne(e => e.Country)
                     .WithMany(c => c.Employees)
-                    .HasForeignKey(d => d.CountryId)
+                    .HasForeignKey(e => e.CountryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_employees_countries");
             });
@@ -961,15 +961,15 @@ namespace SSMS.EntityModels
                     .HasColumnName("workPhone")
                     .HasMaxLength(15);
 
-                entity.HasOne(d => d._Parent)
-                    .WithOne(p => p.Parents)
-                    .HasForeignKey<Parent>(d => d.ParentId)
+                entity.HasOne(p => p._Parent)
+                    .WithOne(u => u.Parents)
+                    .HasForeignKey<Parent>(p => p.ParentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_parents_users");
 
-                entity.HasOne(d => d.Country)
+                entity.HasOne(p => p.Country)
                     .WithMany(c => c.Parents)
-                    .HasForeignKey(d => d.CountryId)
+                    .HasForeignKey(p => p.CountryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_parents_countries");
             });
@@ -1296,15 +1296,15 @@ namespace SSMS.EntityModels
                     .HasForeignKey(d => d.ParentId)
                     .HasConstraintName("FK_students_parents");
 
-                entity.HasOne(d => d._Student)
+                entity.HasOne(s => s._Student)
                     .WithOne(p => p.Students)
-                    .HasForeignKey<Student>(d => d.StudentId)
+                    .HasForeignKey<Student>(s => s.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_students_users");
 
-                entity.HasOne(d => d.Country)
+                entity.HasOne(s => s.Country)
                     .WithMany(c => c.Students)
-                    .HasForeignKey(d => d.CountryId)
+                    .HasForeignKey(s => s.CountryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_students_countries");
             });
