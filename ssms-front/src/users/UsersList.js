@@ -2,7 +2,7 @@ import React from 'react'
 import UserState from './UserState'
 
 export default () => (
-  <UserState>
+  <UserState keys={ ['users'] }>
       {
         ({ users }) => (
           <ul>
