@@ -8,16 +8,16 @@ using SSMS.EntityModels;
 
 namespace SSMS.Users.Parents
 {
-    public class ParentsController : BaseController<Parent,String>
+    public class DocTypesController : BaseController<DocType,Byte>
     {
-        private BaseService<Parent,String> _ParentSrv { get; }
+        private BaseService<DocType,Byte> _DocTypeSrv { get; }
         //in ctor take parent service from DI and pass it to the base controller
         //when sending this entity type and its key type,
         //we tranform the Base service to this entity service (parent)
-        public ParentsController(BaseService<Parent,String> ParentsService)
-                                :base(ParentsService, "parents", null)
+        public DocTypesController(BaseService<DocType,Byte> DocTypesService)
+                                :base(DocTypesService, "docTypes", null)
         {
-            _ParentSrv = ParentsService;
+            _DocTypeSrv = DocTypesService;
         }
     }
 }
