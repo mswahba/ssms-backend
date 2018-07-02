@@ -8,16 +8,16 @@ using SSMS.EntityModels;
 
 namespace SSMS.Shared
 {
-    public class DocTypesController : BaseController<DocType,Byte>
+    public class CountriesController : BaseController<Country,Byte>
     {
-        private BaseService<DocType,Byte> _DocTypeSrv { get; }
+        private BaseService<Country,Byte> _CountriesSrv { get; }
         //in ctor take parent service from DI and pass it to the base controller
         //when sending this entity type and its key type,
         //we tranform the Base service to this entity service (parent)
-        public DocTypesController(BaseService<DocType,Byte> DocTypesService)
-                                :base(DocTypesService, "docTypes", null)
+        public CountriesController(BaseService<Country,Byte> CountriesService)
+                                :base(CountriesService, "countries", null)
         {
-            _DocTypeSrv = DocTypesService;
+            _CountriesSrv = CountriesService;
         }
     }
 }

@@ -44,6 +44,7 @@ namespace SSMS
             services.AddScoped<BaseService<Student, String>>();
             services.AddScoped<BaseService<Employee, String>>();
             services.AddScoped<BaseService<DocType, Byte>>();
+            services.AddScoped<BaseService<Country, Byte>>();
 
             services.AddSwaggerGen(c =>
             {

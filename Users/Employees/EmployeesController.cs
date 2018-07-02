@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SSMS.EntityModels;
 
-namespace SSMS.Users.Employees  
+namespace SSMS.Users.Employees
 {
     public class EmployeesController : BaseController<Employee,String>
     {
@@ -14,7 +14,7 @@ namespace SSMS.Users.Employees
         public EmployeesController(BaseService<Employee,String> EmployeesService, Ado ado)
                                 :base(EmployeesService, "employees", ado)
         {
-            _EmployeeSrv = EmployeesService;    
+            _EmployeeSrv = EmployeesService;
         }
     }
 }
