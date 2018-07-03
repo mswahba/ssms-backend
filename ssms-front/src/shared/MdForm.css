@@ -1,0 +1,35 @@
+.switch {
+  padding-left: 24px;
+  padding-top: 7px;
+  display: flex;
+  flex-flow: row-reverse;
+  justify-content: center;
+  align-items: center;
+}
+.range-label {
+  font-size: 1.1rem !important;
+  margin-top: -25px !important;
+}
+.range-input {
+  padding-top: 10px !important;
+}
+.input-label {
+  font-size: 1rem;
+}
+.switch-label > span {
+  transform: scale(1.2);
+}
+.radio-check-label {
+  top: -25px !important;
+  font-size: 1rem;
+}
+.radio-check-items {
+  padding-top: 10px;
+  margin-left: 40px;
+  margin-bottom: 25px;
+}
+.radio-check-item {
+  display: block;
+  position: static !important;
+  color: #000;
+}

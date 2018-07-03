@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import SignIn from './users/SignIn';
 import UsersList from './users/UsersList';
+import SignUpParent from './users/SignUpParent';
 import './App.css';
 
 class App extends Component {
@@ -9,6 +10,7 @@ class App extends Component {
       <Fragment>
         <SignIn/>
         <UsersList/>
+        <SignUpParent/>
       </Fragment>
     );
   }
