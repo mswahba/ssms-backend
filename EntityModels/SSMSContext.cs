@@ -479,7 +479,7 @@ namespace SSMS.EntityModels
                 entity.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
 
                 entity.HasOne(e => e.Emp)
-                    .WithOne(u => u.Employees)
+                    .WithOne(u => u._Employee)
                     .HasForeignKey<Employee>(e => e.EmpId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_employees_users");
@@ -962,7 +962,7 @@ namespace SSMS.EntityModels
                     .HasMaxLength(15);
 
                 entity.HasOne(p => p._Parent)
-                    .WithOne(u => u.Parents)
+                    .WithOne(u => u._Parent)
                     .HasForeignKey<Parent>(p => p.ParentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_parents_users");
@@ -1297,7 +1297,7 @@ namespace SSMS.EntityModels
                     .HasConstraintName("FK_students_parents");
 
                 entity.HasOne(s => s._Student)
-                    .WithOne(p => p.Students)
+                    .WithOne(p => p._Student)
                     .HasForeignKey<Student>(s => s.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_students_users");

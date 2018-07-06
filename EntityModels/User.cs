@@ -19,9 +19,9 @@ namespace SSMS.EntityModels
         public bool? IsDeleted { get; set; }
 
         public UserType UserType { get; set; }
-        public Employee Employees { get; set; }
-        public Parent Parents { get; set; }
-        public Student Students { get; set; }
+        public Employee _Employee { get; set; }
+        public Parent _Parent { get; set; }
+        public Student _Student { get; set; }
         public ICollection<UsersDocs> UsersDocs { get; set; }
     }
 }

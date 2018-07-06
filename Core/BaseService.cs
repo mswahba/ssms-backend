@@ -22,11 +22,11 @@ namespace SSMS
         {
             db = _db;
         }
-  
-        #region Privates 
+
+        #region Privates
         private SSMSContext db { get; }
-        //takes array of filters (each : field|operator|value) 
-        //formats it .... and generates the conditions of the sql where clause 
+        //takes array of filters (each : field|operator|value)
+        //formats it .... and generates the conditions of the sql where clause
         private string _GetCondition(string[] filter, string prefix)
         {
             string _field = filter[0].Trim();
@@ -34,7 +34,7 @@ namespace SSMS
             string _value = filter[2].Trim();
 
             var prop = typeof(TEntity).GetProperty(_field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            //if field not found or null , return emtpy string 
+            //if field not found or null , return emtpy string
             if (prop == null)
                 return "";
             var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
@@ -127,8 +127,8 @@ namespace SSMS
                 return false;  //if field not found or null , return false to Where()
             var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
             TypeCode typeCode = System.Type.GetTypeCode(propertyType);
-            //First get value of filed in current row ex. age = 20 
-            // compare it with the value we received from query ex. 25  
+            //First get value of filed in current row ex. age = 20
+            // compare it with the value we received from query ex. 25
             //with every row we check : where (20 == 25) then return res (t or f) then go to next row
             switch (typeCode)
             {
@@ -377,7 +377,7 @@ namespace SSMS
             }
         }
         #endregion
-  
+
         #region Query Services
         public TEntity GetOne(TKey id)
         {
@@ -387,18 +387,18 @@ namespace SSMS
         {
             return db.Set<TEntity>().Where(expression).SingleOrDefault();
         }
-        //takes a labmda expression and executes it (using .ToList()) and returns result as list  
+        //takes a labmda expression and executes it (using .ToList()) and returns result as list
         public List<TEntity> GetList(Expression<Func<TEntity, bool>> expression)
         {
             return db.Set<TEntity>().Where(expression).ToList();
         }
-        //returns all entities without applying any filter expression 
+        //returns all entities without applying any filter expression
         public List<TEntity> GetList()
         {
             return db.Set<TEntity>().ToList();
         }
-        //Does the following: 
-        // 1) get total items  based on ListType string (all/existing/deleted) 
+        //Does the following:
+        // 1) get total items  based on ListType string (all/existing/deleted)
         // 2) calculate the count of items  based on ListType
         // 3) calculate the number of pages based on page size and count of items
         public PageResult<TEntity> GetPageResult(IQueryable query, int pageSize, int pageNumber)
@@ -407,34 +407,34 @@ namespace SSMS
             {
                 PageItems = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(),
                 TotalItems = query.Count(),
-                //Ceiling is a math function that adjusts any decimal fraction to the next integer 
+                //Ceiling is a math function that adjusts any decimal fraction to the next integer
                 TotalPages = (int)Math.Ceiling((decimal)query.Count() / pageSize),
             };
         }
-        //takes a labmda expression (and doesn't execute it) and returns result as enumerable  
-        //so that I can reuse it and add more linq operators (count() or take())  
+        //takes a labmda expression (and doesn't execute it) and returns result as enumerable
+        //so that I can reuse it and add more linq operators (count() or take())
         public IQueryable<TEntity> GetQuery(Expression<Func<TEntity, bool>> expression)
         {
             return db.Set<TEntity>().Where(expression);
         }
-        //returns all rows of an entity, AsQuerable to chain it later   
+        //returns all rows of an entity, AsQuerable to chain it later
         public IQueryable<TEntity> GetQuery()
         {
             return db.Set<TEntity>().AsQueryable();
         }
-        // receives a comma separated string of filters 
-        // and converts it to array of filters, 
-        // each filter is string array [0] field [1] operator [2] value) 
+        // receives a comma separated string of filters
+        // and converts it to array of filters,
+        // each filter is string array [0] field [1] operator [2] value)
         //It uses checkFilter() , sends it (item {record} , filter {filed|operator|value})
         public IQueryable<TEntity> ApplyFilter(string filters)
         {
-            //split filters and add every filter as an item in an array 
+            //split filters and add every filter as an item in an array
             string[] filtersArr = filters.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            //list to hold every filter as an arry with 3 item 
+            //list to hold every filter as an arry with 3 item
             List<string[]> filtersList = filtersArr.Select(item => item.Split('|', StringSplitOptions.RemoveEmptyEntries))
                                                     .ToList();
-            //use no tracking so that db context won't track changes on this dbset 
-            //better performance that AsQueriable -- used in read only queries 
+            //use no tracking so that db context won't track changes on this dbset
+            //better performance that AsQueriable -- used in read only queries
             var query = db.Set<TEntity>().AsNoTracking();
             foreach (var filter in filtersList)
                 query = query.Where(item => _CheckFilter(item, filter));
@@ -442,13 +442,13 @@ namespace SSMS
         }
         public IQueryable<TEntity> ApplySqlWhere(string filters, string tableName)
         {
-            //split filters and add every filter as an item in an array 
+            //split filters and add every filter as an item in an array
             string[] filtersArr = filters.SplitAndRemoveEmpty(',');
-            //list to hold every filter as an arry with 3 item 
+            //list to hold every filter as an arry with 3 item
             List<string[]> filtersList = filtersArr.Select(item => item.SplitAndRemoveEmpty('|'))
                                                    .ToList();
-            //use no tracking so that db context won't track changes on this dbset 
-            //better performance than AsQueriable -- used in read only queries 
+            //use no tracking so that db context won't track changes on this dbset
+            //better performance than AsQueriable -- used in read only queries
             var query = db.Set<TEntity>().AsNoTracking();
             string sqlQuery = $"select * from {tableName} ";
             foreach (var filter in filtersList)
@@ -460,47 +460,47 @@ namespace SSMS
         public IQueryable<TEntity> ApplySort(string orderBy, IQueryable<TEntity> query)
         {
             //if query is not provide, we start querying on the whole entity from the beginning
-            // if we get the query, we continue working on it  
+            // if we get the query, we continue working on it
             query = (query == null) ? db.Set<TEntity>().AsNoTracking() : query;
-            // convert comma separated list to array so that we can remove empty items                             
+            // convert comma separated list to array so that we can remove empty items
             orderBy = orderBy.RemoveEmptyElements(',');
-            //use Linq.Dynamic.Core library to apply orderby using sql-like string not expression 
+            //use Linq.Dynamic.Core library to apply orderby using sql-like string not expression
             return query.OrderBy(orderBy);
         }
         public IQueryable ApplySelect(string fields, IQueryable<TEntity> query)
         {
             //if query is not provide, we start querying on the whole entity from the beginning
-            // if we get the query, we continue working on it  
+            // if we get the query, we continue working on it
             query = (query == null) ? db.Set<TEntity>().AsNoTracking() : query;
             fields = fields.RemoveEmptyElements(',');
             return query.Select($"new({fields})");
         }
         #endregion
-     
+
         #region Data Manipulation (Add-Update-Delete)
         public int Add(TEntity entity)
         {
-            // Use db.Set<TEntity> to access db set collection (tables) 
-            // instead of using db.Parents or db.users  to be generic    
+            // Use db.Set<TEntity> to access db set collection (tables)
+            // instead of using db.Parents or db.users  to be generic
             db.Set<TEntity>().Add(entity);
             return db.SaveChanges();
         }
         public int Update(TEntity entity)
         {
-            //Attach the coming object to the db COntext 
-            //Change the coming object state to modified so that saveChanges generates an update statment 
+            //Attach the coming object to the db COntext
+            //Change the coming object state to modified so that saveChanges generates an update statment
             db.Entry(entity).State = EntityState.Modified;
             return db.SaveChanges();
         }
-        //update the primary key of any given table 
+        //update the primary key of any given table
         public int UpdateKey(string tableName, string keyName, TKey newKey, TKey oldKey)
         {
             string sql = $"update {tableName} set {keyName} = {newKey.ToString()} where {keyName} = {oldKey.ToString()}";
             return db.Database.ExecuteSqlCommand(sql);
         }
         /// <summary>
-        /// takes entity to be deleted, get the 'isDeleted' property value , if exists get  its value 
-        /// if isDeleted is 'true'  return , if not change its value to true 
+        /// takes entity to be deleted, get the 'isDeleted' property value , if exists get  its value
+        /// if isDeleted is 'true'  return , if not change its value to true
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
@@ -531,13 +531,13 @@ namespace SSMS
         {
             db.Set<TEntity>().Attach(entity);
         }
-        //sets entity state , 4 cases 
-        // added > executes insert statement   
-        // Modified > update 
-        // Deleted > delete    
-        // unchanged > do nothing  
-        //db.Entry function checkis if entity is attached or not, 
-        //if not, it attaches it to dbSet , then changes its state 
+        //sets entity state , 4 cases
+        // added > executes insert statement
+        // Modified > update
+        // Deleted > delete
+        // unchanged > do nothing
+        //db.Entry function checkis if entity is attached or not,
+        //if not, it attaches it to dbSet , then changes its state
         public void SetState(TEntity entity, string state)
         {
             switch (state)
