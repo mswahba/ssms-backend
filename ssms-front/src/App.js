@@ -8,8 +8,8 @@ class App extends Component {
   render() {
     return (
       <Fragment>
-        <SignIn/>
-        <UsersList/>
+        {/* <SignIn/>
+        <UsersList/> */}
         <SignUpParent/>
       </Fragment>
     );

@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 import MdForm from '../shared/MdForm'
-import axios from 'axios'
+import SharedState from '../shared/SharedState'
 
 const fields = {
   fName: {
@@ -18,6 +18,11 @@ const fields = {
   lName: {
     type: 'text',
     label: 'lName'
+  },
+  countries: {
+    type: 'autocomplete',
+    label: 'Country',
+    options: {}
   },
   mobile: {
     type: 'text',
@@ -57,34 +62,24 @@ const fields = {
   },
   submit: {
     type: 'button',
-    label: 'Save',
-    className: 'btn-large'
+    label: 'Save'
   }
 }
 
-export default class SignUpParent extends Component {
-
-  state = {
-    form: null
-  }
-
-  componentWillMount() {
-    axios.all([
-      axios.get('/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'),
-      axios.get('/Countries?fields=countryId,countryAr,countryEn')
-    ])
-      .then(axios.spread( (docTypes, countries) => {
-        console.table(docTypes.data);
-        console.table(countries.data);
-        fields.idType.options = docTypes.data.map(item => ({text: item.DocTypeEn, value: item.DocTypeId}))
-        fields.countryId.options = countries.data.map(item => ({text: item.CountryEn, value: item.CountryId}))
-        this.setState({
-          form: <MdForm {...fields} />
-        })
-      }))
-  }
-
-  render() {
-    return this.state.form;
-  }
-}
+export default () => (
+  <SharedState keys={ ['docTypes','countries'] }>
+    {
+      ({ docTypes, countries }) => {
+        fields.idType.options = docTypes.map(item => ({text: item.DocTypeEn, value: item.DocTypeId}))
+        fields.countryId.options = countries.map(item => ({text: item.CountryEn, value: item.CountryId}))
+        fields.countries.options = countries.reduce( (data, item) => {
+          data[item.CountryEn] = null;
+          return data;
+        }, {});
+        return (docTypes.length > 0 && countries.length > 0)
+                ? <MdForm {...fields} />
+                : null
+      }
+    }
+  </SharedState>
+)

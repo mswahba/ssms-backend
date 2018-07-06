@@ -238,7 +238,7 @@ export default class MdForm extends Component {
           )
         case 'select':
           return (
-            <div key={input.key} className="input-field">
+            <div key={key} className="input-field">
               <i className="material-icons prefix">{input.icon || 'input'}</i>
               <select id={key}
                       name={key}
@@ -270,7 +270,7 @@ export default class MdForm extends Component {
                     name={input.key}
                     type={input.type}
                     onClick={()=> {
-                        console.log(this.state);
+                        console.table(this.state);
                       }}>
                 {input.label}
               <i className="material-icons right">{input.icon || 'send'}</i>
@@ -283,20 +283,22 @@ export default class MdForm extends Component {
               <i className="material-icons prefix">{input.icon || 'input'}</i>
               <input id={key}
                     name={key}
-                    type={input.type || 'text'}
+                    type='text'
+                    className={input.type === 'autocomplete'? "autocomplete" : ""}
                     value={this.state.key}
-                    onChange={ (e) => {
+                    onChange={input.type === 'autocomplete'? null : (e) => {
                       let value = this.domElements[key].value;
                       this.setValue(key,input,value);
                     } }
-                    onBlur={ (e) => this.setState( (prevState) =>  {
+                    onBlur={input.type === 'autocomplete'? null : (e) => this.setState( (prevState) =>  {
                       return {
                         [key]: {
                           ...prevState[key],
                           touched: true
                         }
                       }
-                    }) } />
+                    }) }
+                    />
               <label htmlFor={key}>{input.label || input.placeholder || key}</label>
             </div>
           )
@@ -324,11 +326,29 @@ export default class MdForm extends Component {
     M.FormSelect.init(selectLists, {});
   }
 
+  initAutoComplete = () => {
+    const autoCompleteLists = document.querySelectorAll('.autocomplete');
+    autoCompleteLists.forEach(elem => {
+      const input = this.inputs.find(item => item.fieldName === elem.id);
+      M.Autocomplete.init(elem, {
+                                  data: input.options,
+                                  limit: Infinity,
+                                  minLength: 1,
+                                  onAutocomplete: () => {
+                                    let value = this.domElements[elem.id].value;
+                                    this.setValue(elem.id,input,value);
+                                  }
+                                });
+    });
+  }
+
   componentDidMount () {
     // init the datepicker with options
     this.initDatePickers();
-    //init the Form Select Lists
+    // init the Form Select Lists
     this.initSelectLists();
+    // init the Auto Complete Lists
+    this.initAutoComplete();
     // get all the needed dom element to be used element events
     this.domElements = this.inputs
         .filter(input => !['submit','button'].includes(input.fieldName) )
