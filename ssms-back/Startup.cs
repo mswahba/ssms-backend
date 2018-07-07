@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SSMS.EntityModels;
 using SSMS.Users;
 using SSMS.Users.Parents;
@@ -26,14 +28,18 @@ namespace SSMS
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Allow CORS
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
                     {
                         builder.AllowAnyOrigin()
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     }));
-
-            services.AddMvc();
+            // configure MVC options
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
             //Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
             services.AddDbContext<SSMSContext>();
             //AddSingleton configues settings to create only one instance of this type
@@ -45,15 +51,11 @@ namespace SSMS
             services.AddScoped<BaseService<Employee, String>>();
             services.AddScoped<BaseService<DocType, Byte>>();
             services.AddScoped<BaseService<Country, Byte>>();
-
+            // Configure Swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
-            /*
-            services.AddDbContext<test1Context>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("constr")));
-            */
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
