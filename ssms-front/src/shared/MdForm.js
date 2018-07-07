@@ -270,8 +270,17 @@ export default class MdForm extends Component {
                     name={input.key}
                     type={input.type}
                     onClick={()=> {
-                        console.table(this.state);
-                      }}>
+                      // extract the key, value of the Form Fields form the State
+                      const data = Object.keys(this.state)
+                                          .filter(key => !['invalid','touched'].includes(key))
+                                          .reduce( (acc,key) => {
+                                            acc[key] = this.state[key]['value'];
+                                            return acc;
+                                          }, {});
+                      console.log(this.state);
+                      // call the submitForm Function
+                      input.submitFunc(data);
+                    }}>
                 {input.label}
               <i className="material-icons right">{input.icon || 'send'}</i>
               </button>
@@ -283,7 +292,7 @@ export default class MdForm extends Component {
               <i className="material-icons prefix">{input.icon || 'input'}</i>
               <input id={key}
                     name={key}
-                    type='text'
+                    type={input.type === 'autocomplete'? "text" : input.type}
                     className={input.type === 'autocomplete'? "autocomplete" : ""}
                     value={this.state.key}
                     onChange={input.type === 'autocomplete'? null : (e) => {

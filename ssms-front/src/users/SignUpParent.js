@@ -67,15 +67,16 @@ const fields = {
 }
 
 export default () => (
-  <SharedState keys={ ['docTypes','countries'] }>
+  <SharedState keys={ ['docTypes','countries', 'SignUpParentFormSubmit'] }>
     {
-      ({ docTypes, countries }) => {
+      ({ docTypes, countries, SignUpParentFormSubmit }) => {
         fields.idType.options = docTypes.map(item => ({text: item.DocTypeEn, value: item.DocTypeId}))
         fields.countryId.options = countries.map(item => ({text: item.CountryEn, value: item.CountryId}))
         fields.countries.options = countries.reduce( (data, item) => {
           data[item.CountryEn] = null;
           return data;
         }, {});
+        fields.submit.submitFunc = SignUpParentFormSubmit;
         return (docTypes.length > 0 && countries.length > 0)
                 ? <MdForm {...fields} />
                 : null
