@@ -8,6 +8,8 @@ namespace SSMS.EntityModels
         public User()
         {
             UsersDocs = new HashSet<UsersDocs>();
+            SubscribeDate = DateTime.UtcNow.AddHours(3);
+            IsDeleted = false;
         }
 
         public string UserId { get; set; }
