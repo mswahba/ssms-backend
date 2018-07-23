@@ -4,25 +4,75 @@ import HijriDatePicker from 'hijri-date-picker'
 import '../../node_modules/hijri-date-picker/build/css/index.css'
 import moment from 'moment-hijri'
 
+function toHDate(GDate) {
+  return GDate
+          .toLocaleDateString('ar-SA')
+          .replace('هـ', '')
+          .trim();
+}
+
+function toGDate(HDate) {
+  // convert the date string to Hijri date object using 'moment-hijri'
+  return moment(HDate, 'iYYYY/iMM/iDD')
+  // convert the Hdate to Gdate using 'moment-hijri'
+    .format('YYYY/MM/DD');
+}
+
 export default class HGDatePicker extends Component {
+  // the initial state
+  state = {
+    inputDate: null,
+    GDateValue: null,
+    HDateValue: null
+  }
+  // get the converted date from props
+  setInitialDates = () => {
+    let { GDate, HDate, GKey, HKey } = this.props;
+    let selectedInput = GKey;
+    if(GDate) {
+      // convert Gdate to Hdate using built-in Date function
+      HDate = toHDate(GDate);
+    } else if (HDate) {
+      // convert the Hdate to Gdate using 'moment-hijri'
+      GDate = toGDate(HDate);
+      selectedInput = HKey;
+    } else {
+      GDate = new Date();
+      HDate = toHDate(GDate);
+    }
+    this.setState({
+      inputDate: selectedInput,
+      GDateValue: GDate,
+      HDateValue: HDate
+    })
+  }
+  // handle selected date radio input
+  onRadioChecked = (e) => {
+    this.setState( { inputDate: e.target.value } );
+  }
 
   // init Gdate picker [materialize-css]
-  initGDatePicker = ({ GKey, GDate }) => {
+  initGDatePicker = ({ GKey, GDate, getDates }) => {
     const now = new Date();
     const currentYear = +now.getFullYear();
     const options = {
       format: 'dd/mm/yyyy',
       yearRange: [currentYear-70,currentYear+30],
       firstDay: 6,
-      defaultDate: GDate,
+      defaultDate: new Date(this.state.GDateValue),
       setDefaultDate: true,
       onSelect: (selectedDate) => {
         // add 3 hours to utc date
         selectedDate.setHours(selectedDate.getHours()+3);
         const Gdate = selectedDate;
         // convert Gdate to Hdate using built-in Date function
-        const Hdate = selectedDate.toLocaleDateString('ar-SA');
-        console.log(Hdate.replace('هـ','').trim(), Gdate);
+        const Hdate = toHDate(selectedDate);
+        // set the converted G date to its state
+        this.setState({
+          HDateValue: Hdate
+        });
+        // console.log(Hdate, Gdate);
+        getDates({ Hdate, Gdate });
       }
     }
     // get the input el
@@ -31,7 +81,7 @@ export default class HGDatePicker extends Component {
     M.Datepicker.init(el, options);
   }
   // get the selected Hdate value
-  HdateOnChange = ({ HKey }) => {
+  HdateOnChange = ({ HKey, getDates }) => {
     // the container div
     const container = document.querySelector(`#${HKey}`);
     // the date input
@@ -42,14 +92,22 @@ export default class HGDatePicker extends Component {
       if(e.target.nodeName === "BUTTON") {
         // wait till the selected date is written in the text input
         setTimeout(() => {
-          // convert the date string to Hijri date object using 'moment-hijri'
-          const Hdate = moment(input.value, 'iYYYY/iMM/iDD');
           // convert the Hdate to Gdate using 'moment-hijri'
-          const Gdate = Hdate.format('YYYY/MM/DD');
-          console.log(Hdate, Gdate);
+          const Gdate = toGDate(input.value);
+          // set the converted G date to its state
+          this.setState({
+            GDateValue: Gdate
+          });
+          // console.log(Hdate, Gdate);
+          getDates({ HDate: input.value, Gdate });
         }, 0)
       }
     })
+  }
+
+  componentWillMount() {
+    // call the setIntialDates to set the GDate and HDate values from props
+    this.setInitialDates();
   }
 
   componentDidMount() {
@@ -67,7 +125,16 @@ export default class HGDatePicker extends Component {
     return (
       <Fragment>
         <label htmlFor={GKey}>{label}</label>
-        <div className="input-field">
+        <br/>
+        <label>
+          <input type="radio"
+                name={label}
+                value={GKey}
+                onChange={this.onRadioChecked}
+                checked={this.state.inputDate === GKey} />
+          <span>{GKey}</span>
+        </label>
+        <div className="input-field" hidden={this.state.inputDate !== GKey}>
           <i className="material-icons prefix">date_range</i>
           <input type="text"
                 className="datepicker"
@@ -75,13 +142,35 @@ export default class HGDatePicker extends Component {
                 name={GKey}
           />
         </div>
-        <div id={HKey} className="input-field">
+        <div className="input-field" hidden={this.state.inputDate === GKey}>
+        <input type="text"
+                id={GKey}
+                placeholder={GKey}
+                value={this.state.GDateValue.toLocaleDateString('en-gb')}
+                disabled />
+        </div>
+        <label>
+          <input type="radio"
+                name={label}
+                value={HKey}
+                checked={this.state.inputDate === HKey}
+                onChange={this.onRadioChecked} />
+          <span>{HKey}</span>
+        </label>
+        <div id={HKey} className="input-field" hidden={this.state.inputDate !== HKey}>
           <i className="material-icons prefix">date_range</i>
           <HijriDatePicker
               className="input-field"
               inputName={HKey}
-              selectedDate={HDate}
+              selectedDate={this.state.HDateValue}
           />
+        </div>
+        <div className="input-field" hidden={this.state.inputDate === HKey}>
+          <input type="text"
+                id={HDate}
+                placeholder={HDate}
+                value={this.state.HDateValue}
+                disabled />
         </div>
       </Fragment>
     )

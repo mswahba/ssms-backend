@@ -7,6 +7,7 @@ import HGDatePicker from './shared/HGDatePicker';
 import './App.css';
 
 class App extends Component {
+  logDates = (dates) => console.log(dates);
   render() {
     return (
       <Fragment>
@@ -20,8 +21,9 @@ class App extends Component {
         <HGDatePicker label="HireDate"
                       HKey="HireDateH"
                       GKey="HireDateG"
-                      HDate={'01/01/1439'}
+                      HDate={null}
                       GDate={new Date()}
+                      getDates={this.logDates}
         />
       </div>
       </Fragment>
