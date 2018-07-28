@@ -12,6 +12,7 @@ using Newtonsoft.Json.Serialization;
 using SSMS.EntityModels;
 using SSMS.Users;
 using SSMS.Users.Parents;
+using SSMS.Shared;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SSMS
@@ -51,6 +52,8 @@ namespace SSMS
             services.AddScoped<BaseService<Employee, String>>();
             services.AddScoped<BaseService<DocType, Byte>>();
             services.AddScoped<BaseService<Country, Byte>>();
+            services.AddScoped<BaseService<School, Byte>>();
+            
             // Configure Swagger
             services.AddSwaggerGen(c =>
             {
