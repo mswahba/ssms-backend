@@ -18,11 +18,8 @@ class App extends Component {
         <Route path='/signUpParent' component={SignUpParent} />
         <Route path='/usersList' component={UsersList} />
         <Route path='/hijri' component={Hijri} />
-        <Route path='/' component={() => <h2> 404 Page not Found ...</h2> } />
-        {/*
-          <Fragment>
-            <Schools />
-            <div className="my-container">
+        <Route path='/hg-datepicker' component={ () => (
+          <div className="my-container">
               <HGDatePicker label="HireDate"
                             HKey="HireDateH"
                             GKey="HireDateG"
@@ -31,12 +28,8 @@ class App extends Component {
                             getDates={this.logDates}
               />
             </div>
-            <SignIn/>
-            <UsersList/>
-            <SignUpParent/>
-            <Hijri />
-          </Fragment>
-        */}
+          )} />
+        <Route path='/' component={() => <h2> 404 Page not Found ...</h2> } />
       </Switch>
     );
   }
