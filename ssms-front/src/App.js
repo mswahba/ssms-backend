@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Switch, Route } from 'react-router-dom';
 import SignIn from './users/SignIn';
 import UsersList from './users/UsersList';
 import SignUpParent from './users/SignUpParent';
@@ -11,24 +12,32 @@ class App extends Component {
   // logDates = (dates) => console.log(dates);
   render() {
     return (
-      <Fragment>
-        <Schools />
-      {/*
-        <div className="my-container">
-          <HGDatePicker label="HireDate"
-                        HKey="HireDateH"
-                        GKey="HireDateG"
-                        HDate={null}
-                        GDate={new Date()}
-                        getDates={this.logDates}
-          />
-        </div>
-        <SignIn/>
-        <UsersList/>
-        <SignUpParent/>
-        <Hijri />
-      */}
-      </Fragment>
+      <Switch>
+        <Route path='/schools' component={Schools} />
+        <Route path='/signIn' component={SignIn} />
+        <Route path='/signUpParent' component={SignUpParent} />
+        <Route path='/usersList' component={UsersList} />
+        <Route path='/hijri' component={Hijri} />
+        <Route path='/' component={() => <h2> 404 Page not Found ...</h2> } />
+        {/*
+          <Fragment>
+            <Schools />
+            <div className="my-container">
+              <HGDatePicker label="HireDate"
+                            HKey="HireDateH"
+                            GKey="HireDateG"
+                            HDate={null}
+                            GDate={new Date()}
+                            getDates={this.logDates}
+              />
+            </div>
+            <SignIn/>
+            <UsersList/>
+            <SignUpParent/>
+            <Hijri />
+          </Fragment>
+        */}
+      </Switch>
     );
   }
 }
