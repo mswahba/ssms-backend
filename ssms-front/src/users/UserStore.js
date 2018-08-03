@@ -29,7 +29,9 @@ class UserStore {
     },
     getUsers: () => {
       axios.get("/Users/List/all")
-          .then(res => this.setState({ user: {users: res.data} }) )
+          .then(res => {
+            this.store.setState({ user: {users: res.data} })
+          })
     }
   }
 }

@@ -39,7 +39,7 @@ class SharedStore {
         axios.get('/Countries?fields=countryId,countryAr,countryEn')
       ])
       .then(axios.spread( (docTypes, countries) => {
-        this.setState({
+        this.store.setState({
           shared: {
             docTypes: docTypes.data,
             countries: countries.data

@@ -7,7 +7,7 @@ class EduAssetsStore {
   methods = {}
     getSchools = () => {
       axios.get("/Schools/List/all")
-        .then(res => this.setState({
+        .then(res => this.store.setState({
           eduAssets: {
             schools: res.data
           }
