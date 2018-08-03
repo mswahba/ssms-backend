@@ -1,9 +1,6 @@
 import axios from 'axios'
 
-export default class SharedStore {
-  constructor() {
-    this.getSignUpParentFormData();
-  }
+class SharedStore {
   state = {
     docTypes: [],
     countries: []
@@ -35,18 +32,22 @@ export default class SharedStore {
               console.log(res);
               console.log(res.data);
             })
+    },
+    getSignUpParentFormData: () => {
+      axios.all([
+        axios.get('/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'),
+        axios.get('/Countries?fields=countryId,countryAr,countryEn')
+      ])
+      .then(axios.spread( (docTypes, countries) => {
+        this.setState({
+          shared: {
+            docTypes: docTypes.data,
+            countries: countries.data
+          }
+        })
+      }))
     }
   }
-  getSignUpParentFormData = () => {
-    axios.all([
-      axios.get('/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'),
-      axios.get('/Countries?fields=countryId,countryAr,countryEn')
-    ])
-      .then(
-        axios.spread( (docTypes, countries) => {
-          this.state.docTypes = docTypes.data,
-          this.state.countries = countries.data
-        })
-      )
-  }
 }
+
+export default new SharedStore();

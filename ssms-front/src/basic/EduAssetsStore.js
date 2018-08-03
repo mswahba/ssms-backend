@@ -1,17 +1,18 @@
 import axios from 'axios';
 
-export default class EduAssetsStore {
-  constructor() {
-    this.getSchools();
-  }
+class EduAssetsStore {
   state = {
     schools: []
   }
   methods = {}
-  getSchools = () => {
-    axios.get("/Schools/List/all")
-      .then(res => this.setState({
-        schools: res.data
-      }))
-  }
+    getSchools = () => {
+      axios.get("/Schools/List/all")
+        .then(res => this.setState({
+          eduAssets: {
+            schools: res.data
+          }
+        }))
+    }
 }
+
+export default new EduAssetsStore();

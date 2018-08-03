@@ -9,6 +9,11 @@ import axios from "axios";
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/omega/theme.css";
 
+// test
+import { getState, getActions } from './CentralStore'
+console.log(getState())
+console.log(getActions(this))
+
 axios.defaults.baseURL = "http://localhost:5000";
 
 M.AutoInit();

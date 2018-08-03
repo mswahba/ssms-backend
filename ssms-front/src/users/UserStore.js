@@ -1,10 +1,7 @@
 import axios from 'axios'
 import M from 'materialize-css';
 
-export default class UserStore {
-  constructor() {
-    this.getUsers();
-  }
+class UserStore {
   state = {
     users: [],
     loggedUser: {}
@@ -30,9 +27,11 @@ export default class UserStore {
           })
         });
     },
-  }
-  getUsers = () => {
-    axios.get("/Users/List/all")
-      .then(res => this.state.users = res.data)
+    getUsers: () => {
+      axios.get("/Users/List/all")
+          .then(res => this.setState({ user: {users: res.data} }) )
+    }
   }
 }
+
+export default new UserStore();
