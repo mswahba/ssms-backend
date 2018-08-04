@@ -352,12 +352,6 @@ export default class MdForm extends Component {
   }
 
   componentDidMount () {
-    // init the datepicker with options
-    this.initDatePickers();
-    // init the Form Select Lists
-    this.initSelectLists();
-    // init the Auto Complete Lists
-    this.initAutoComplete();
     // get all the needed dom element to be used element events
     this.domElements = this.inputs
         .filter(input => !['submit','button'].includes(input.fieldName) )
@@ -371,6 +365,12 @@ export default class MdForm extends Component {
             obj[input.fieldName] = document.getElementById(input.fieldName);
           return obj;
         }, {});
+    // init the datepicker with options
+    this.initDatePickers();
+    // init the Form Select Lists
+    this.initSelectLists();
+    // init the Auto Complete Lists
+    this.initAutoComplete();
   }
 
   render() {

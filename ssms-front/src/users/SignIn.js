@@ -1,8 +1,8 @@
 import React from 'react'
-import UserState from './UserState'
+import { Consumer } from '../AppStore'
 
 export default () => (
-    <UserState keys={ ['signIn'] }>
+    <Consumer>
         {
             ({ signIn }) => (
                 <form>
@@ -25,5 +25,5 @@ export default () => (
                 </form>
             )
         }
-    </UserState>
+    </Consumer>
 );

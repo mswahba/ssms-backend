@@ -4,8 +4,8 @@ class EduAssetsStore {
   state = {
     schools: []
   }
-  methods = {}
-    getSchools = () => {
+  methods = {
+    getSchools: () => {
       axios.get("/Schools/List/all")
         .then(res => this.store.setState({
           eduAssets: {
@@ -13,6 +13,7 @@ class EduAssetsStore {
           }
         }))
     }
+  }
 }
 
 export default new EduAssetsStore();

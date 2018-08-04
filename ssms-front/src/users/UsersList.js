@@ -1,9 +1,8 @@
 import React from "react";
-import UserState from "./UserState";
 import { Consumer } from "../AppStore";
 export default () => (
   <Consumer>
-    {({ user, _getUsers, getUsers }) => {
+    {({ user, getUsers }) => {
       if(!user.users.length)
         getUsers();
       return (

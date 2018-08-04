@@ -21,9 +21,10 @@ class UserStore {
         .catch((error) => {
           if (!error.response)
             return;
-          console.log(error.response.data);
+          const { response: {data} } = error
+          console.log(data);
           M.toast({
-            html: error.response.data.UserId || error.response.data.UserPassword || error.response.data
+            html: JSON.stringify(data)
           })
         });
     },
