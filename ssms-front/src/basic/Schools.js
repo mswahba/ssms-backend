@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
-import { Switch, Route } from "react-router-dom";
-import EduAssetsState from "./EduAssetsState";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { Consumer } from "../AppStore";
 import SchoolsForm from "./SchoolsForm";
 import SchoolsTable from "./SchoolsTable";
@@ -14,9 +13,11 @@ export default props => (
         getSchools();
       return (
         <Switch>
-          <Route path={`${url}/form`} component={SchoolsForm} />
+          <Route path={`${url}/edit/:id`} component={SchoolsForm} />
+          <Route path={`${url}/new`} component={SchoolsForm} />
+          <Route path={`${url}/details`} component={SchoolsForm} />
           <Route path={`${url}/list`} component={() => <SchoolsTable schools={eduAssets.schools} />} />
-          <Route path="/" component={() => <h2>Schools</h2>} />
+          <Redirect from="/" to={`${url}/list`} />
         </Switch>
       );
     }}
