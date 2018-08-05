@@ -7,52 +7,69 @@ export default class SchoolsForm extends Component {
     title: "Add New School",
     schoolId: {
       hidden: false,
-      disabled: true
+      disabled: true,
+      value: ''
     },
     schoolName: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     },
     schoolNameEn: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     },
     startDate: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     },
     address: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     },
     comNum: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     },
     isActive: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     },
     btnAdd: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     },
     btnUpdate: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     },
     btnDelete: {
       hidden: false,
-      disabled: false
+      disabled: false,
+      value: ''
     }
   };
 
   initDatePicker = () => {
-    var elems = document.querySelector(".datepicker");
-    M.Datepicker.init(elems, { format: "dd/mm/yyyy" });
+    const pickers = document.querySelector(".datepicker");
+    const options = {
+      format: 'dd/mm/yyyy',
+      yearRange: [currentYear-70,currentYear],
+      onSelect: (selectedDate) => {
+        this.setState({ startDate: { value: selectedDate } });
+      }
+    }
+    M.Datepicker.init(pickers, options);
   };
 
-  setupFormType() {
+  setupFormType = () => {
     const { match: { params: { id } }, match: { url } } = this.props;
     if (url.includes('edit') && id)
       this.setState({
@@ -129,6 +146,10 @@ export default class SchoolsForm extends Component {
     this.setupFormType();
   }
 
+  addSchool = () => {
+    console.log(this.state);
+  }
+
   render() {
     const {
       title,
@@ -151,7 +172,15 @@ export default class SchoolsForm extends Component {
         {/* schoolId */}
         <div className="input-field" hidden={schoolId.hidden}>
           <i className="material-icons prefix">edit</i>
-          <input disabled={schoolId.disabled} id="schoolId" type="text" className="validate" />
+          <input disabled={schoolId.disabled}
+                  id="schoolId"
+                  type="text"
+                  className="validate"
+                  value={schoolId.value}
+                  onChange={(e)=> {
+                    this.setState({ schoolId : { value: e.target.value}})
+                  }}
+          />
           <label htmlFor="schoolId">School Number</label>
         </div>
         {/* schoolName */}
@@ -161,6 +190,10 @@ export default class SchoolsForm extends Component {
                 id="schoolName"
                 type="text"
                 className="validate"
+                value={schoolName.value}
+                onChange={(e)=> {
+                  this.setState({ schoolName : { value: e.target.value}})
+                }}
           />
           <label htmlFor="schoolName">School Name [Arabic] </label>
         </div>
@@ -171,6 +204,10 @@ export default class SchoolsForm extends Component {
                 id="schoolNameEn"
                 type="text"
                 className="validate"
+                value={schoolNameEn.value}
+                onChange={(e)=> {
+                  this.setState({ schoolNameEn : { value: e.target.value}})
+                }}
           />
           <label htmlFor="schoolNameEn">School Name [English] </label>
         </div>
@@ -191,6 +228,10 @@ export default class SchoolsForm extends Component {
                   id="address"
                   type="text"
                   className="materialize-textarea validate"
+                  value={address.value}
+                  onChange={(e)=> {
+                    this.setState({ address : { value: e.target.value}})
+                  }}
           />
           <label htmlFor="address">Address </label>
         </div>
@@ -201,6 +242,10 @@ export default class SchoolsForm extends Component {
                 id="comNum"
                 type="text"
                 className="validate"
+                value={comNum.value}
+                onChange={(e)=> {
+                  this.setState({ comNum : { value: e.target.value}})
+                }}
           />
           <label htmlFor="comNum">Commercial Number</label>
         </div>
@@ -210,36 +255,44 @@ export default class SchoolsForm extends Component {
           <div id="isActive">
             <label>
               Activate School? No
-              <input disabled={isActive.disabled} type="checkbox" />
-              <span class="lever" />
+              <input disabled={isActive.disabled}
+                    type="checkbox"
+                    value={isActive.value}
+                    onChange={(e)=> {
+                      this.setState({ isActive : { value: e.target.value}})
+                    }}
+              />
+              <span className="lever" />
               Yes
             </label>
           </div>
         </div>
         {/* Action Buttons */}
         <div className="input-field center">
-        <button class="btn waves-effect waves-light primary darken-3"
+        <button className="btn waves-effect waves-light primary darken-3"
                 id="btnAdd"
                 name="btnAdd"
                 disabled={btnAdd.disabled}
-                hidden={btnAdd.hidden}>
-            <i class="material-icons left">add</i>
+                hidden={btnAdd.hidden}
+                onClick={this.addSchool}
+        >
+            <i className="material-icons left">add</i>
             Add New School
         </button>
-        <button class="btn waves-effect waves-light orange darken-3"
+        <button className="btn waves-effect waves-light orange darken-3"
                 id="btnUpdate"
                 name="btnUpdate"
                 disabled={btnUpdate.disabled}
                 hidden={btnUpdate.hidden}>
-            <i class="material-icons left">edit</i>
+            <i className="material-icons left">edit</i>
             Update School
         </button>
-        <button class="btn waves-effect waves-light red darken-3"
+        <button className="btn waves-effect waves-light red darken-3"
                 id="btnDelete"
                 name="btnDelete"
                 disabled={btnDelete.disabled}
                 hidden={btnDelete.hidden}>
-            <i class="material-icons left">close</i>
+            <i className="material-icons left">close</i>
             Delete School
         </button>
         </div>
