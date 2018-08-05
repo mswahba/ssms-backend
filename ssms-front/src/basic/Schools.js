@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { Consumer } from "../AppStore";
 import SchoolsForm from "./SchoolsForm";
@@ -14,8 +14,8 @@ export default props => (
       return (
         <Switch>
           <Route path={`${url}/edit/:id`} component={SchoolsForm} />
+          <Route path={`${url}/details/:id`} component={SchoolsForm} />
           <Route path={`${url}/new`} component={SchoolsForm} />
-          <Route path={`${url}/details`} component={SchoolsForm} />
           <Route path={`${url}/list`} component={() => <SchoolsTable schools={eduAssets.schools} />} />
           <Redirect from="/" to={`${url}/list`} />
         </Switch>

@@ -6,7 +6,7 @@ class SharedStore {
     countries: []
   }
   methods = {
-    SignUpParentFormSubmit: (entity) => {
+    signUpParentFormSubmit: (entity) => {
       // reshapping and adjustment entity
       console.log(entity);
       const user = {

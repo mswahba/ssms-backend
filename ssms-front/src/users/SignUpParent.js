@@ -72,7 +72,7 @@ export default () => (
       shared: { docTypes },
       shared: { countries },
       getSignUpParentFormData,
-      SignUpParentFormSubmit
+      signUpParentFormSubmit
     }) => {
       if (!docTypes.length && !countries.length)
         getSignUpParentFormData();
@@ -88,7 +88,7 @@ export default () => (
         data[item.countryEn] = null;
         return data;
       }, {});
-      fields.submit.submitFunc = SignUpParentFormSubmit;
+      fields.submit.submitFunc = signUpParentFormSubmit;
       return docTypes.length && countries.length
               ? <MdForm {...fields} />
               : null;

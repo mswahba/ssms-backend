@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import SignIn from './users/SignIn';
 import UsersList from './users/UsersList';
