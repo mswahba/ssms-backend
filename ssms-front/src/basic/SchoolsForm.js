@@ -183,9 +183,7 @@ export default class SchoolsForm extends Component {
     } = this.state;
     return (
       <Consumer>
-        {({eduAssets, getSchools, getSchool, getMaxSchoolId}) => {
-          if(!eduAssets.schools || !eduAssets.maxSchoolId)
-            getSchools();
+        {({eduAssets, getSchool}) => {
           return (
             <form>
               {/* form title */}
