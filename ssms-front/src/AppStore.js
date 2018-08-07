@@ -1,32 +1,20 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import { getState, getActions } from './centralStore';
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
+import userReducer from './users/usersReducer';
 
-const { Provider, Consumer } = React.createContext();
-class AppStore extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   console.log(this.getValue());
-  //   console.log( ...Object.entries(getActions(this)).map(item => item[1]) )
-  // }
-  state = getState();
-  getValue = () => ({
-    ...this.state,
-    ...getActions(this)
-  });
-  render() {
-    return (
-      <Provider value={ this.getValue() }>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
-    )
-  }
-}
+const rootReducer = combineReducers({
+  user: userReducer
+})
 
-export {
-  Consumer,
-  AppStore as default
-};
+const store = createStore(rootReducer)
+
+export default () => (
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>
+)
