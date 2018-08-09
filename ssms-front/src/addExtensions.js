@@ -16,7 +16,7 @@ export default () => {
     for (let i = 0; i < count; i++) {
       _currString = String.random(_stringOpts);
       if (unique) {
-        while ( result.includes(_currString) )
+        while ( _result.includes(_currString) )
           _currString = String.random(_stringOpts);
       }
       _result.push(_currString);
@@ -193,7 +193,7 @@ export default () => {
     return indexes.map(index => this[index]);
   };
   Array.prototype.flatten = function() {
-    this.reduce((a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []);
+    this.reduce((a, b) => a.concat(Array.isArray(b) ? b.flatten() : b), []);
   };
   // randomize sort an array
   Array.prototype.shuffle = function() {

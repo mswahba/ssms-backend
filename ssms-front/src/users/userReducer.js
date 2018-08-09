@@ -13,7 +13,7 @@ const methods = {
   SIGN_IN_FULFILLED: (state, payload) => ({
     ...state,
     loading: false,
-    loggedUser: payload
+    loggedUser: payload.data
   }),
   SIGN_IN_REJECTED: (state, payload) => ({
     ...state,
@@ -27,7 +27,7 @@ const methods = {
   GET_USERS_FULFILLED: (state, payload) => ({
     ...state,
     loading: false,
-    users: payload
+    users: payload.data
   }),
   GET_USERS_REJECTED: (state, payload) => ({
     ...state,

@@ -3,25 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "redux": "^4.0.0",
-    "react-redux": "^5.0.7",
-    "redux-promise-middleware": "^5.1.1",
-    "react-router-dom": "^4.3.1",
     "axios": "^0.18.0",
+    "classnames": "^2.2.6",
     "hijri-date-picker": "^1.0.1",
     "materialize-css": "^1.0.0-rc.2",
     "moment": "^2.22.2",
     "moment-hijri": "^2.1.1",
     "primereact": "^2.0.0-beta.1",
-    "classnames": "^2.2.6",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
-    "react-scripts": "1.1.4"
+    "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "1.1.4",
+    "redux": "^4.0.0",
+    "redux-promise-middleware": "^5.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "redux-devtools-extension": "^2.13.5"
   }
 }
