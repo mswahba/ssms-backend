@@ -1,4 +1,18 @@
-const lookup = ['docTypes','countries','jobs','departments'];
+const lookup = [
+  'schools',
+  'branches',
+  'stages',
+  'grades',
+  'classrooms',
+  'periods',
+  'schoolDayEvents',
+  'academicYears',
+  'academicSemesters',
+  'academicWeeks', 
+  'majors',
+  'subjects',
+  'gradesSubjects'
+];
 
 const lookupState = lookup.reduce((acc,key) => {
   acc[key] = []
@@ -7,16 +21,16 @@ const lookupState = lookup.reduce((acc,key) => {
 
 const initialState = {
   loading: false,
-  error: "",
+  error: '',
   ...lookupState
 }
 
 const methods = {
-  GET_SHARED_LOOK_UP_PENDING: (state) => ({
+  GET_EDUASSETS_LOOK_UP_PENDING: (state) => ({
     ...state,
     loading: true
   }),
-  GET_SHARED_LOOK_UP_FULFILLED: (state, payload) => {
+  GET_EDUASSETS_LOOK_UP_FULFILLED: (state, payload) => {
     const lookupNewState = lookup.reduce((acc,key) => {
       if(payload[key])
         acc[key] = payload[key] 
@@ -28,18 +42,18 @@ const methods = {
       loading: false
     }
   },
-  GET_SHARED_LOOK_UP_REJECTED: (state, payload) => ({
+  GET_EDUASSETS_LOOK_UP_REJECTED: (state, payload) => ({
     ...state,
-    loading: false,
-    error: payload
+    error: payload,
+    loading: false
   })
 }
 
 export const actionTypes = {
-  GET_SHARED_LOOK_UP: "GET_SHARED_LOOK_UP",
-  GET_SHARED_LOOK_UP_PENDING: "GET_SHARED_LOOK_UP_PENDING",
-  GET_SHARED_LOOK_UP_FULFILLED: "GET_SHARED_LOOK_UP_FULFILLED",
-  GET_SHARED_LOOK_UP_REJECTED: "GET_SHARED_LOOK_UP_REJECTED"
+  GET_EDUASSETS_LOOK_UP: "GET_EDUASSETS_LOOK_UP",
+  GET_EDUASSETS_LOOK_UP_PENDING: "GET_EDUASSETS_LOOK_UP_PENDING",
+  GET_EDUASSETS_LOOK_UP_FULFILLED: "GET_EDUASSETS_LOOK_UP_FULFILLED",
+  GET_EDUASSETS_LOOK_UP_REJECTED: "GET_EDUASSETS_LOOK_UP_REJECTED"
 }
 
 // userReducer
