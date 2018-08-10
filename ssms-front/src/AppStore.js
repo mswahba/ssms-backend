@@ -1,11 +1,12 @@
 // React
 import React from 'react'
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom"
 // Redux And React-Redux
-import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import promise from 'redux-promise-middleware';
+import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { Provider } from 'react-redux'
+import promise from 'redux-promise-middleware'
+import logger from 'redux-logger'
 // App Reducers
 import { userReducer } from './store/user';
 import { sharedReducer } from './store/shared';
@@ -19,7 +20,7 @@ const rootReducer = combineReducers({
   eduAssets: eduAssetsReducer
 })
 // applying middleware chain functions
-const middleware = applyMiddleware(promise())
+const middleware = applyMiddleware(logger, promise())
 // define enhancers
 const enhancers = composeWithDevTools(
   middleware

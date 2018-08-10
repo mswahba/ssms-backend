@@ -8,18 +8,17 @@ class UsersList extends Component {
   componentDidMount() {
     // dispatch getUsers Action [GET_USERS]
     userActions.getUsers( axiosOne('get','/Users/List/all') )
-    console.log(this.props);
   }
   render() {
+    const { loading, error, users } = this.props;
     return (
       <ol>
-        {
-          (this.props.loading)
+        { (loading)
             ? "loading ..."
-            : (this.props.error)
-              ? JSON.stringify(this.props.error)
-              : (this.props.users.length)
-                ? this.props.users.map(user => <li key={user.userId}>{user.userId}</li>)
+            : (error)
+              ? JSON.stringify(error)
+              : (users.length)
+                ? users.map(user => <li key={user.userId}>{user.userId}</li>)
                 : "no users yet ..."
         }
       </ol>
