@@ -1,22 +1,22 @@
 // React
 import React from 'react'
 import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./AppRoutes";
 // Redux And React-Redux
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import promise from 'redux-promise-middleware';
 import { composeWithDevTools } from 'redux-devtools-extension'
 // App Reducers
-import user from './users/userReducer';
-import shared from './shared/sharedReducer';
-import eduAssets from './basic/eduAssetsReducer';
-
+import { userReducer } from './store/user';
+import { sharedReducer } from './store/shared';
+import { eduAssetsReducer } from './store/eduAssets';
+// App Routes Component
+import AppRoutes from "./AppRoutes";
 // combine multiple reducers
 const rootReducer = combineReducers({
-  user,
-  shared,
-  eduAssets
+  user: userReducer,
+  shared: sharedReducer,
+  eduAssets: eduAssetsReducer
 })
 // applying middleware chain functions
 const middleware = applyMiddleware(promise())
