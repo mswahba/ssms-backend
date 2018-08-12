@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "node-dir":"^0.1.17",
     "redux-logger": "^3.0.6",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",

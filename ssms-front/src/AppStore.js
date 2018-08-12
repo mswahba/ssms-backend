@@ -8,9 +8,9 @@ import { Provider } from 'react-redux'
 import promise from 'redux-promise-middleware'
 import logger from 'redux-logger'
 // App Reducers
-import { userReducer } from './store/user';
-import { sharedReducer } from './store/shared';
-import { eduAssetsReducer } from './store/eduAssets';
+import userReducer from './store/user';
+import sharedReducer from './store/shared';
+import eduAssetsReducer from './store/eduAssets';
 // App Routes Component
 import AppRoutes from "./AppRoutes";
 // combine multiple reducers

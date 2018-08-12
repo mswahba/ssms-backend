@@ -40,11 +40,11 @@ const updater = {
   [actionTypes.GET_SHARED_LOOK_UP_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload
+    error: payload.response.data
   })
 }
 
-export const sharedActions = {
+const sharedActions = {
   getSharedLookUp: (payload) => {
     store.dispatch({
       type: actionTypes.GET_SHARED_LOOK_UP,
@@ -53,7 +53,9 @@ export const sharedActions = {
   }
 }
 
-export const sharedReducer = (state = initialState, { type, payload }) => {
+const stateKey = 'shared'
+
+const reducer = (state = initialState, { type, payload }) => {
   // instead of one big switch statement
   // call a function based on actionType [from the updater object]
   // that called function will return the new state
@@ -61,4 +63,10 @@ export const sharedReducer = (state = initialState, { type, payload }) => {
   return (Object.keys(updater).includes(type))
     ? updater[type](state,payload)
     : state;
+}
+
+export {
+  sharedActions,
+  stateKey,
+  reducer as default
 }

@@ -15,7 +15,7 @@ const initialState = {
   users: [],
   loggedUser: {},
   loading: false,
-  error: ""
+  error: ''
 }
 
 const updater = {
@@ -31,7 +31,7 @@ const updater = {
   [actionTypes.SIGN_IN_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload
+    error: payload.response.data
   }),
   [actionTypes.GET_USERS_PENDING]: (state, payload) => ({
     ...state,
@@ -45,11 +45,11 @@ const updater = {
   [actionTypes.GET_USERS_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload
+    error: payload.response.data
   }),
 }
 
-export const userActions = {
+const userActions = {
   signIn:(payload) => {
     store.dispatch({
       type: actionTypes.SIGN_IN,
@@ -57,15 +57,21 @@ export const userActions = {
     })
   },
   getUsers:(payload) => {
-    store.dispatch({
-      type: actionTypes.GET_USERS,
-      payload
-    })
+    // dispath only when users is empty
+    const {user: {users}} = store.getState();
+    if(!users.length) {
+        store.dispatch({
+        type: actionTypes.GET_USERS,
+        payload
+      })
+    }
   }
 }
 
+const stateKey = 'user';
+
 // userReducer
-export const userReducer = (state = initialState, { type, payload }) => {
+const reducer = (state = initialState, { type, payload }) => {
   // instead of one big switch statement
   // call a function based on actionType [from the updater object]
   // that called function will return the new state
@@ -73,4 +79,10 @@ export const userReducer = (state = initialState, { type, payload }) => {
   return (Object.keys(updater).includes(type))
     ? updater[type](state,payload)
     : state;
+}
+
+export {
+  userActions,
+  stateKey,
+  reducer as default
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import UsersList from './users/UsersList';
-// import SignIn from './users/SignIn';
+import SignIn from './users/SignIn';
 // import SignUpParent from './users/SignUpParent';
 // import Hijri from './shared/Hijri';
 // import HGDatePicker from './shared/HGDatePicker';
@@ -29,6 +29,7 @@ export default class AppRoutes extends Component {
               />
             </div>
           )} /> */}
+        <Route path='/signIn' component={SignIn} />
         <Route path='/usersList' component={UsersList} />
         <Route path='/' component={() => <h2> 404 Page not Found ...</h2> } />
       </Switch>

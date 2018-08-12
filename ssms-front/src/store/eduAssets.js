@@ -54,12 +54,12 @@ const updater = {
   },
   [actionTypes.GET_EDUASSETS_LOOK_UP_REJECTED]: (state, payload) => ({
     ...state,
-    error: payload,
+    error: payload.response.data,
     loading: false
   })
 }
 
-export const eduAssetsActions = {
+const eduAssetsActions = {
   getEduAssetsLookUp: (payload) => {
     store.dispatch({
       type: actionTypes.GET_EDUASSETS_LOOK_UP,
@@ -68,7 +68,9 @@ export const eduAssetsActions = {
   }
 }
 
-export const eduAssetsReducer = (state = initialState, { type, payload }) => {
+const stateKey = 'eduAssets';
+
+const reducer = (state = initialState, { type, payload }) => {
   // instead of one big switch statement
   // call a function based on actionType [from the updater object]
   // that called function will return the new state
@@ -76,4 +78,10 @@ export const eduAssetsReducer = (state = initialState, { type, payload }) => {
   return (Object.keys(updater).includes(type))
     ? updater[type](state,payload)
     : state;
+}
+
+export {
+  eduAssetsActions,
+  stateKey,
+  reducer as default
 }
