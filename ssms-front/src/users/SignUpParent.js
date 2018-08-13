@@ -1,6 +1,9 @@
-import React from "react";
+import React, { Component } from 'react'
 import MdForm from "../shared/MdForm";
-import { Consumer } from "../AppStore";
+import { connect } from "react-redux";
+import { sharedActions } from "../store/shared";
+import { userActions } from '../store/user';
+import { axiosOne, axiosAll } from "../axios";
 
 const fields = {
   fName: {
@@ -65,33 +68,47 @@ const fields = {
     label: "Save"
   }
 };
+class SignUpParent extends Component {
+  componentDidMount() {
+    sharedActions.setResKeys(['docTypes','countries']);
+    sharedActions.getSharedLookUp(
+      axiosAll([
+        axiosOne('get','/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'),
+        axiosOne('get','/Countries?fields=countryId,countryAr,countryEn')
+      ])
+    );
+  }
+  completeFields = () => {
+    fields.idType.options = this.props.docTypes.map(item => ({
+      text: item.docTypeEn,
+      value: item.docTypeId
+    }));
+    fields.countryId.options = this.props.countries.map(item => ({
+      text: item.countryEn,
+      value: item.countryId
+    }));
+    fields.countries.options = this.props.countries.reduce((data, item) => {
+      data[item.countryEn] = null;
+      return data;
+    }, {});
+    // pass the axios request to addParent and return the inner function which
+    // will be called later by the MdForm and will dispatch [ADD_PARENT] Action
+    fields.submit.submitFunc = userActions.addParent({ method: 'post', url: '/Users/Add'});
+  }
+  render() {
+    // console.group(`SignUpParent render @${(new Date()).getFullTime()}`)
+    // console.log(this.props)
+    // console.groupEnd()
+    if(this.props.docTypes.length && this.props.countries.length) {
+      this.completeFields();
+      return <MdForm {...fields} />
+    }
+    return null;
+  }
+}
 
-export default () => (
-  <Consumer>
-    {({
-      shared: { docTypes },
-      shared: { countries },
-      getSignUpParentFormData,
-      signUpParentFormSubmit
-    }) => {
-      if (!docTypes.length && !countries.length)
-        getSignUpParentFormData();
-      fields.idType.options = docTypes.map(item => ({
-        text: item.docTypeEn,
-        value: item.docTypeId
-      }));
-      fields.countryId.options = countries.map(item => ({
-        text: item.countryEn,
-        value: item.countryId
-      }));
-      fields.countries.options = countries.reduce((data, item) => {
-        data[item.countryEn] = null;
-        return data;
-      }, {});
-      fields.submit.submitFunc = signUpParentFormSubmit;
-      return docTypes.length && countries.length
-              ? <MdForm {...fields} />
-              : null;
-    }}
-  </Consumer>
-);
+const mapStateToProps = state => ({
+  ...state.shared
+});
+
+export default connect(mapStateToProps)(SignUpParent);

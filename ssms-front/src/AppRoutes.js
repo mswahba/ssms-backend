@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import UsersList from './users/UsersList';
 import SignIn from './users/SignIn';
-// import SignUpParent from './users/SignUpParent';
+import SignUpParent from './users/SignUpParent';
 // import Hijri from './shared/Hijri';
 // import HGDatePicker from './shared/HGDatePicker';
 // import Schools from './basic/Schools'
-import './App.css';
+import './app.css';
 
 export default class AppRoutes extends Component {
   // logDates = (dates) => console.log(dates);
@@ -15,7 +15,6 @@ export default class AppRoutes extends Component {
       <Switch>
         {/* <Route path='/schools' component={Schools} />
         <Route path='/signIn' component={SignIn} />
-        <Route path='/signUpParent' component={SignUpParent} />
         <Route path='/usersList' component={UsersList} />
         <Route path='/hijri' component={Hijri} />
         <Route path='/hg-datepicker' component={ () => (
@@ -29,6 +28,7 @@ export default class AppRoutes extends Component {
               />
             </div>
           )} /> */}
+        <Route path='/signUpParent' component={SignUpParent} />
         <Route path='/signIn' component={SignIn} />
         <Route path='/usersList' component={UsersList} />
         <Route path='/' component={() => <h2> 404 Page not Found ...</h2> } />

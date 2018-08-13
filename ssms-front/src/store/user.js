@@ -1,4 +1,5 @@
 import { store } from '../AppStore'
+import { axiosOne } from '../axios'
 
 const actionTypes = {
   SIGN_IN: "SIGN_IN",
@@ -8,12 +9,17 @@ const actionTypes = {
   GET_USERS: "GET_USERS",
   GET_USERS_PENDING: "GET_USERS_PENDING",
   GET_USERS_FULFILLED: "GET_USERS_FULFILLED",
-  GET_USERS_REJECTED: "GET_USERS_REJECTED"
+  GET_USERS_REJECTED: "GET_USERS_REJECTED",
+  ADD_PARENT: "ADD_PARENT",
+  ADD_PARENT_PENDING: "ADD_PARENT_PENDING",
+  ADD_PARENT_FULFILLED: "ADD_PARENT_FULFILLED",
+  ADD_PARENT_REJECTED: "ADD_PARENT_REJECTED"
 }
 
 const initialState = {
   users: [],
   loggedUser: {},
+  currentParent: {},
   loading: false,
   error: ''
 }
@@ -47,6 +53,20 @@ const updater = {
     loading: false,
     error: payload.response.data
   }),
+  [actionTypes.ADD_PARENT_PENDING]: (state, payload) => ({
+    ...state,
+    loading: true
+  }),
+  [actionTypes.ADD_PARENT_FULFILLED]: (state, payload) => ({
+    ...state,
+    loading: false,
+    currentParent: payload.data
+  }),
+  [actionTypes.ADD_PARENT_REJECTED]: (state, payload) => ({
+    ...state,
+    loading: false,
+    error: payload.response.data
+  }),
 }
 
 const userActions = {
@@ -54,6 +74,31 @@ const userActions = {
     store.dispatch({
       type: actionTypes.SIGN_IN,
       payload
+    })
+  },
+  addParent: (payload) => (entity) => {
+    // mapping
+    const parent = {
+      userId: entity.parentId,
+      userPassword: entity.password,
+      userTypeId: 3,
+      _parent: {
+        parentId: entity.parentId,
+        fName: entity.fName,
+        mName: entity.mName,
+        gName: entity.gName,
+        lName: entity.lName,
+        idType: entity.idType,
+        idExpireDateG: entity.idExpireDateG,
+        mobile1: entity.mobile,
+        email: entity.email,
+        countryId: entity.countryId
+      }
+    };
+    // dispatch
+    store.dispatch({
+      type: actionTypes.ADD_PARENT,
+      payload: axiosOne(payload.method,payload.url, parent)
     })
   },
   getUsers:(payload) => {

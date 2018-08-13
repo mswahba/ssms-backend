@@ -10,6 +10,7 @@ const lookupState = lookup.reduce((acc,key) => {
 const initialState = {
   loading: false,
   error: "",
+  resKeys: [],
   ...lookupState
 }
 
@@ -17,7 +18,8 @@ const actionTypes = {
   GET_SHARED_LOOK_UP: "GET_SHARED_LOOK_UP",
   GET_SHARED_LOOK_UP_PENDING: "GET_SHARED_LOOK_UP_PENDING",
   GET_SHARED_LOOK_UP_FULFILLED: "GET_SHARED_LOOK_UP_FULFILLED",
-  GET_SHARED_LOOK_UP_REJECTED: "GET_SHARED_LOOK_UP_REJECTED"
+  GET_SHARED_LOOK_UP_REJECTED: "GET_SHARED_LOOK_UP_REJECTED",
+  SET_RES_KEYS: "SET_RES_KEYS",
 }
 
 const updater = {
@@ -26,9 +28,8 @@ const updater = {
     loading: true
   }),
   [actionTypes.GET_SHARED_LOOK_UP_FULFILLED]: (state, payload) => {
-    const lookupNewState = lookup.reduce((acc,key) => {
-      if(payload[key])
-        acc[key] = payload[key]
+    const lookupNewState = state.resKeys.reduce((acc,key, i) => {
+      acc[key] = payload[i].data
       return acc;
     } ,{})
     return {
@@ -41,6 +42,10 @@ const updater = {
     ...state,
     loading: false,
     error: payload.response.data
+  }),
+  [actionTypes.SET_RES_KEYS]: (state,payload) => ({
+    ...state,
+    resKeys: payload
   })
 }
 
@@ -48,6 +53,12 @@ const sharedActions = {
   getSharedLookUp: (payload) => {
     store.dispatch({
       type: actionTypes.GET_SHARED_LOOK_UP,
+      payload
+    })
+  },
+  setResKeys: (payload) => {
+    store.dispatch({
+      type: actionTypes.SET_RES_KEYS,
       payload
     })
   }

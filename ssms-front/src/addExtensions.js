@@ -176,6 +176,23 @@ export default () => {
         return 'invalid comparison operator !!!'
     }
   }
+  // get time with milliseconds
+  Date.prototype.getFullTime = function() {
+    let hours = this.getHours();
+    hours = (hours < 10)? '0'+hours : hours;
+    let minutes = this.getMinutes();
+    minutes = (minutes < 10)? '0'+minutes : minutes;
+    let seconds = this.getSeconds();
+    seconds = (seconds < 10)? '0'+seconds : seconds;
+    let milliseconds = this.getMilliseconds();
+    milliseconds = (milliseconds < 10)
+                      ? '00'+milliseconds
+                      : (milliseconds < 100)
+                        ? '0'+milliseconds
+                        : milliseconds;
+    const period = this.toLocaleTimeString().slice(-2);
+    return `${hours}:${minutes}:${seconds}.${milliseconds} ${period}`;
+  }
   // randomize sort an array
   Array.prototype.randomize = function(count) {
     if (this.length <= 1) return this;
