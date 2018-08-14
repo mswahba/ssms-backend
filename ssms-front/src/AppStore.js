@@ -5,8 +5,7 @@ import { BrowserRouter } from "react-router-dom"
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { Provider } from 'react-redux'
-import promise from 'redux-promise-middleware'
-import logger from 'redux-logger'
+import { middlewares } from './store/middlewares'
 // App Routes Component
 import AppRoutes from "./AppRoutes"
 
@@ -14,10 +13,12 @@ import AppRoutes from "./AppRoutes"
 // import all store reducers dynamically from './store' dir
 const importAll = (r) => r.keys().map(r);
 const allModules = importAll(require.context('./store', false, /\.js$/));
-const allReducers = allModules.reduce( (reducers, _module) => {
-  reducers[_module.stateKey] = _module.default;
-  return reducers;
-},{});
+const allReducers = allModules
+      .filter(_module => _module.middlewares === undefined)
+      .reduce( (reducers, _module) => {
+        reducers[_module.stateKey] = _module.default;
+        return reducers;
+      },{});
 // #endregion
 
 // #region log
@@ -30,7 +31,7 @@ const allReducers = allModules.reduce( (reducers, _module) => {
 // combine multiple reducers
 const rootReducer = combineReducers(allReducers);
 // applying middleware chain functions
-const middleware = applyMiddleware(logger, promise());
+const middleware = applyMiddleware(...middlewares);
 // define enhancers
 const enhancers = composeWithDevTools(middleware);
 // create the Redux Store

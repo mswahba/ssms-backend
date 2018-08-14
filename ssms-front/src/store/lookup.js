@@ -69,10 +69,13 @@ const updater = {
     error: payload.response.data,
     loading: false
   }),
-  [actionTypes.SET_LOOKUP_ENTITY]: (state, payload) => ({
-    ...state,
-    lookupEntity: state[payload.lookupTable].find(item => item[payload.lookupKey] == payload.id)
-  })
+  [actionTypes.SET_LOOKUP_ENTITY]: (state, payload) => {
+    const entity = state[payload.lookupTable].find(item => item[payload.lookupKey] == payload.id)
+    return {
+      ...state,
+      lookupEntity: entity
+    }
+  }
 }
 
 const lookupActions = {
@@ -82,10 +85,10 @@ const lookupActions = {
       payload
     })
   },
-  getLookupData: (payload) => {
+  getLookupData: (params) => {
     store.dispatch({
       type: actionTypes.GET_LOOKUP_DATA,
-      payload
+      ...params
     })
   },
   setLookupEntity: (payload) => {
@@ -109,6 +112,7 @@ const reducer = (state = initialState, { type, payload }) => {
 }
 
 export {
+  actionTypes as lookupActionTypes,
   lookupActions,
   stateKey,
   reducer as default

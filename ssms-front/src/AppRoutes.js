@@ -3,9 +3,9 @@ import { Switch, Route } from 'react-router-dom';
 import UsersList from './users/UsersList';
 import SignIn from './users/SignIn';
 import SignUpParent from './users/SignUpParent';
-// import Hijri from './shared/Hijri';
-// import HGDatePicker from './shared/HGDatePicker';
-// import Schools from './basic/Schools'
+import Hijri from './shared/Hijri';
+import HGDatePicker from './shared/HGDatePicker';
+import Schools from './basic/Schools'
 import './app.css';
 
 export default class AppRoutes extends Component {
@@ -13,9 +13,6 @@ export default class AppRoutes extends Component {
   render() {
     return (
       <Switch>
-        {/* <Route path='/schools' component={Schools} />
-        <Route path='/signIn' component={SignIn} />
-        <Route path='/usersList' component={UsersList} />
         <Route path='/hijri' component={Hijri} />
         <Route path='/hg-datepicker' component={ () => (
           <div className="my-container">
@@ -27,7 +24,9 @@ export default class AppRoutes extends Component {
                             getDates={this.logDates}
               />
             </div>
-          )} /> */}
+          )}
+        />
+        <Route path='/schools' component={Schools} />
         <Route path='/signUpParent' component={SignUpParent} />
         <Route path='/signIn' component={SignIn} />
         <Route path='/usersList' component={UsersList} />
