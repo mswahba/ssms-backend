@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import MdForm from "../shared/MdForm";
 import { connect } from "react-redux";
-import { sharedActions } from "../store/shared";
+import { lookupActions } from "../store/lookup";
 import { userActions } from '../store/user';
 import { axiosOne, axiosAll } from "../axios";
 
@@ -70,8 +70,8 @@ const fields = {
 };
 class SignUpParent extends Component {
   componentDidMount() {
-    sharedActions.setResKeys(['docTypes','countries']);
-    sharedActions.getSharedLookUp(
+    lookupActions.setLookupKeys(['docTypes','countries']);
+    lookupActions.getLookupData(
       axiosAll([
         axiosOne('get','/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'),
         axiosOne('get','/Countries?fields=countryId,countryAr,countryEn')
@@ -108,7 +108,7 @@ class SignUpParent extends Component {
 }
 
 const mapStateToProps = state => ({
-  ...state.shared
+  ...state.lookup
 });
 
 export default connect(mapStateToProps)(SignUpParent);
