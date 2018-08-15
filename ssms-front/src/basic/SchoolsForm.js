@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { lookupActions, lookupActionTypes } from "../store/lookup";
-import { axiosOne } from '../axios';
+import { lookupActions } from "../store/lookup";
 import M from "materialize-css";
 
 class SchoolsForm extends Component {
@@ -26,7 +25,7 @@ class SchoolsForm extends Component {
     startDate: {
       hidden: false,
       disabled: false,
-      value: ''
+      value: new Date()
     },
     address: {
       hidden: false,
@@ -63,6 +62,8 @@ class SchoolsForm extends Component {
     const options = {
       format: 'dd/mm/yyyy',
       yearRange: [currentYear-70,currentYear],
+      setDefaultDate: true,
+      defaultDate: this.state.startDate.value.toLocaleDateString('en-gb'),
       onSelect: (selectedDate) => {
         this.setFieldValue('startDate',selectedDate);
       }
@@ -169,6 +170,38 @@ class SchoolsForm extends Component {
     this.setupFormType(id, url);
   }
 
+  // static getDrivedStateFromProps(nextProps, prevState) {
+  //   console.log(nextProps)
+  //   if( nextProps.schools.length && Object.keys(nextProps.lookupEntity).length === 0) {
+  //     lookupActions.setLookupEntity({
+  //       lookupTable: 'schools',
+  //       lookupKey: 'schoolId',
+  //       id: nextProps.match.params.id
+  //     })
+  //   } else {
+  //     return {
+
+  //     }
+  //   }
+  // }
+
+  componentWillReceiveProps(newProps) {
+    // when receive schools but lookupEntity in empty - then fill it
+    if( newProps.schools.length && Object.keys(newProps.lookupEntity).length === 0) {
+      lookupActions.setLookupEntity({
+        lookupTable: 'schools',
+        lookupKey: 'schoolId',
+        id: newProps.match.params.id
+      })
+    }
+    // when lookupEntity is filled - pass its values to the form State values
+    if(Object.keys(newProps.lookupEntity).length) {
+      Object.entries(newProps.lookupEntity)
+            .filter(([key,val]) => key !== 'branches')
+            .forEach(([key,val]) => this.setFieldValue(key,(key === 'startDate')? new Date(val) : val) );
+    }
+  }
+
   addSchool = () => {
     console.log(this.state);
   }
@@ -182,7 +215,7 @@ class SchoolsForm extends Component {
               type="text"
               className="materialize-textarea validate"
               placeholder=""
-              value={input[2]}
+              value={input[1].value}
               onChange={(e)=> {
                 this.setFieldValue(input[0],e.target.value);
               }}
@@ -191,32 +224,32 @@ class SchoolsForm extends Component {
               id={input[0]}
               type="text"
               className="materialize-textarea validate"
-              value={input[2]}
+              value={input[1].value}
               onChange={(e)=> {
                 this.setFieldValue(input[0],e.target.value);
               }}
-          />     
+          />
     } else if (input[0] === 'isActive') {
-      return (url.includes('/edit') || url.includes('/details')) 
+      return (url.includes('/edit') || url.includes('/details'))
         ? <input disabled={input[1].disabled}
               id={input[0]}
-              type="text"
+              type="checkbox"
               className="validate"
               placeholder=""
-              checked={input[2]}
+              checked={input[1].value}
               onChange={(e)=> {
                 this.setFieldValue(input[0],e.target.value);
               }}
           />
         : <input disabled={input[1].disabled}
               id={input[0]}
-              type="text"
+              type="checkbox"
               className="validate"
-              checked={input[2]}
+              checked={input[1].value}
               onChange={(e)=> {
                 this.setFieldValue(input[0],e.target.value);
               }}
-          /> 
+          />
     }
     return (url.includes('/edit') || url.includes('/details'))
       ? <input disabled={input[1].disabled}
@@ -224,7 +257,7 @@ class SchoolsForm extends Component {
             type="text"
             className="validate"
             placeholder=""
-            value={input[2]}
+            value={input[1].value}
             onChange={(e) => {
               this.setFieldValue(input[0], e.target.value);
             }}
@@ -233,7 +266,7 @@ class SchoolsForm extends Component {
             id={input[0]}
             type="text"
             className="validate"
-            value={input[2]}
+            value={input[1].value}
             onChange={(e) => {
               this.setFieldValue(input[0], e.target.value);
             }}
@@ -255,16 +288,6 @@ class SchoolsForm extends Component {
       btnDelete
     } = this.state;
 
-    const {
-      schoolId: _schoolId,
-      schoolName: _schoolName,
-      schoolNameEn: _schoolNameEn,
-      startDate: _startDate,
-      address: _address,
-      comNum: _comNum,
-      isActive: _isActive
-    } = this.props.lookupEntity;
-
     return (
       <form>
         {/* form title */}
@@ -273,19 +296,19 @@ class SchoolsForm extends Component {
         {/* schoolId */}
         <div className="input-field" hidden={schoolId.hidden}>
           <i className="material-icons prefix">edit</i>
-          { this.getFormInputs(["schoolId", schoolId , _schoolId]) }
+          { this.getFormInputs(["schoolId", schoolId]) }
           <label htmlFor="schoolId">School Number</label>
         </div>
         {/* schoolName */}
         <div className="input-field" hidden={schoolName.hidden}>
           <i className="material-icons prefix">edit</i>
-          { this.getFormInputs(["schoolName", schoolName , _schoolName]) }
+          { this.getFormInputs(["schoolName", schoolName]) }
           <label htmlFor="schoolName">School Name [Arabic] </label>
         </div>
         {/* schoolNameEn */}
         <div className="input-field" hidden={schoolNameEn.hidden}>
           <i className="material-icons prefix">edit</i>
-          { this.getFormInputs(["schoolNameEn", schoolNameEn , _schoolNameEn]) }
+          { this.getFormInputs(["schoolNameEn", schoolNameEn]) }
           <label htmlFor="schoolNameEn">School Name [English] </label>
         </div>
         {/* startDate */}
@@ -295,20 +318,20 @@ class SchoolsForm extends Component {
                 id="startDate"
                 type="text"
                 className="datepicker"
-                value={new Date(_startDate).toLocaleDateString('en-gb')}
+                value={startDate.value.toLocaleDateString('en-gb')}
           />
           <label htmlFor="startDate">Start Date </label>
         </div>
         {/* address */}
         <div className="input-field" hidden={address.hidden}>
           <i className="material-icons prefix">home</i>
-          { this.getFormInputs(["address", address , _address]) }
+          { this.getFormInputs(["address", address]) }
           <label htmlFor="address">Address </label>
         </div>
         {/* comNum */}
         <div className="input-field" hidden={comNum.hidden}>
           <i className="material-icons prefix">edit</i>
-          { this.getFormInputs(["comNum", comNum , _comNum]) }
+          { this.getFormInputs(["comNum", comNum]) }
           <label htmlFor="comNum">Commercial Number</label>
         </div>
         {/* isActive */}
@@ -317,7 +340,7 @@ class SchoolsForm extends Component {
           <div id="isActive">
             <label>
               Activate School? No
-              { this.getFormInputs(["isActive", isActive , _isActive]) }
+              { this.getFormInputs(["isActive", isActive]) }
               <span className="lever" />
               Yes
             </label>
@@ -360,19 +383,9 @@ class SchoolsForm extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  if( ownProps &&
-      state.lookup.schools.length &&
-      Object.keys(state.lookup.lookupEntity).length === 0) {
-    lookupActions.setLookupEntity({
-      lookupTable: 'schools',
-      lookupKey: 'schoolId',
-      id: ownProps.match.params.id
-    })
-  }
-  return {
-    ...state.lookup
-  }
-}
+const mapStateToProps = (state, ownProps) => ({
+  ...state.lookup
+})
+
 
 export default connect(mapStateToProps)(SchoolsForm)
