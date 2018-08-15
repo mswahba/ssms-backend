@@ -6,17 +6,16 @@ import { axiosOne } from '../axios';
 import SchoolsTable from "./SchoolsTable";
 import SchoolsForm from "./SchoolsForm";
 
-// flage to get data only once
+// flag to get data only once
 let fetchData = true;
 
 const Schools = (props) => {
   // extract url from routes props
   const { match: { url } } = props;
-  console.log(url);
   if(fetchData && !url.includes('edit')) {
     fetchData = false;
     lookupActions.setLookupKeys(['schools']);
-    lookupActions.getLookupData( { payload: axiosOne('get','/schools/List/all')} );
+    lookupActions.getLookupData( axiosOne('get','/schools/List/all') );
   }
   return (
     <Switch>

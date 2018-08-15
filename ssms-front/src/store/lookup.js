@@ -85,10 +85,10 @@ const lookupActions = {
       payload
     })
   },
-  getLookupData: (params) => {
+  getLookupData: (payload) => {
     store.dispatch({
       type: actionTypes.GET_LOOKUP_DATA,
-      ...params
+      payload
     })
   },
   setLookupEntity: (payload) => {

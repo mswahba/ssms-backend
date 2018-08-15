@@ -71,7 +71,7 @@ class SchoolsForm extends Component {
   };
 
   setupFormType = (id, url) => {
-    if (url.includes('edit') && id)
+    if (url.includes('edit') && id) {
       this.setState((prevState) => ({
         title: "Edit this School",
         schoolId: {
@@ -84,6 +84,7 @@ class SchoolsForm extends Component {
           disabled: true
         }
       }));
+    }
     else if (url.includes('new'))
       this.setState((prevState) => ({
         title: "Add New School",
@@ -162,32 +163,81 @@ class SchoolsForm extends Component {
   componentDidMount() {
     // extract id, url from routes props
     const { match: { params: { id } }, match: { url } } = this.props;
-    console.log(url);
     // init Materialize datePicker
     this.initDatePicker();
     // handle the 3 Form Conditions based on routes props
     this.setupFormType(id, url);
-    // 
-    lookupActions.setLookupKeys(['schools']);
-    lookupActions.getLookupData(
-      {
-        payload: axiosOne('get','/schools/List/all'),
-        afterFulfilled: [
-          {
-            type: lookupActionTypes.SET_LOOKUP_ENTITY,
-            payload: {
-              lookupTable: 'schools',
-              lookupKey: 'schoolId',
-              id
-            }
-          }
-        ]
-      }
-    );
   }
 
   addSchool = () => {
     console.log(this.state);
+  }
+
+  getFormInputs = (input) => {
+    const { match: { url } } = this.props;
+    if (input[0] === 'address') {
+      return (url.includes('/edit') || url.includes('/details'))
+        ? <textarea disabled={input[1].disabled}
+              id={input[0]}
+              type="text"
+              className="materialize-textarea validate"
+              placeholder=""
+              value={input[2]}
+              onChange={(e)=> {
+                this.setFieldValue(input[0],e.target.value);
+              }}
+          />
+        : <textarea disabled={input[1].disabled}
+              id={input[0]}
+              type="text"
+              className="materialize-textarea validate"
+              value={input[2]}
+              onChange={(e)=> {
+                this.setFieldValue(input[0],e.target.value);
+              }}
+          />     
+    } else if (input[0] === 'isActive') {
+      return (url.includes('/edit') || url.includes('/details')) 
+        ? <input disabled={input[1].disabled}
+              id={input[0]}
+              type="text"
+              className="validate"
+              placeholder=""
+              checked={input[2]}
+              onChange={(e)=> {
+                this.setFieldValue(input[0],e.target.value);
+              }}
+          />
+        : <input disabled={input[1].disabled}
+              id={input[0]}
+              type="text"
+              className="validate"
+              checked={input[2]}
+              onChange={(e)=> {
+                this.setFieldValue(input[0],e.target.value);
+              }}
+          /> 
+    }
+    return (url.includes('/edit') || url.includes('/details'))
+      ? <input disabled={input[1].disabled}
+            id={input[0]}
+            type="text"
+            className="validate"
+            placeholder=""
+            value={input[2]}
+            onChange={(e) => {
+              this.setFieldValue(input[0], e.target.value);
+            }}
+      />
+      : <input disabled={input[1].disabled}
+            id={input[0]}
+            type="text"
+            className="validate"
+            value={input[2]}
+            onChange={(e) => {
+              this.setFieldValue(input[0], e.target.value);
+            }}
+      />
   }
 
   render() {
@@ -204,6 +254,17 @@ class SchoolsForm extends Component {
       btnUpdate,
       btnDelete
     } = this.state;
+
+    const {
+      schoolId: _schoolId,
+      schoolName: _schoolName,
+      schoolNameEn: _schoolNameEn,
+      startDate: _startDate,
+      address: _address,
+      comNum: _comNum,
+      isActive: _isActive
+    } = this.props.lookupEntity;
+
     return (
       <form>
         {/* form title */}
@@ -212,43 +273,19 @@ class SchoolsForm extends Component {
         {/* schoolId */}
         <div className="input-field" hidden={schoolId.hidden}>
           <i className="material-icons prefix">edit</i>
-          <input disabled={schoolId.disabled}
-                  id="schoolId"
-                  type="text"
-                  className="validate"
-                  value={schoolId.value}
-                  onChange={(e)=> {
-                    this.setFieldValue('schoolId',e.target.value);
-                  }}
-          />
+          { this.getFormInputs(["schoolId", schoolId , _schoolId]) }
           <label htmlFor="schoolId">School Number</label>
         </div>
         {/* schoolName */}
         <div className="input-field" hidden={schoolName.hidden}>
           <i className="material-icons prefix">edit</i>
-          <input disabled={schoolName.disabled}
-                id="schoolName"
-                type="text"
-                className="validate"
-                value={schoolName.value}
-                onChange={(e)=> {
-                  this.setFieldValue('schoolName',e.target.value);
-                }}
-          />
+          { this.getFormInputs(["schoolName", schoolName , _schoolName]) }
           <label htmlFor="schoolName">School Name [Arabic] </label>
         </div>
         {/* schoolNameEn */}
         <div className="input-field" hidden={schoolNameEn.hidden}>
           <i className="material-icons prefix">edit</i>
-          <input disabled={schoolNameEn.disabled}
-                id="schoolNameEn"
-                type="text"
-                className="validate"
-                value={schoolNameEn.value}
-                onChange={(e)=> {
-                  this.setFieldValue('schoolNameEn',e.target.value);
-                }}
-          />
+          { this.getFormInputs(["schoolNameEn", schoolNameEn , _schoolNameEn]) }
           <label htmlFor="schoolNameEn">School Name [English] </label>
         </div>
         {/* startDate */}
@@ -258,35 +295,20 @@ class SchoolsForm extends Component {
                 id="startDate"
                 type="text"
                 className="datepicker"
+                value={new Date(_startDate).toLocaleDateString('en-gb')}
           />
           <label htmlFor="startDate">Start Date </label>
         </div>
         {/* address */}
         <div className="input-field" hidden={address.hidden}>
           <i className="material-icons prefix">home</i>
-          <textarea disabled={address.disabled}
-                  id="address"
-                  type="text"
-                  className="materialize-textarea validate"
-                  value={address.value}
-                  onChange={(e)=> {
-                    this.setFieldValue('address',e.target.value);
-                  }}
-          />
+          { this.getFormInputs(["address", address , _address]) }
           <label htmlFor="address">Address </label>
         </div>
         {/* comNum */}
         <div className="input-field" hidden={comNum.hidden}>
           <i className="material-icons prefix">edit</i>
-          <input disabled={comNum.disabled}
-                id="comNum"
-                type="text"
-                className="validate"
-                value={comNum.value}
-                onChange={(e)=> {
-                    this.setFieldValue('comNum',e.target.value);
-                }}
-          />
+          { this.getFormInputs(["comNum", comNum , _comNum]) }
           <label htmlFor="comNum">Commercial Number</label>
         </div>
         {/* isActive */}
@@ -295,13 +317,7 @@ class SchoolsForm extends Component {
           <div id="isActive">
             <label>
               Activate School? No
-              <input disabled={isActive.disabled}
-                    type="checkbox"
-                    checked={isActive.value}
-                    onChange={(e)=> {
-                      this.setFieldValue('isActive',e.target.checked);
-                    }}
-              />
+              { this.getFormInputs(["isActive", isActive , _isActive]) }
               <span className="lever" />
               Yes
             </label>
@@ -344,8 +360,19 @@ class SchoolsForm extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  ...state.lookup
-})
+const mapStateToProps = (state, ownProps) => {
+  if( ownProps &&
+      state.lookup.schools.length &&
+      Object.keys(state.lookup.lookupEntity).length === 0) {
+    lookupActions.setLookupEntity({
+      lookupTable: 'schools',
+      lookupKey: 'schoolId',
+      id: ownProps.match.params.id
+    })
+  }
+  return {
+    ...state.lookup
+  }
+}
 
 export default connect(mapStateToProps)(SchoolsForm)
