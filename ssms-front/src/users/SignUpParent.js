@@ -3,7 +3,6 @@ import MdForm from "../shared/MdForm";
 import { connect } from "react-redux";
 import { lookupActions } from "../store/lookup";
 import { userActions } from '../store/user';
-import { axiosOne, axiosAll } from "../axios";
 
 const fields = {
   fName: {
@@ -71,11 +70,19 @@ const fields = {
 class SignUpParent extends Component {
   componentDidMount() {
     lookupActions.setLookupKeys(['docTypes','countries']);
+    // lookupActions.getLookupData(
+    //   axiosAll([
+    //     axiosOne('get','/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'),
+    //     axiosOne('get','/Countries?fields=countryId,countryAr,countryEn')
+    //   ])
+    // );
     lookupActions.getLookupData(
-      axiosAll([
-        axiosOne('get','/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'),
-        axiosOne('get','/Countries?fields=countryId,countryAr,countryEn')
-      ])
+    {
+      req: [
+        ['get','/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'],
+        ['get','/Countries?fields=countryId,countryAr,countryEn']
+      ]
+    }
     );
   }
   completeFields = () => {

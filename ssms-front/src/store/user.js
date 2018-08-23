@@ -1,5 +1,4 @@
 import { store } from '../AppStore'
-import { axiosOne } from '../axios'
 
 const actionTypes = {
   SIGN_IN: "SIGN_IN",
@@ -98,7 +97,8 @@ const userActions = {
     // dispatch
     store.dispatch({
       type: actionTypes.ADD_PARENT,
-      payload: axiosOne(payload.method,payload.url, parent)
+      // payload: axiosOne(payload.method,payload.url, parent)
+      payload: { req: [payload.method,payload.url, parent] }
     })
   },
   getUsers:(payload) => {

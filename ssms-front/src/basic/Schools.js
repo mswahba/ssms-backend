@@ -1,8 +1,7 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { lookupActions, lookupActionTypes } from "../store/lookup";
-import { axiosOne } from '../axios';
+import { lookupActions } from "../store/lookup";
 import SchoolsTable from "./SchoolsTable";
 import SchoolsForm from "./SchoolsForm";
 
@@ -15,7 +14,8 @@ const Schools = (props) => {
   if(fetchData && !url.includes('edit')) {
     fetchData = false;
     lookupActions.setLookupKeys(['schools']);
-    lookupActions.getLookupData( axiosOne('get','/schools/List/all') );
+    // lookupActions.getLookupData( axiosOne('get','/schools/List/all') );
+    lookupActions.getLookupData( { req: ['get','/schools/List/all']} );
   }
   return (
     <Switch>

@@ -1,13 +1,13 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { userActions } from '../store/user'
-import { axiosOne } from '../axios'
 
 class UsersList extends Component {
 
   componentDidMount() {
     // dispatch getUsers Action [GET_USERS]
-    userActions.getUsers( axiosOne('get','/Users/List/all') )
+    // userActions.getUsers( axiosOne('get','/Users/List/all') )
+    userActions.getUsers( { req: ['get','/Users/List/all'] } )
   }
   render() {
     const { loading, error, users } = this.props;

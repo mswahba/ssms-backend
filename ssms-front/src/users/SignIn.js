@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { userActions } from "../store/user";
-import { axiosOne } from "../axios";
 import M from "materialize-css";
 
 class SignIn extends Component {
@@ -34,7 +33,9 @@ class SignIn extends Component {
         </div>
         <a
           className="waves-effect waves-light btn"
-          onClick={() => userActions.signIn(axiosOne("post", "/Users/SignIn", this.state)) }
+          onClick= {
+            () => userActions.signIn({ req: ["post", "/Users/SignIn", this.state]})
+          }
         >
           <i className="material-icons right">cloud</i>
           Sign-in
@@ -43,6 +44,8 @@ class SignIn extends Component {
     );
   }
 }
+
+// () => userActions.signIn(axiosOne("post", "/Users/SignIn", this.state))
 
 const mapStateToProps = state => {
   if (state.user.error)
