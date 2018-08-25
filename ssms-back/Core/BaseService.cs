@@ -508,12 +508,12 @@ namespace SSMS
         {
             string propName = "IsDeleted";
             if (entity.GetProperty(propName) == null)
-                return 0;
+                return -1;
             bool value = false;
             if (entity.GetValue(propName) != null)
                 value = (bool)entity.GetValue(propName);
             if (value == true)
-                return 0;
+                return -2;
             entity.SetValue("IsDeleted", true);
             return db.SaveChanges();
         }

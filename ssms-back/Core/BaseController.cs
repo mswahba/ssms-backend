@@ -220,24 +220,33 @@ namespace SSMS
         // the param (deleteType) will come from queryString
         public IActionResult Delete([FromQuery] string deleteType, [FromQuery] TKey key)
         {
+            // if there is no deleteType supplied
             if (deleteType == null)
-                return BadRequest("Can't identify The type of the Delete operation");
+                return BadRequest(new Error() { Message = "Can't identify The type of the Delete operation" });
+            // if the supplied key doesn't match the TKey DataType
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            int res;
-            //First get the entity using its key to send it to delete
+            // First get the entity using its key to send it to delete method
             TEntity entity = _service.GetOne(key);
-            if (deleteType == "logical")
+            if(entity == null)
+                return BadRequest(new Error() { Message = "Item doesn't exist" });
+            // switch on the [deleteType] and perform the appropriate action
+            int res;
+            switch (deleteType)
             {
-                res = _service.DeleteLogical(entity);
-                return Ok($"{res} Item(s) Deleted successfully...");
+                case "logical":
+                    res = _service.DeleteLogical(entity);
+                    if(res == -1)
+                        return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
+                    else if(res == -2)
+                        return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
+                    return Ok($"{res} Item(s) Deleted successfully...");
+                case "physical":
+                    res = _service.Delete(entity);
+                    return Ok($"{res} Item(s) Deleted successfully...");
+                default:
+                    return BadRequest(new Error() { Message = "Unknow Delete Type" });
             }
-            else if (deleteType == "physical")
-            {
-                res = _service.Delete(entity);
-                return Ok($"{res} Item(s) Deleted successfully...");
-            }
-            return BadRequest("Unknow Delete Type");
         }
         /********************************************************** */
         #region assistant Actions
