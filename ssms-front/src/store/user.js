@@ -23,7 +23,8 @@ const initialState = {
 const updater = {
   [actionTypes.SIGN_IN_PENDING]: (state) => ({
     ...state,
-    loading: true
+    loading: true,
+    error: null
   }),
   [actionTypes.SIGN_IN_FULFILLED]: (state, payload) => ({
     ...state,
@@ -38,7 +39,8 @@ const updater = {
   }),
   [actionTypes.GET_USERS_PENDING]: (state) => ({
     ...state,
-    loading: true
+    loading: true,
+    error: null
   }),
   [actionTypes.GET_USERS_FULFILLED]: (state, payload) => ({
     ...state,
@@ -53,7 +55,8 @@ const updater = {
   }),
   [actionTypes.ADD_PARENT_PENDING]: (state) => ({
     ...state,
-    loading: true
+    loading: true,
+    error: null
   }),
   [actionTypes.ADD_PARENT_FULFILLED]: (state, payload) => ({
     ...state,

@@ -10,9 +10,9 @@ class SignIn extends Component {
   };
   componentWillReceiveProps(newProps) {
     if (newProps.error)
-      toast({ html: JSON.stringify(newProps.error), time: 5000, allowMultiple: false })
+      toast({ html: JSON.stringify(newProps.error), time: 5000, preventMultiple: true })
     else if(newProps.loggedUser.userId)
-      toast({ html: JSON.stringify(newProps.loggedUser.userId), time: 5000, allowMultiple: false })
+      toast({ html: JSON.stringify(newProps.loggedUser.userId), time: 5000, preventMultiple: true })
   }
   render() {
     return (
