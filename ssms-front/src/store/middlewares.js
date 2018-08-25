@@ -26,17 +26,17 @@ const ajax = ({ dispatch }) => next => action => {
       requestPromise = axios[method](url, body);
     }
     // send pending to store
-    dispatch({type: action.type + '_PENDING'});
+    // dispatch({type: action.type + '_PENDING'});
     if (!action.payload.afterFulfilled)
       requestPromise
         .then(res => {
-          console.log('​---');
-          console.log('​', res);
-          console.log('​---');
-          dispatch({ type: action.type + "_FULFILLED", payload: res });
+          // console.log('​---');
+          // console.log('​', res);
+          // console.log('​---');
+          dispatch({ type: action.type.replace('_PENDING', '_FULFILLED') , payload: res });
         })
         .catch(res => {
-          dispatch({ type: action.type + "_REJECTED", payload: res });
+          dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: res });
         });
     else
       requestPromise
@@ -49,8 +49,7 @@ const ajax = ({ dispatch }) => next => action => {
           dispatch({ type: action.type + "_REJECTED", payload: res });
         });
   }
-  else
-    next(action);
+  next(action);
 };
 
 export const middlewares = [logger, ajax];

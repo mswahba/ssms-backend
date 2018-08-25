@@ -70,12 +70,6 @@ const fields = {
 class SignUpParent extends Component {
   componentDidMount() {
     lookupActions.setLookupKeys(['docTypes','countries']);
-    // lookupActions.getLookupData(
-    //   axiosAll([
-    //     axiosOne('get','/DocTypes?filters=docTypeId|<|4&fields=docTypeId,docTypeAr,docTypeEn'),
-    //     axiosOne('get','/Countries?fields=countryId,countryAr,countryEn')
-    //   ])
-    // );
     lookupActions.getLookupData(
     {
       req: [

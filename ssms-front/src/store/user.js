@@ -1,15 +1,12 @@
 import { store } from '../AppStore'
 
 const actionTypes = {
-  SIGN_IN: "SIGN_IN",
   SIGN_IN_PENDING: "SIGN_IN_PENDING",
   SIGN_IN_FULFILLED: "SIGN_IN_FULFILLED",
   SIGN_IN_REJECTED: "SIGN_IN_REJECTED",
-  GET_USERS: "GET_USERS",
   GET_USERS_PENDING: "GET_USERS_PENDING",
   GET_USERS_FULFILLED: "GET_USERS_FULFILLED",
   GET_USERS_REJECTED: "GET_USERS_REJECTED",
-  ADD_PARENT: "ADD_PARENT",
   ADD_PARENT_PENDING: "ADD_PARENT_PENDING",
   ADD_PARENT_FULFILLED: "ADD_PARENT_FULFILLED",
   ADD_PARENT_REJECTED: "ADD_PARENT_REJECTED"
@@ -20,17 +17,18 @@ const initialState = {
   loggedUser: {},
   currentParent: {},
   loading: false,
-  error: ''
+  error: null
 }
 
 const updater = {
-  [actionTypes.SIGN_IN_PENDING]: (state, payload) => ({
+  [actionTypes.SIGN_IN_PENDING]: (state) => ({
     ...state,
     loading: true
   }),
   [actionTypes.SIGN_IN_FULFILLED]: (state, payload) => ({
     ...state,
     loading: false,
+    error: null,
     loggedUser: payload.data
   }),
   [actionTypes.SIGN_IN_REJECTED]: (state, payload) => ({
@@ -38,13 +36,14 @@ const updater = {
     loading: false,
     error: payload.response.data
   }),
-  [actionTypes.GET_USERS_PENDING]: (state, payload) => ({
+  [actionTypes.GET_USERS_PENDING]: (state) => ({
     ...state,
     loading: true
   }),
   [actionTypes.GET_USERS_FULFILLED]: (state, payload) => ({
     ...state,
     loading: false,
+    error: null,
     users: payload.data
   }),
   [actionTypes.GET_USERS_REJECTED]: (state, payload) => ({
@@ -52,13 +51,14 @@ const updater = {
     loading: false,
     error: payload.response.data
   }),
-  [actionTypes.ADD_PARENT_PENDING]: (state, payload) => ({
+  [actionTypes.ADD_PARENT_PENDING]: (state) => ({
     ...state,
     loading: true
   }),
   [actionTypes.ADD_PARENT_FULFILLED]: (state, payload) => ({
     ...state,
     loading: false,
+    error: null,
     currentParent: payload.data
   }),
   [actionTypes.ADD_PARENT_REJECTED]: (state, payload) => ({
@@ -71,7 +71,7 @@ const updater = {
 const userActions = {
   signIn:(payload) => {
     store.dispatch({
-      type: actionTypes.SIGN_IN,
+      type: actionTypes.SIGN_IN_PENDING,
       payload
     })
   },
@@ -96,7 +96,7 @@ const userActions = {
     };
     // dispatch
     store.dispatch({
-      type: actionTypes.ADD_PARENT,
+      type: actionTypes.ADD_PARENT_PENDING,
       // payload: axiosOne(payload.method,payload.url, parent)
       payload: { req: [payload.method,payload.url, parent] }
     })
@@ -106,7 +106,7 @@ const userActions = {
     const {user: {users}} = store.getState();
     if(!users.length) {
         store.dispatch({
-        type: actionTypes.GET_USERS,
+        type: actionTypes.GET_USERS_PENDING,
         payload
       })
     }

@@ -14,7 +14,6 @@ const Schools = (props) => {
   if(fetchData && !url.includes('edit')) {
     fetchData = false;
     lookupActions.setLookupKeys(['schools']);
-    // lookupActions.getLookupData( axiosOne('get','/schools/List/all') );
     lookupActions.getLookupData( { req: ['get','/schools/List/all']} );
   }
   return (

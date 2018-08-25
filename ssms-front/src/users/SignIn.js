@@ -1,13 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { userActions } from "../store/user";
-import M from "materialize-css";
+import toast from '../mdToast';
 
 class SignIn extends Component {
   state = {
     userId: "",
     userPassword: ""
   };
+  componentWillReceiveProps(newProps) {
+    if (newProps.error)
+      toast({ html: JSON.stringify(newProps.error), time: 5000, allowMultiple: false })
+    else if(newProps.loggedUser.userId)
+      toast({ html: JSON.stringify(newProps.loggedUser.userId), time: 5000, allowMultiple: false })
+  }
   render() {
     return (
       <form>
@@ -45,23 +51,8 @@ class SignIn extends Component {
   }
 }
 
-// () => userActions.signIn(axiosOne("post", "/Users/SignIn", this.state))
-
-const mapStateToProps = state => {
-  if (state.user.error)
-    return {
-      ...state.user,
-      error: M.toast({ html: JSON.stringify(state.user.error) })
-    };
-  else if(state.user.loggedUser.userId)
-    return {
-      ...state.user,
-      message: M.toast({ html: JSON.stringify(state.user.loggedUser.userId) })
-    };
-  else
-    return {
-      ...state.user,
-    };
-};
+const mapStateToProps = state => ({
+  ...state.user
+});
 
 export default connect(mapStateToProps)(SignIn);

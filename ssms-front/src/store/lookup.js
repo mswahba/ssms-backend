@@ -35,7 +35,6 @@ const initialState = {
 
 const actionTypes = {
   SET_LOOKUP_KEYS: "SET_LOOKUP_KEYS",
-  GET_LOOKUP_DATA: "GET_LOOKUP_DATA",
   GET_LOOKUP_DATA_PENDING: "GET_LOOKUP_DATA_PENDING",
   GET_LOOKUP_DATA_FULFILLED: "GET_LOOKUP_DATA_FULFILLED",
   GET_LOOKUP_DATA_REJECTED: "GET_LOOKUP_DATA_REJECTED",
@@ -61,13 +60,14 @@ const updater = {
     return {
       ...state,
       ...lookupNewState,
-      loading: false
+      loading: false,
+      error: null,
     }
   },
   [actionTypes.GET_LOOKUP_DATA_REJECTED]: (state, payload) => ({
     ...state,
-    error: payload.response.data,
-    loading: false
+    loading: false,
+    error: payload.response.data
   }),
   [actionTypes.SET_LOOKUP_ENTITY]: (state, payload) => {
     const entity = state[payload.lookupTable].find(item => item[payload.lookupKey] == payload.id)
@@ -87,7 +87,7 @@ const lookupActions = {
   },
   getLookupData: (payload) => {
     store.dispatch({
-      type: actionTypes.GET_LOOKUP_DATA,
+      type: actionTypes.GET_LOOKUP_DATA_PENDING,
       payload
     })
   },
