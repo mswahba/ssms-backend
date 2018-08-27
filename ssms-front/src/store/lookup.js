@@ -41,13 +41,13 @@ const actionTypes = {
   //
   SET_SELECTED_TABLES: "SET_SELECTED_TABLES",
   //
+  SET_SELECTED_TABLE: "SET_SELECTED_TABLE",
+  //
   SET_LOOKUP_ENTITY: "SET_LOOKUP_ENTITY",
   //
   GET_LOOKUP_DATA_PENDING: "GET_LOOKUP_DATA_PENDING",
   GET_LOOKUP_DATA_FULFILLED: "GET_LOOKUP_DATA_FULFILLED",
   GET_LOOKUP_DATA_REJECTED: "GET_LOOKUP_DATA_REJECTED",
-  //
-  SET_SELECTED_TABLE: "SET_SELECTED_TABLE",
   //
   ADD_LOOKUP_ENTITY_PENDING: "ADD_LOOKUP_ENTITY_PENDING",
   ADD_LOOKUP_ENTITY_FULFILLED: "ADD_LOOKUP_ENTITY_FULFILLED",
@@ -109,7 +109,7 @@ const updater = {
   }),
   [actionTypes.ADD_LOOKUP_ENTITY_FULFILLED]: (state, payload) => ({
     ...state,
-    [state.selectedTable]: [...state[state.selectedTable],payload],
+    [state.selectedTable.name]: [...state[state.selectedTable.name],payload],
     loading: false,
     error: null,
   }),
@@ -125,7 +125,7 @@ const updater = {
   }),
   [actionTypes.UPDATE_LOOKUP_ENTITY_FULFILLED]: (state, payload) => ({
     ...state,
-    [state.selectedTable]: state[state.selectedTable].map(item => {
+    [state.selectedTable.name]: state[state.selectedTable.name].map(item => {
       if(item[state.selectedTable.key] == payload.data[state.selectedTable.key])
         return payload.data;
       return item;
@@ -145,7 +145,7 @@ const updater = {
   }),
   [actionTypes.DELETE_LOOKUP_ENTITY_FULFILLED]: (state, payload) => ({
     ...state,
-    [state.selectedTable]: state[state.selectedTable].filter(item => item[state.selectedTable.key] != payload.data[state.selectedTable.key] ),
+    [state.selectedTable.name]: state[state.selectedTable.name].filter(item => item[state.selectedTable.key] != payload.data[state.selectedTable.key] ),
     loading: false,
     error: null,
   }),

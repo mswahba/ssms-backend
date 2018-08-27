@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { lookupActions } from "../store/lookup";
 import { initDatePicker } from '../helpers'
 
+let newId = 3;
 class SchoolsForm extends Component {
 
   placeholder = {};
@@ -77,9 +78,9 @@ class SchoolsForm extends Component {
       this.setState((prevState) => ({
         title: "Add New School",
         schoolId: {
-          ...prevState.schoolId,
           hidden: true,
-          disabled: true
+          disabled: true,
+          value: newId++
         },
         btnUpdate: {
           hidden: true,
@@ -148,6 +149,15 @@ class SchoolsForm extends Component {
     }));
   };
 
+  getFormValues = () => {
+    return Object.entries(this.state).reduce( (acc,item) => {
+      if( ["title","btnAdd","btnUpdate","btnDelete"].includes(item[0]) )
+        return acc;
+      acc[item[0]] = item[1].value;
+      return acc;
+    }, {});
+  }
+
   componentDidMount() {
     // extract id, url from routes props
     const { match: { params: { id } }, match: { url } } = this.props;
@@ -160,12 +170,12 @@ class SchoolsForm extends Component {
       format: 'dd/mm/yyyy',
       yearRange: [currentYear-70,currentYear+30],
       defaultDate: this.state.startDate.value.toLocaleDateString('en-gb'),
-      onSelect: (selectedDate) => {
-        this.setFieldValue('startDate',selectedDate);
-      }
+      onSelect: (selectedDate) => this.setFieldValue('startDate',selectedDate)
     });
     // handle the 3 Form Conditions based on routes props
     this.setupFormType(id, url);
+    // set the selected table which will be used in ADD,UPDATE,DELETE Actions
+    lookupActions.setSelectedTable({ name: 'schools', key: 'schoolId'});
   }
 
   componentWillReceiveProps(newProps) {
@@ -191,13 +201,13 @@ class SchoolsForm extends Component {
   }
 
   addSchool = () => {
-    console.log(this.state);
+    lookupActions.addLookupEntity( { req: ['post','/schools/add', this.getFormValues()]} );
   }
   updateSchool = () => {
-    console.log(this.state);
+    lookupActions.addLookupEntity( { req: ['post','/schools/update', this.getFormValues()]} );
   }
   deleteSchool = () => {
-    console.log(this.state);
+    lookupActions.addLookupEntity( { req: ['get',`/schools/delete-byId?deleteType=physical&key=${this.state.schoolId.value}`]} );
   }
 
   render() {
@@ -342,7 +352,9 @@ class SchoolsForm extends Component {
                 id="btnUpdate"
                 name="btnUpdate"
                 disabled={btnUpdate.disabled}
-                hidden={btnUpdate.hidden}>
+                hidden={btnUpdate.hidden}
+                onClick={this.updateSchool}
+        >
             <i className="material-icons left">edit</i>
             Update School
         </button>
@@ -351,7 +363,9 @@ class SchoolsForm extends Component {
                 id="btnDelete"
                 name="btnDelete"
                 disabled={btnDelete.disabled}
-                hidden={btnDelete.hidden}>
+                hidden={btnDelete.hidden}
+                onClick={this.deleteSchool}
+        >
             <i className="material-icons left">close</i>
             Delete School
         </button>
