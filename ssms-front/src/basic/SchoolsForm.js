@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { lookupActions } from "../store/lookup";
-import M from "materialize-css";
+import { initDatePicker } from '../helpers'
 
 class SchoolsForm extends Component {
 
@@ -56,21 +56,6 @@ class SchoolsForm extends Component {
       hidden: false,
       disabled: false
     }
-  };
-
-  initDatePicker = () => {
-    const currentYear = (new Date()).getFullYear();
-    const pickers = document.querySelector(".datepicker");
-    const options = {
-      format: 'dd/mm/yyyy',
-      yearRange: [currentYear-70,currentYear],
-      setDefaultDate: true,
-      defaultDate: this.state.startDate.value.toLocaleDateString('en-gb'),
-      onSelect: (selectedDate) => {
-        this.setFieldValue('startDate',selectedDate);
-      }
-    }
-    M.Datepicker.init(pickers, options);
   };
 
   setupFormType = (id, url) => {
@@ -170,7 +155,15 @@ class SchoolsForm extends Component {
     if(url.includes('/edit') || url.includes('/details'))
       this.placeholder = { placeholder: "" }
     // init Materialize datePicker
-    this.initDatePicker();
+    const currentYear = (new Date()).getFullYear();
+    initDatePicker({
+      format: 'dd/mm/yyyy',
+      yearRange: [currentYear-70,currentYear+30],
+      defaultDate: this.state.startDate.value.toLocaleDateString('en-gb'),
+      onSelect: (selectedDate) => {
+        this.setFieldValue('startDate',selectedDate);
+      }
+    });
     // handle the 3 Form Conditions based on routes props
     this.setupFormType(id, url);
   }
@@ -198,6 +191,12 @@ class SchoolsForm extends Component {
   }
 
   addSchool = () => {
+    console.log(this.state);
+  }
+  updateSchool = () => {
+    console.log(this.state);
+  }
+  deleteSchool = () => {
     console.log(this.state);
   }
 

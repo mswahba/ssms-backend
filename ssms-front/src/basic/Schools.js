@@ -13,7 +13,7 @@ const Schools = (props) => {
   const { match: { url } } = props;
   if(fetchData && !url.includes('edit')) {
     fetchData = false;
-    lookupActions.setLookupKeys(['schools']);
+    lookupActions.setSelectedTables(['schools']);
     lookupActions.getLookupData( { req: ['get','/schools/List/all']} );
   }
   return (

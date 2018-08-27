@@ -1,6 +1,6 @@
 import { store } from '../AppStore'
 
-const allLookupKeys = [
+const lookupTables = [
   'docTypes',
   'countries',
   'jobs',
@@ -20,7 +20,7 @@ const allLookupKeys = [
   'gradesSubjects'
 ];
 
-const lookupState = allLookupKeys.reduce((acc,key) => {
+const lookupState = lookupTables.reduce((acc,key) => {
   acc[key] = []
   return acc;
 } ,{})
@@ -28,30 +28,63 @@ const lookupState = allLookupKeys.reduce((acc,key) => {
 const initialState = {
   loading: false,
   error: '',
-  lookupKeys: [],
+  selectedTables: [],
+  selectedTable: {
+    name: '',
+    key: ''
+  },
   lookupEntity: {},
   ...lookupState
 }
 
 const actionTypes = {
-  SET_LOOKUP_KEYS: "SET_LOOKUP_KEYS",
+  //
+  SET_SELECTED_TABLES: "SET_SELECTED_TABLES",
+  //
+  SET_LOOKUP_ENTITY: "SET_LOOKUP_ENTITY",
+  //
   GET_LOOKUP_DATA_PENDING: "GET_LOOKUP_DATA_PENDING",
   GET_LOOKUP_DATA_FULFILLED: "GET_LOOKUP_DATA_FULFILLED",
   GET_LOOKUP_DATA_REJECTED: "GET_LOOKUP_DATA_REJECTED",
-  SET_LOOKUP_ENTITY: "SET_LOOKUP_ENTITY"
+  //
+  SET_SELECTED_TABLE: "SET_SELECTED_TABLE",
+  //
+  ADD_LOOKUP_ENTITY_PENDING: "ADD_LOOKUP_ENTITY_PENDING",
+  ADD_LOOKUP_ENTITY_FULFILLED: "ADD_LOOKUP_ENTITY_FULFILLED",
+  ADD_LOOKUP_ENTITY_REJECTED: "ADD_LOOKUP_ENTITY_REJECTED",
+  //
+  UPDATE_LOOKUP_ENTITY_PENDING: "UPDATE_LOOKUP_ENTITY_PENDING",
+  UPDATE_LOOKUP_ENTITY_FULFILLED: "UPDATE_LOOKUP_ENTITY_FULFILLED",
+  UPDATE_LOOKUP_ENTITY_REJECTED: "UPDATE_LOOKUP_ENTITY_REJECTED",
+  //
+  DELETE_LOOKUP_ENTITY_PENDING: "DELETE_LOOKUP_ENTITY_PENDING",
+  DELETE_LOOKUP_ENTITY_FULFILLED: "DELETE_LOOKUP_ENTITY_FULFILLED",
+  DELETE_LOOKUP_ENTITY_REJECTED: "DELETE_LOOKUP_ENTITY_REJECTED"
 }
 
 const updater = {
-  [actionTypes.SET_LOOKUP_KEYS]: (state,payload) => ({
+  [actionTypes.SET_SELECTED_TABLES]: (state,payload) => ({
     ...state,
-    lookupKeys: payload
+    selectedTables: payload
+  }),
+  [actionTypes.SET_LOOKUP_ENTITY]: (state, payload) => {
+    const entity = state[payload.lookupTable].find(item => item[payload.lookupKey] == payload.id)
+    return {
+      ...state,
+      lookupEntity: entity
+    }
+  },
+  [actionTypes.SET_SELECTED_TABLE]: (state,payload) => ({
+    ...state,
+    selectedTable: payload
   }),
   [actionTypes.GET_LOOKUP_DATA_PENDING]: (state) => ({
     ...state,
-    loading: true
+    loading: true,
+    error: null
   }),
   [actionTypes.GET_LOOKUP_DATA_FULFILLED]: (state, payload) => {
-    const lookupNewState = state.lookupKeys.reduce((acc,key,i) => {
+    const lookupNewState = state.selectedTables.reduce((acc,key,i) => {
       (Array.isArray(payload))
         ? acc[key] = payload[i].data
         : acc[key] = payload.data;
@@ -69,19 +102,70 @@ const updater = {
     loading: false,
     error: payload.response.data
   }),
-  [actionTypes.SET_LOOKUP_ENTITY]: (state, payload) => {
-    const entity = state[payload.lookupTable].find(item => item[payload.lookupKey] == payload.id)
-    return {
-      ...state,
-      lookupEntity: entity
-    }
-  }
+  [actionTypes.ADD_LOOKUP_ENTITY_PENDING]: (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  }),
+  [actionTypes.ADD_LOOKUP_ENTITY_FULFILLED]: (state, payload) => ({
+    ...state,
+    [state.selectedTable]: [...state[state.selectedTable],payload],
+    loading: false,
+    error: null,
+  }),
+  [actionTypes.GET_LOOKUP_DATA_REJECTED]: (state, payload) => ({
+    ...state,
+    loading: false,
+    error: payload.response.data
+  }),
+  [actionTypes.UPDATE_LOOKUP_ENTITY_PENDING]: (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  }),
+  [actionTypes.UPDATE_LOOKUP_ENTITY_FULFILLED]: (state, payload) => ({
+    ...state,
+    [state.selectedTable]: state[state.selectedTable].map(item => {
+      if(item[state.selectedTable.key] == payload.data[state.selectedTable.key])
+        return payload.data;
+      return item;
+    }),
+    loading: false,
+    error: null,
+  }),
+  [actionTypes.UPDATE_LOOKUP_ENTITY_REJECTED]: (state, payload) => ({
+    ...state,
+    loading: false,
+    error: payload.response.data
+  }),
+  [actionTypes.DELETE_LOOKUP_ENTITY_PENDING]: (state) => ({
+    ...state,
+    loading: true,
+    error: null
+  }),
+  [actionTypes.DELETE_LOOKUP_ENTITY_FULFILLED]: (state, payload) => ({
+    ...state,
+    [state.selectedTable]: state[state.selectedTable].filter(item => item[state.selectedTable.key] != payload.data[state.selectedTable.key] ),
+    loading: false,
+    error: null,
+  }),
+  [actionTypes.DELETE_LOOKUP_ENTITY_REJECTED]: (state, payload) => ({
+    ...state,
+    loading: false,
+    error: payload.response.data
+  }),
 }
 
 const lookupActions = {
-  setLookupKeys: (payload) => {
+  setSelectedTables: (payload) => {
     store.dispatch({
-      type: actionTypes.SET_LOOKUP_KEYS,
+      type: actionTypes.SET_SELECTED_TABLES,
+      payload
+    })
+  },
+  setSelectedTable: (payload) => {
+    store.dispatch({
+      type: actionTypes.SET_SELECTED_TABLE,
       payload
     })
   },
@@ -94,6 +178,24 @@ const lookupActions = {
   setLookupEntity: (payload) => {
     store.dispatch({
       type: actionTypes.SET_LOOKUP_ENTITY,
+      payload
+    })
+  },
+  addLookupEntity: (payload) => {
+    store.dispatch({
+      type: actionTypes.ADD_LOOKUP_ENTITY_PENDING,
+      payload
+    })
+  },
+  updateLookupEntity: (payload) => {
+    store.dispatch({
+      type: actionTypes.UPDATE_LOOKUP_ENTITY_PENDING,
+      payload
+    })
+  },
+  deleteLookupEntity: (payload) => {
+    store.dispatch({
+      type: actionTypes.DELETE_LOOKUP_ENTITY_PENDING,
       payload
     })
   }

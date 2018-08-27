@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { userActions } from "../store/user";
-import toast from '../mdToast';
+import { toast } from '../helpers';
 
 class SignIn extends Component {
   state = {
