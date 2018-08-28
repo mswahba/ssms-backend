@@ -12,7 +12,7 @@ namespace SSMS.Users.Employees
     {
         private BaseService<Employee,String> _EmployeeSrv { get; }
         public EmployeesController(BaseService<Employee,String> EmployeesService, Ado ado)
-                                :base(EmployeesService, "employees", ado)
+                                :base(EmployeesService, "employees", "empId", ado)
         {
             _EmployeeSrv = EmployeesService;
         }

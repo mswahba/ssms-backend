@@ -15,7 +15,7 @@ namespace SSMS.Shared
         //when sending this entity type and its key type,
         //we tranform the Base service to this entity service (parent)
         public DocTypesController(BaseService<DocType,Byte> DocTypesService)
-                                :base(DocTypesService, "docTypes", null)
+                                :base(DocTypesService, "docTypes", "docTypeId", null)
         {
             _DocTypeSrv = DocTypesService;
         }

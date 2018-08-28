@@ -11,13 +11,46 @@ namespace SSMS
     [Route("[controller]")]
     public class BaseController<TEntity, TKey> : Controller where TEntity : class
     {
-        public string _tableName { get; }
+        private string _tableName { get; }
+        private string _keyName { get; }
         private BaseService<TEntity, TKey> _service { get; }
         private Ado _ado { get; set; }
-        //receive the service (to deal with db) and the table name of the entity (from entity Controller)
-        public BaseController(BaseService<TEntity, TKey> service, string tableName, Ado ado)
+        private string _selectMaxId { get; set;}
+
+        private IActionResult DoDelete(string deleteType, TEntity entity) {
+            if (deleteType == null)
+                return BadRequest("Can't identify The type of the Delete operation");
+            if(entity == null)
+                return BadRequest(new Error() { Message = "Item doesn't exist" });
+            // switch on the [deleteType] and perform the appropriate action
+            int res;
+            try {
+                switch (deleteType)
+                {
+                    case "logical":
+                        res = _service.DeleteLogical(entity);
+                        if(res == -1)
+                            return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
+                        else if(res == -2)
+                            return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
+                        return Ok($"{res} Item(s) Deleted successfully...");
+                    case "physical":
+                        res = _service.Delete(entity);
+                        return Ok($"{res} Item(s) Deleted successfully...");
+                    default:
+                        return BadRequest(new Error() { Message = "Unknow Delete Type" });
+                }
+            } catch (Exception ex) {
+                return BadRequest(ex);
+            }
+        }
+        // receive the service (to deal with db) 
+        // and the table name of the entity (from entity Controller) and the PK field name
+        // and the ado from DI
+        public BaseController(BaseService<TEntity, TKey> service, string tableName, string keyName, Ado ado)
         {
             _tableName = tableName;
+            _keyName = keyName;
             _service = service;
             _ado = ado;
         }
@@ -135,23 +168,31 @@ namespace SSMS
         {
             return Ok(_service.GetOne(id));
         }
-        [HttpPost("Add")]
-        public IActionResult Add([FromBody] TEntity entity)
+        [HttpPost("add")]
+        public IActionResult Add([FromQuery] string autoId, [FromBody] TEntity entity)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            // get max id select statement
+            _selectMaxId =  "Declare @v_id int;" +
+                            "set @v_id = (select max("+ _keyName +") from "+ _tableName +");" +
+                            "if @v_id is null set @v_id = 0;" +
+                            "set @v_id = @v_id + 1;";
             try
             {
+                // if autoId has value then generate new Id
+                if(!String.IsNullOrEmpty(autoId))
+                    entity.SetValue(_keyName,_ado.ExecuteScalar(_selectMaxId));
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
                 _service.Add(entity);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex);
             }
             return Ok(entity);  //if everything is ok, return the full user obj with all inserted values
         }
         //Update all parent Data -- used either by Parent or Admin
-        [HttpPost("Update")]
+        [HttpPut("update")]
         public IActionResult Update([FromBody]TEntity entity)
         {
             if (!ModelState.IsValid)
@@ -166,7 +207,7 @@ namespace SSMS
             }
             return Ok(entity);  //if everything is ok, return the full  obj with all inserted values
         }
-        [HttpGet("Update-Key")]
+        [HttpPut("update-Key")]
         //update Only ParentId --Used by Admins Only
         public IActionResult UpdateKey([FromQuery] string tableName, string keyName, TKey newKey, TKey oldKey)
         {
@@ -190,67 +231,32 @@ namespace SSMS
             //if everything is ok, return the full user obj with all inserted values
             return Ok(result);
         }
-        [HttpPost("Delete")]
+        [HttpPost("delete")]
         //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
         // Then call the appropriate function from the BaseService class to execute operation
         // the param (deleteType) will come from queryString
         public IActionResult Delete([FromQuery] string deleteType, [FromBody] TEntity entity)
         {
-            if (deleteType == null)
-                return BadRequest("Can't identify The type of the Delete operation");
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            int res;
-            if (deleteType == "logical")
-            {
-                _service.Attach(entity);
-                res = _service.DeleteLogical(entity);
-                return Ok($"{res} Item(s) Deleted successfully...");
-            }
-            else if (deleteType == "physical")
-            {
-                res = _service.Delete(entity);
-                return Ok($"{res} Item(s) Deleted successfully...");
-            }
-            return BadRequest("Unknow Delete Type");
+            return DoDelete(deleteType, entity);
         }
-        [HttpGet("Delete-ById")]
+        [HttpDelete("delete-by-id")]
         //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
         // Then call the appropriate function from the BaseService class to execute operation
         // the param (deleteType) will come from queryString
         public IActionResult Delete([FromQuery] string deleteType, [FromQuery] TKey key)
         {
-            // if there is no deleteType supplied
-            if (deleteType == null)
-                return BadRequest(new Error() { Message = "Can't identify The type of the Delete operation" });
             // if the supplied key doesn't match the TKey DataType
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             // First get the entity using its key to send it to delete method
             TEntity entity = _service.GetOne(key);
-            if(entity == null)
-                return BadRequest(new Error() { Message = "Item doesn't exist" });
-            // switch on the [deleteType] and perform the appropriate action
-            int res;
-            switch (deleteType)
-            {
-                case "logical":
-                    res = _service.DeleteLogical(entity);
-                    if(res == -1)
-                        return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
-                    else if(res == -2)
-                        return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
-                    return Ok($"{res} Item(s) Deleted successfully...");
-                case "physical":
-                    res = _service.Delete(entity);
-                    return Ok($"{res} Item(s) Deleted successfully...");
-                default:
-                    return BadRequest(new Error() { Message = "Unknow Delete Type" });
-            }
+            return DoDelete(deleteType, entity);
         }
         /********************************************************** */
         #region assistant Actions
-        [HttpGet("Filter")]
+        [HttpGet("filter")]
         //'filters' is a comma separated "string" and
         //one filter is like this [field|operator|value]
         // operators must be one of (= , != , > , < , >=, <=, % [contains], @ [contains whole word])
@@ -269,7 +275,7 @@ namespace SSMS
         }
         // [controller]/sql-where?filters=
         // Apply Filter (sql Where Caluse)
-        [HttpGet("Sql-Where")]
+        [HttpGet("sql-where")]
         public IActionResult SqlWhere([FromQuery] string filters)
         {
             try
@@ -286,7 +292,7 @@ namespace SSMS
         //'fields' is a comma separated string of entity fields we want to select
         //return entity that contains only these fields
         // [controller]/Select?fileds=empId, empName
-        [HttpGet("Select")]
+        [HttpGet("select")]
         public IActionResult Select([FromQuery] string fields)
         {
             if (fields == null)
@@ -320,7 +326,7 @@ namespace SSMS
         //Dynamic Select using System.Linq.Dynamic.core
         // Select() takes a comma separated list of fields,
         //and generates the select statement which will be exectued in SQL and return the result
-        [HttpGet("Select-Dynamic")]
+        [HttpGet("select-Dynamic")]
         public IActionResult SelectDynamic([FromQuery] string fields)
         {
             if (fields == null)
@@ -335,7 +341,7 @@ namespace SSMS
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("Select-Ado")]
+        [HttpGet("select-Ado")]
         public IActionResult SelectAdo([FromQuery] string sqlQuery)
         {
             try
@@ -349,7 +355,7 @@ namespace SSMS
             }
         }
         //Users/sort?orderby= userId desc, userPassword
-        [HttpGet("Sort")]
+        [HttpGet("sort")]
         public IActionResult Sort([FromQuery] string orderBy)
         {
             if (orderBy == null)

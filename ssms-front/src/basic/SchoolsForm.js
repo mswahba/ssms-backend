@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { lookupActions } from "../store/lookup";
 import { initDatePicker } from '../helpers'
 
-let newId = 3;
 class SchoolsForm extends Component {
 
   placeholder = {};
@@ -13,7 +12,7 @@ class SchoolsForm extends Component {
     schoolId: {
       hidden: false,
       disabled: true,
-      value: ''
+      value: 0
     },
     schoolName: {
       hidden: false,
@@ -78,9 +77,9 @@ class SchoolsForm extends Component {
       this.setState((prevState) => ({
         title: "Add New School",
         schoolId: {
+          ...prevState.schoolId,
           hidden: true,
-          disabled: true,
-          value: newId++
+          disabled: true
         },
         btnUpdate: {
           hidden: true,
@@ -185,7 +184,7 @@ class SchoolsForm extends Component {
     if (url.includes('/new'))
       return;
     // when receive schools but lookupEntity is empty - then fill it
-    if( newProps.schools.length && Object.keys(newProps.lookupEntity).length === 0) {
+    if( newProps.schools.length && newProps.lookupEntity && Object.keys(newProps.lookupEntity).length === 0) {
       lookupActions.setLookupEntity({
         lookupTable: 'schools',
         lookupKey: 'schoolId',
@@ -193,7 +192,7 @@ class SchoolsForm extends Component {
       })
     }
     // when lookupEntity is filled - pass its values to the form State values
-    if(Object.keys(newProps.lookupEntity).length) {
+    if(newProps.lookupEntity && Object.keys(newProps.lookupEntity).length) {
       Object.entries(newProps.lookupEntity)
             .filter(([key,val]) => key !== 'branches')
             .forEach(([key,val]) => this.setFieldValue(key,(key === 'startDate')? new Date(val) : val) );
@@ -201,13 +200,13 @@ class SchoolsForm extends Component {
   }
 
   addSchool = () => {
-    lookupActions.addLookupEntity( { req: ['post','/schools/add', this.getFormValues()]} );
+    lookupActions.addLookupEntity( { req: ['post','/schools/add?autoId=ok', this.getFormValues()]} );
   }
   updateSchool = () => {
-    lookupActions.addLookupEntity( { req: ['post','/schools/update', this.getFormValues()]} );
+    lookupActions.updateLookupEntity( { req: ['put','/schools/update', this.getFormValues()]} );
   }
   deleteSchool = () => {
-    lookupActions.addLookupEntity( { req: ['get',`/schools/delete-byId?deleteType=physical&key=${this.state.schoolId.value}`]} );
+    lookupActions.deleteLookupEntity( { req: ['post',`/schools/delete?deleteType=physical`, this.getFormValues() ]} );
   }
 
   render() {

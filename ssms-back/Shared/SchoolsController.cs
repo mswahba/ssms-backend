@@ -15,7 +15,7 @@ namespace SSMS.Shared
         //when sending this entity type and its key type,
         //we tranform the Base service to this entity service (parent)
         public SchoolsController(BaseService<School,Byte> SchoolsService)
-                                :base(SchoolsService, "Schools", null)
+                                :base(SchoolsService, "schools", "SchoolId", null)
         {
             _SchoolSrv = SchoolsService;
         }

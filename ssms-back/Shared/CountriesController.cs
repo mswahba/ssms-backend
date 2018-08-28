@@ -15,7 +15,7 @@ namespace SSMS.Shared
         //when sending this entity type and its key type,
         //we tranform the Base service to this entity service (parent)
         public CountriesController(BaseService<Country,Byte> CountriesService)
-                                :base(CountriesService, "countries", null)
+                                :base(CountriesService, "countries", "countryId", null)
         {
             _CountriesSrv = CountriesService;
         }

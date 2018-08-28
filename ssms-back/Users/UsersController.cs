@@ -17,7 +17,7 @@ namespace SSMS.Users
         //Give the BaseConstructor the dependency it needs which is DB contect
         //To get Db Context, we receive it from DI then pass it to Base constructor
         public UsersController(BaseService<User, String> usersService, Ado ado)
-                            : base(usersService, "users", ado)
+                            : base(usersService, "users", "userId", ado)
         {
             _UserSrv = usersService;    //DI inject usersService object here from startup Class
         }

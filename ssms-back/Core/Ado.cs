@@ -19,6 +19,7 @@ namespace SSMS
         // List of Dictionary > represents table which is a list of (Dictionary of Rows)
         static List<Dictionary<string, object>> result;
         static string filePath;
+        static object value;
 
         //initiaize fields inside class constructor
         public Ado(IHostingEnvironment env)
@@ -27,9 +28,9 @@ namespace SSMS
             con = new SqlConnection(filePath.GetJsonValue());
             //con = new SqlConnection(@"Server=DESKTOP-8GK916E;Database=ssms;Trusted_Connection=True;");
             command = new SqlCommand();
+            command.Connection = con;
             adapter = new SqlDataAdapter();
             table = new DataTable();
-            command.Connection = con;
             result = new List<Dictionary<string, object>>();
         }
         public List<Dictionary<string, object>> ExecuteQuery(string sqlQuery)
@@ -61,6 +62,14 @@ namespace SSMS
                 result.Add(obj);
             }
             return result;
+        }
+        public object ExecuteScalar(string sqlQuery) 
+        {
+            command.CommandText = sqlQuery;
+            con.Open();
+            value = command.ExecuteScalar();
+            con.Close();
+            return value;
         }
     }
 }

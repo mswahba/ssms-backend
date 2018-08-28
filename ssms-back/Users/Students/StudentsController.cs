@@ -12,7 +12,7 @@ namespace SSMS.Students
     {
         private BaseService<Student, String> _StudentSrv { get; }
         public StudentsController(BaseService<Student, String> StudentsService) 
-                            : base(StudentsService, "students", null)
+                            : base(StudentsService, "students", "studentId", null)
         {
             _StudentSrv = StudentsService;
         }
