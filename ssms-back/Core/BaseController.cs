@@ -19,7 +19,7 @@ namespace SSMS
 
         private IActionResult DoDelete(string deleteType, TEntity entity) {
             if (deleteType == null)
-                return BadRequest("Can't identify The type of the Delete operation");
+                return BadRequest(new Error() { Message = "Can't identify The type of the Delete operation"});
             if(entity == null)
                 return BadRequest(new Error() { Message = "Item doesn't exist" });
             // switch on the [deleteType] and perform the appropriate action
@@ -69,7 +69,7 @@ namespace SSMS
             if (listType.ToLower() != "existing" &&
                 listType.ToLower() != "deleted" &&
                 listType.ToLower() != "all")
-                return BadRequest("Unknow List Type.[all] OR [deleted] OR [existing] only acceptable");
+                return BadRequest(new Error() { Message = "Unknow List Type.[all] OR [deleted] OR [existing] only acceptable"});
             //If page size & number aren't provided from the query string
             //then return regular result based on list type.
             IQueryable<TEntity> result;
@@ -132,7 +132,7 @@ namespace SSMS
                                     [FromQuery] int? pageNumber)
         {
             if (filters == null && fields == null && orderBy == null)
-                return BadRequest("Must supply at least one of the following : [Filters] and/or [Fileds] and/or [Order By]");
+                return BadRequest(new Error() { Message = "Must supply at least one of the following : [Filters] and/or [Fileds] and/or [Order By]"});
             IQueryable<TEntity> query = _service.GetQuery().AsQueryable();
             IQueryable result;
             try
@@ -171,23 +171,26 @@ namespace SSMS
         [HttpPost("add")]
         public IActionResult Add([FromQuery] string autoId, [FromBody] TEntity entity)
         {
-            // get max id select statement
+            // get newId sql select statement
             _selectMaxId =  $"Declare @v_id int;" +
                             "set @v_id = (select max("+ _keyName +") from "+ _tableName +");" +
                             "if @v_id is null set @v_id = 0;" +
                             "set @v_id = @v_id + 1;select @v_id;";
             try {
-                // if autoId has value then generate new Id
+                // if autoId has value then generate newId and set keyName of this entity
                 if(!String.IsNullOrEmpty(autoId))
                     entity.SetValue(_keyName,_ado.ExecuteScalar(_selectMaxId));
+                // model state errors
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
+                // add entity and saveChanges
                 _service.Add(entity);
+                // if everything is ok, return the full user obj with all inserted values
+                return Ok(entity);
             }
             catch (Exception ex) {
                 return BadRequest(ex);
             }
-            return Ok(entity);  //if everything is ok, return the full user obj with all inserted values
         }
         //Update all parent Data -- used either by Parent or Admin
         [HttpPut("update")]
@@ -205,14 +208,14 @@ namespace SSMS
             }
             return Ok(entity);  //if everything is ok, return the full  obj with all inserted values
         }
-        [HttpPut("update-Key")]
         //update Only ParentId --Used by Admins Only
+        [HttpPut("update-Key")]
         public IActionResult UpdateKey([FromQuery] string tableName, string keyName, TKey newKey, TKey oldKey)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             if (string.IsNullOrEmpty(tableName) || string.IsNullOrEmpty(keyName) || newKey == null || tableName == null)
-                return BadRequest("Incomplete Data...");
+                return BadRequest(new Error() { Message = "Incomplete Data..."});
             try
             {
                 _service.UpdateKey(tableName, keyName, newKey, oldKey);
@@ -229,20 +232,20 @@ namespace SSMS
             //if everything is ok, return the full user obj with all inserted values
             return Ok(result);
         }
-        [HttpPost("delete")]
         //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
         // Then call the appropriate function from the BaseService class to execute operation
         // the param (deleteType) will come from queryString
+        [HttpPost("delete")]
         public IActionResult Delete([FromQuery] string deleteType, [FromBody] TEntity entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             return DoDelete(deleteType, entity);
         }
-        [HttpDelete("delete-by-id")]
         //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
         // Then call the appropriate function from the BaseService class to execute operation
         // the param (deleteType) will come from queryString
+        [HttpDelete("delete-by-id")]
         public IActionResult Delete([FromQuery] string deleteType, [FromQuery] TKey key)
         {
             // if the supplied key doesn't match the TKey DataType
@@ -254,11 +257,11 @@ namespace SSMS
         }
         /********************************************************** */
         #region assistant Actions
-        [HttpGet("filter")]
         //'filters' is a comma separated "string" and
         //one filter is like this [field|operator|value]
         // operators must be one of (= , != , > , < , >=, <=, % [contains], @ [contains whole word])
         // Route : Users?filters=userName|=|Mohammad , age| > |20, isActive|=|false
+        [HttpGet("filter")]
         public IActionResult Filter([FromQuery] string filters)
         {
             try
@@ -294,7 +297,7 @@ namespace SSMS
         public IActionResult Select([FromQuery] string fields)
         {
             if (fields == null)
-                return BadRequest("Must supply fields");
+                return BadRequest(new Error() { Message = "Must supply fields"});
             // string[] fieldsArr = fields.Split(',', StringSplitOptions.RemoveEmptyEntries);
             // fieldsArr = fieldsArr.Where(field => !string.IsNullOrWhiteSpace(field)).ToArray();
             //dict to hold anonymous obj .....
@@ -328,7 +331,7 @@ namespace SSMS
         public IActionResult SelectDynamic([FromQuery] string fields)
         {
             if (fields == null)
-                return BadRequest("Must supply fields");
+                return BadRequest(new Error() { Message = "Must supply fields"});
             try
             {
                 var res = _service.ApplySelect(fields, null);  //use linq.dynamic.core to generate the
@@ -357,7 +360,7 @@ namespace SSMS
         public IActionResult Sort([FromQuery] string orderBy)
         {
             if (orderBy == null)
-                return BadRequest("Must supply 'Order By' statement");
+                return BadRequest(new Error() { Message = "Must supply 'Order By' statement"});
             try
             {
                 var res = _service.ApplySort(orderBy, null);
