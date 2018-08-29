@@ -33,20 +33,29 @@ const ajax = ({ dispatch }) => next => action => {
           // console.log('​---');
           // console.log('​', res);
           // console.log('​---');
-          dispatch({ type: action.type.replace('_PENDING', '_FULFILLED') , payload: res });
+          // dispatch action only when res in not null or undefined
+          if(res) {
+            dispatch({ type: action.type.replace('_PENDING', '_FULFILLED') , payload: res });
+          }
         })
         .catch(res => {
-          dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: res });
+          if(res) {
+            dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: res });
+          }
         });
     else
       requestPromise
         .then(res => {
-          dispatch({ type: action.type + "_FULFILLED", payload: res });
-          if ( action.payload.afterFulfilled && action.payload.afterFulfilled.length )
-            action.payload.afterFulfilled.forEach(action => dispatch(action));
+          if(res) {
+            dispatch({ type: action.type + "_FULFILLED", payload: res });
+            if ( action.payload.afterFulfilled && action.payload.afterFulfilled.length )
+              action.payload.afterFulfilled.forEach(action => dispatch(action));
+          }
         })
         .catch(res => {
-          dispatch({ type: action.type + "_REJECTED", payload: res });
+          if(res) {
+            dispatch({ type: action.type + "_REJECTED", payload: res });
+          }
         });
   }
   next(action);
