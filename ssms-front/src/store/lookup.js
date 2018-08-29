@@ -109,11 +109,11 @@ const updater = {
   }),
   [actionTypes.ADD_LOOKUP_ENTITY_FULFILLED]: (state, payload) => ({
     ...state,
-    [state.selectedTable.name]: [...state[state.selectedTable.name],payload],
+    [state.selectedTable.name]: [...state[state.selectedTable.name],payload.data],
     loading: false,
     error: null,
   }),
-  [actionTypes.GET_LOOKUP_DATA_REJECTED]: (state, payload) => ({
+  [actionTypes.ADD_LOOKUP_DATA_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
     error: payload.response.data

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
+import { connect } from "react-redux";
 
-export default ({ schools }) => {
+const SchoolsTable = ({ schools }) => {
   const columns = [
     { field: "schoolId", header: "Id" },
     { field: "schoolName", header: "Name Ar" },
@@ -23,11 +24,19 @@ export default ({ schools }) => {
     />
   ));
   return (
-    <DataTable
-      className="responsive-table striped highlight"
-      value={schools}
-    >
-      {Columns}
-    </DataTable>
+    <Fragment>
+      <DataTable
+        className="responsive-table striped highlight"
+        value={schools}
+      >
+        {Columns}
+      </DataTable>
+    </Fragment>
   );
 };
+
+const mapStateToProps = (state) => {
+  return {...state.lookup}
+}
+
+export default connect(mapStateToProps)(SchoolsTable);

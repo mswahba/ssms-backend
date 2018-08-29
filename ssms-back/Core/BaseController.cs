@@ -16,7 +16,7 @@ namespace SSMS
         private BaseService<TEntity, TKey> _service { get; }
         private Ado _ado { get; set; }
         private string _selectMaxId { get; set;}
-
+        private Dictionary<string, object> _deleteResult;
         private IActionResult DoDelete(string deleteType, TEntity entity) {
             if (deleteType == null)
                 return BadRequest(new Error() { Message = "Can't identify The type of the Delete operation"});
@@ -33,10 +33,18 @@ namespace SSMS
                             return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
                         else if(res == -2)
                             return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
-                        return Ok($"{res} Item(s) Deleted successfully...");
+                        _deleteResult = new Dictionary<string, object>();
+                        _deleteResult.Add(_keyName,entity.GetValue(_keyName));
+                        _deleteResult.Add("DeleteType","logical");
+                        _deleteResult.Add("Message",$"{res} Item(s) Deleted successfully...");
+                        return Ok(_deleteResult);
                     case "physical":
                         res = _service.Delete(entity);
-                        return Ok($"{res} Item(s) Deleted successfully...");
+                        _deleteResult = new Dictionary<string, object>();
+                        _deleteResult.Add(_keyName,entity.GetValue(_keyName));
+                        _deleteResult.Add("DeleteType","physical");
+                        _deleteResult.Add("Message",$"{res} Item(s) Deleted successfully...");
+                        return Ok(_deleteResult);
                     default:
                         return BadRequest(new Error() { Message = "Unknow Delete Type" });
                 }
@@ -201,36 +209,37 @@ namespace SSMS
             try
             {
                 _service.Update(entity);
+                //if everything is ok, return the full  obj with all inserted values
+                return Ok(entity);
             }
             catch (System.Exception ex)
             {
                 return BadRequest(ex);
             }
-            return Ok(entity);  //if everything is ok, return the full  obj with all inserted values
         }
         //update Only ParentId --Used by Admins Only
         [HttpPut("update-Key")]
-        public IActionResult UpdateKey([FromQuery] string tableName, string keyName, TKey newKey, TKey oldKey)
+        public IActionResult UpdateKey([FromQuery] TKey newKey, TKey oldKey)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            if (string.IsNullOrEmpty(tableName) || string.IsNullOrEmpty(keyName) || newKey == null || tableName == null)
-                return BadRequest(new Error() { Message = "Incomplete Data..."});
+            if (newKey == null || oldKey == null)
+                return BadRequest(new Error() { Message = "Must supply both newKey and oldKey ..."});
             try
             {
-                _service.UpdateKey(tableName, keyName, newKey, oldKey);
+                _service.UpdateKey(_tableName, _keyName, newKey, oldKey);
+                //Use Reflection : When we have a string OF a property and want to access a property value in runtime
+                //Get type,
+                //Get Property (binding Flags: ignore case sensitive, instance (not static), public) ,
+                //Get Value
+                TEntity entity = _service.GetOne(item => item.GetValue(_keyName).Equals(newKey));
+                //if everything is ok, return the full user obj with all inserted values
+                return Ok(entity);
             }
             catch (System.Exception ex)
             {
                 return BadRequest(ex);
             }
-            //Use Reflection : When we have a string OF a property and want to access a property value in runtime
-            //Get type,
-            //Get Property (binding Flags: ignore case sensitive, instance (not static), public) ,
-            //Get Value
-            var result = _service.GetOne(item => item.GetValue(keyName).Equals(newKey));
-            //if everything is ok, return the full user obj with all inserted values
-            return Ok(result);
         }
         //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
         // Then call the appropriate function from the BaseService class to execute operation
