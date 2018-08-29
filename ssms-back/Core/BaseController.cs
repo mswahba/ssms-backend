@@ -172,12 +172,11 @@ namespace SSMS
         public IActionResult Add([FromQuery] string autoId, [FromBody] TEntity entity)
         {
             // get max id select statement
-            _selectMaxId =  "Declare @v_id int;" +
+            _selectMaxId =  $"Declare @v_id int;" +
                             "set @v_id = (select max("+ _keyName +") from "+ _tableName +");" +
                             "if @v_id is null set @v_id = 0;" +
-                            "set @v_id = @v_id + 1;";
-            try
-            {
+                            "set @v_id = @v_id + 1;select @v_id;";
+            try {
                 // if autoId has value then generate new Id
                 if(!String.IsNullOrEmpty(autoId))
                     entity.SetValue(_keyName,_ado.ExecuteScalar(_selectMaxId));
@@ -185,8 +184,7 @@ namespace SSMS
                     return BadRequest(ModelState);
                 _service.Add(entity);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 return BadRequest(ex);
             }
             return Ok(entity);  //if everything is ok, return the full user obj with all inserted values

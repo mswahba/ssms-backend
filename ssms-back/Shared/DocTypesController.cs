@@ -14,8 +14,8 @@ namespace SSMS.Shared
         //in ctor take parent service from DI and pass it to the base controller
         //when sending this entity type and its key type,
         //we tranform the Base service to this entity service (parent)
-        public DocTypesController(BaseService<DocType,Byte> DocTypesService)
-                                :base(DocTypesService, "docTypes", "docTypeId", null)
+        public DocTypesController(BaseService<DocType,Byte> DocTypesService, Ado ado)
+                                :base(DocTypesService, "docTypes", "docTypeId", ado)
         {
             _DocTypeSrv = DocTypesService;
         }

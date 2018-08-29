@@ -66,7 +66,8 @@ namespace SSMS
         public object ExecuteScalar(string sqlQuery) 
         {
             command.CommandText = sqlQuery;
-            con.Open();
+            if(con.State != ConnectionState.Open)
+                con.Open();
             value = command.ExecuteScalar();
             con.Close();
             return value;
