@@ -17,6 +17,13 @@ namespace SSMS
         private Ado _ado { get; set; }
         private string _selectMaxId { get; set;}
         private Dictionary<string, object> _deleteResult;
+
+        private void SetDeleteResult(TEntity entity, int res, string deleteType) {
+            _deleteResult = new Dictionary<string, object>();
+            _deleteResult.Add(_keyName,entity.GetValue(_keyName));
+            _deleteResult.Add("DeleteType",deleteType);
+            _deleteResult.Add("Message",$"{res} Item(s) Deleted successfully...");
+        }
         private IActionResult DoDelete(string deleteType, TEntity entity) {
             if (deleteType == null)
                 return BadRequest(new Error() { Message = "Can't identify The type of the Delete operation"});
@@ -33,17 +40,11 @@ namespace SSMS
                             return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
                         else if(res == -2)
                             return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
-                        _deleteResult = new Dictionary<string, object>();
-                        _deleteResult.Add(_keyName,entity.GetValue(_keyName));
-                        _deleteResult.Add("DeleteType","logical");
-                        _deleteResult.Add("Message",$"{res} Item(s) Deleted successfully...");
+                        SetDeleteResult(entity, res, "logical");
                         return Ok(_deleteResult);
                     case "physical":
                         res = _service.Delete(entity);
-                        _deleteResult = new Dictionary<string, object>();
-                        _deleteResult.Add(_keyName,entity.GetValue(_keyName));
-                        _deleteResult.Add("DeleteType","physical");
-                        _deleteResult.Add("Message",$"{res} Item(s) Deleted successfully...");
+                        SetDeleteResult(entity, res, "physical");
                         return Ok(_deleteResult);
                     default:
                         return BadRequest(new Error() { Message = "Unknow Delete Type" });
@@ -52,7 +53,7 @@ namespace SSMS
                 return BadRequest(ex);
             }
         }
-        // receive the service (to deal with db) 
+        // receive the service (to deal with db)
         // and the table name of the entity (from entity Controller) and the PK field name
         // and the ado from DI
         public BaseController(BaseService<TEntity, TKey> service, string tableName, string keyName, Ado ado)

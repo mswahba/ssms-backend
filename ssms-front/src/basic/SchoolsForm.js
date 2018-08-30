@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { lookupActions } from "../store/lookup";
-import { initDatePicker } from '../helpers'
+import { initDatePicker } from '../helpers';
+import { Link } from 'react-router-dom';
 
 class SchoolsForm extends Component {
 
@@ -201,12 +202,15 @@ class SchoolsForm extends Component {
 
   addSchool = () => {
     lookupActions.addLookupEntity( { req: ['post','/schools/add?autoId=ok', this.getFormValues()]} );
+    this.props.history.push("/schools/list");
   }
   updateSchool = () => {
     lookupActions.updateLookupEntity( { req: ['put','/schools/update', this.getFormValues()]} );
+    this.props.history.push("/schools/list");
   }
   deleteSchool = () => {
     lookupActions.deleteLookupEntity( { req: ['post',`/schools/delete?deleteType=physical`, this.getFormValues() ]} );
+    this.props.history.push("/schools/list");
   }
 
   render() {
@@ -227,112 +231,113 @@ class SchoolsForm extends Component {
     return (
       <form>
         {/* form title */}
-        <h3 className="orange-text">{title}</h3>
+        <h4 className="orange-text">{title}</h4>
         <div className="divider orange" />
-              {/* schoolId */}
-              <div className="input-field" hidden={schoolId.hidden}>
-                <i className="material-icons prefix">edit</i>
-                <input disabled={schoolId.disabled}
-                        id="schoolId"
-                        type="text"
-                        className="validate"
-                        value={schoolId.value}
-                        onChange={(e)=> {
-                          this.setFieldValue('schoolId',e.target.value);
-                        }}
-                        {...this.placeholder}
-                />
-                <label htmlFor="schoolId">School Number</label>
-              </div>
-              {/* schoolName */}
-              <div className="input-field" hidden={schoolName.hidden}>
-                <i className="material-icons prefix">edit</i>
-                <input disabled={schoolName.disabled}
-                      id="schoolName"
-                      type="text"
-                      className="validate"
-                      value={schoolName.value}
-                      onChange={(e)=> {
-                        this.setFieldValue('schoolName',e.target.value);
-                      }}
-                      {...this.placeholder}
-                />
-                <label htmlFor="schoolName">School Name [Arabic] </label>
-              </div>
-              {/* schoolNameEn */}
-              <div className="input-field" hidden={schoolNameEn.hidden}>
-                <i className="material-icons prefix">edit</i>
-                <input disabled={schoolNameEn.disabled}
-                      id="schoolNameEn"
-                      type="text"
-                      className="validate"
-                      value={schoolNameEn.value}
-                      onChange={(e)=> {
-                        this.setFieldValue('schoolNameEn',e.target.value);
-                      }}
-                      {...this.placeholder}
-                />
-                <label htmlFor="schoolNameEn">School Name [English] </label>
-              </div>
-              {/* startDate */}
-              <div className="input-field" hidden={startDate.hidden}>
-                <i className="material-icons prefix">date_range</i>
-                <input disabled={startDate.disabled}
-                      id="startDate"
-                      type="text"
-                      className="datepicker"
-                />
-                <label htmlFor="startDate">Start Date </label>
-              </div>
-              {/* address */}
-              <div className="input-field" hidden={address.hidden}>
-                <i className="material-icons prefix">home</i>
-                <textarea disabled={address.disabled}
-                        id="address"
-                        type="text"
-                        className="materialize-textarea validate"
-                        value={address.value}
-                        onChange={(e)=> {
-                          this.setFieldValue('address',e.target.value);
-                        }}
-                        {...this.placeholder}
-                />
-                <label htmlFor="address">Address </label>
-              </div>
-              {/* comNum */}
-              <div className="input-field" hidden={comNum.hidden}>
-                <i className="material-icons prefix">edit</i>
-                <input disabled={comNum.disabled}
-                      id="comNum"
-                      type="text"
-                      className="validate"
-                      value={comNum.value}
-                      onChange={(e)=> {
-                          this.setFieldValue('comNum',e.target.value);
-                      }}
-                      {...this.placeholder}
-                />
-                <label htmlFor="comNum">Commercial Number</label>
-              </div>
-              {/* isActive */}
-              <div className="input-field switch" hidden={isActive.hidden}>
-                <i className="material-icons prefix">school</i>
-                <div id="isActive">
-                  <label>
-                    Activate School? No
-                    <input disabled={isActive.disabled}
-                          type="checkbox"
-                          checked={isActive.value}
-                          onChange={(e)=> {
-                            this.setFieldValue('isActive',e.target.checked);
-                          }}
-                          {...this.placeholder}
-                    />
-                    <span className="lever" />
-                    Yes
-                  </label>
-                </div>
-              </div>
+        <Link to='/schools/list'>Back To List</Link>
+        {/* schoolId */}
+        <div className="input-field" hidden={schoolId.hidden}>
+          <i className="material-icons prefix">edit</i>
+          <input disabled={schoolId.disabled}
+                  id="schoolId"
+                  type="text"
+                  className="validate"
+                  value={schoolId.value}
+                  onChange={(e)=> {
+                    this.setFieldValue('schoolId',e.target.value);
+                  }}
+                  {...this.placeholder}
+          />
+          <label htmlFor="schoolId">School Number</label>
+        </div>
+        {/* schoolName */}
+        <div className="input-field" hidden={schoolName.hidden}>
+          <i className="material-icons prefix">edit</i>
+          <input disabled={schoolName.disabled}
+                id="schoolName"
+                type="text"
+                className="validate"
+                value={schoolName.value}
+                onChange={(e)=> {
+                  this.setFieldValue('schoolName',e.target.value);
+                }}
+                {...this.placeholder}
+          />
+          <label htmlFor="schoolName">School Name [Arabic] </label>
+        </div>
+        {/* schoolNameEn */}
+        <div className="input-field" hidden={schoolNameEn.hidden}>
+          <i className="material-icons prefix">edit</i>
+          <input disabled={schoolNameEn.disabled}
+                id="schoolNameEn"
+                type="text"
+                className="validate"
+                value={schoolNameEn.value}
+                onChange={(e)=> {
+                  this.setFieldValue('schoolNameEn',e.target.value);
+                }}
+                {...this.placeholder}
+          />
+          <label htmlFor="schoolNameEn">School Name [English] </label>
+        </div>
+        {/* startDate */}
+        <div className="input-field" hidden={startDate.hidden}>
+          <i className="material-icons prefix">date_range</i>
+          <input disabled={startDate.disabled}
+                id="startDate"
+                type="text"
+                className="datepicker"
+          />
+          <label htmlFor="startDate">Start Date </label>
+        </div>
+        {/* address */}
+        <div className="input-field" hidden={address.hidden}>
+          <i className="material-icons prefix">home</i>
+          <textarea disabled={address.disabled}
+                  id="address"
+                  type="text"
+                  className="materialize-textarea validate"
+                  value={address.value}
+                  onChange={(e)=> {
+                    this.setFieldValue('address',e.target.value);
+                  }}
+                  {...this.placeholder}
+          />
+          <label htmlFor="address">Address </label>
+        </div>
+        {/* comNum */}
+        <div className="input-field" hidden={comNum.hidden}>
+          <i className="material-icons prefix">edit</i>
+          <input disabled={comNum.disabled}
+                id="comNum"
+                type="text"
+                className="validate"
+                value={comNum.value}
+                onChange={(e)=> {
+                    this.setFieldValue('comNum',e.target.value);
+                }}
+                {...this.placeholder}
+          />
+          <label htmlFor="comNum">Commercial Number</label>
+        </div>
+        {/* isActive */}
+        <div className="input-field switch" hidden={isActive.hidden}>
+          <i className="material-icons prefix">school</i>
+          <div id="isActive">
+            <label>
+              Activate School? No
+              <input disabled={isActive.disabled}
+                    type="checkbox"
+                    checked={isActive.value}
+                    onChange={(e)=> {
+                      this.setFieldValue('isActive',e.target.checked);
+                    }}
+                    {...this.placeholder}
+              />
+              <span className="lever" />
+              Yes
+            </label>
+          </div>
+        </div>
         {/* Action Buttons */}
         <div className="input-field center">
         <button className="btn waves-effect waves-light primary darken-3"

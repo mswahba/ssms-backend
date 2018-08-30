@@ -35,8 +35,8 @@ const SchoolsTable = ({ schools }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {...state.lookup}
-}
+const mapStateToProps = (state) => ({
+  "schools": state.lookup.schools
+})
 
 export default connect(mapStateToProps)(SchoolsTable);

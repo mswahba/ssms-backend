@@ -143,12 +143,25 @@ const updater = {
     loading: true,
     error: null
   }),
-  [actionTypes.DELETE_LOOKUP_ENTITY_FULFILLED]: (state, payload) => ({
-    ...state,
-    [state.selectedTable.name]: state[state.selectedTable.name].filter(item => item[state.selectedTable.key] != payload.data[state.selectedTable.key] ),
-    loading: false,
-    error: null,
-  }),
+  [actionTypes.DELETE_LOOKUP_ENTITY_FULFILLED]: (state, payload) => {
+    const newLookupState = {};
+    (payload.data.deleteType === 'physical')
+      ? newLookupState[state.selectedTable.name] = state[state.selectedTable.name].filter(item => item[state.selectedTable.key] != payload.data[state.selectedTable.key] )
+      : newLookupState[state.selectedTable.name] = state[state.selectedTable.name].map(item => {
+        if(item[state.selectedTable.key] == payload.data[state.selectedTable.key])
+          return {
+            ...item[state.selectedTable.key],
+            isDeleted: true
+          }
+        return item;
+      })
+    return {
+      ...state,
+      ...newLookupState,
+      loading: false,
+      error: null,
+    }
+  },
   [actionTypes.DELETE_LOOKUP_ENTITY_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,

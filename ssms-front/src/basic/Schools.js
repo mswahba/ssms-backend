@@ -18,7 +18,6 @@ const Schools = (props) => {
   }
   return (
     <Fragment>
-      <h4>Count: {props.schools.length}</h4>
       <Switch>
         <Route path={`${url}/edit/:id`} component={SchoolsForm} />
         <Route path={`${url}/details/:id`} component={SchoolsForm} />
@@ -31,7 +30,7 @@ const Schools = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  ...state.lookup
+  "schools": state.lookup.schools
 })
 
 export default connect(mapStateToProps)(Schools)
