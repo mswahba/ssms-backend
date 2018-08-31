@@ -21,12 +21,6 @@ const allReducers = allModules
       },{});
 // #endregion
 
-// #region log
-// console.group(`store dir: @${(new Date()).toLocaleTimeString()}`)
-// console.log(allReducers)
-// console.groupEnd()
-// #endregion
-
 // #region Configure Redux Store
 // combine multiple reducers
 const rootReducer = combineReducers(allReducers);

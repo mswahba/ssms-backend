@@ -1,6 +1,7 @@
 import logger from "redux-logger";
 import axios from "axios";
 import axiosCancel from "axios-cancel";
+import { toast } from 'react-toastify';
 
 // set axios baseURL to server API URL
 axios.defaults.baseURL = "http://localhost:5000";
@@ -30,17 +31,17 @@ const ajax = ({ dispatch }) => next => action => {
     if (!action.payload.afterFulfilled)
       requestPromise
         .then(res => {
-          // console.log('​---');
-          // console.log('​', res);
-          // console.log('​---');
           // dispatch action only when res in not null or undefined
           if(res) {
             dispatch({ type: action.type.replace('_PENDING', '_FULFILLED') , payload: res });
+            if(action.payload.fulfilledMessage)
+              toast.info(action.payload.fulfilledMessage);
           }
         })
         .catch(res => {
           if(res) {
             dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: res });
+              toast.info(JSON.stringify(res.data));
           }
         });
     else

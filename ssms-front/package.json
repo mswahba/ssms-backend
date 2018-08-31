@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "react-toastify": "^4.2.3",
     "axios-cancel": "^0.2.2",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",

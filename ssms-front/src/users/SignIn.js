@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { userActions } from "../store/user";
-import { toast } from '../helpers';
+import { toast } from 'react-toastify';
 
 class SignIn extends Component {
   state = {
@@ -10,9 +10,9 @@ class SignIn extends Component {
   };
   componentWillReceiveProps(newProps) {
     if (newProps.error)
-      toast({ html: JSON.stringify(newProps.error), time: 5000, preventMultiple: true })
+      toast.error(JSON.stringify(newProps.error));
     else if(newProps.loggedUser.userId)
-      toast({ html: JSON.stringify(newProps.loggedUser.userId), time: 5000, preventMultiple: true })
+      toast.info(JSON.stringify(newProps.loggedUser.userId));
   }
   render() {
     return (
