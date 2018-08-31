@@ -5,11 +5,13 @@ import { initDatePicker } from '../helpers';
 import { Link } from 'react-router-dom';
 
 class SchoolsForm extends Component {
-
+  // to render form input with OR without placeholder
   placeholder = {};
-
+  // the form state
   state = {
     title: "Add New School",
+    formInvalid: true,
+    formSubmitted: false,
     schoolId: {
       hidden: false,
       disabled: true,
@@ -18,32 +20,69 @@ class SchoolsForm extends Component {
     schoolName: {
       hidden: false,
       disabled: false,
-      value: ''
+      value: '',
+      touched: false,
+      invalid: true,
+      error: '',
+      validtor: (value) => {
+        if(!value)
+          return "field is required ..."
+      }
     },
     schoolNameEn: {
       hidden: false,
       disabled: false,
-      value: ''
+      value: '',
+      touched: false,
+      invalid: false,
+      error: '',
+      validtor: (value) => {
+        if(!value)
+          return "field is required ..."
+      }
     },
     startDate: {
       hidden: false,
       disabled: false,
-      value: new Date()
+      value: new Date(),
+      touched: false,
+      invalid: false,
+      error: '',
+      validtor: (value) => {
+        if(!value)
+          return "field is required ..."
+      }
     },
     address: {
       hidden: false,
       disabled: false,
-      value: ''
+      value: '',
+      touched: false,
+      invalid: false,
+      error: '',
+      validtor: (value) => {
+        if(!value)
+          return "field is required ..."
+        else if(value.length > 250)
+          return "field length can't be more than 250 character ..."
+      }
     },
     comNum: {
       hidden: false,
       disabled: false,
-      value: ''
+      value: '',
+      touched: false,
+      invalid: false,
+      error: '',
+      validtor: (value) => {
+        if(!value)
+          return "field is required ...";
+      }
     },
     isActive: {
       hidden: false,
       disabled: false,
-      value: false
+      value: false,
     },
     btnAdd: {
       hidden: false,
@@ -58,7 +97,10 @@ class SchoolsForm extends Component {
       disabled: false
     }
   };
-
+  // exclude none form fields from the form state
+  fieldsKeys = Object.keys(this.state).filter(key => !["title","btnAdd","btnUpdate","btnDelete"].includes(key) );
+  // change form inputs [disable-hidden] state based on the form type
+  // that comes form form url [new, edit, details]
   setupFormType = (id, url) => {
     if (url.includes('edit') && id) {
       this.setState((prevState) => ({
@@ -81,6 +123,10 @@ class SchoolsForm extends Component {
           ...prevState.schoolId,
           hidden: true,
           disabled: true
+        },
+        startDate: {
+          ...prevState.startDate,
+          value: null
         },
         btnUpdate: {
           hidden: true,
@@ -139,7 +185,7 @@ class SchoolsForm extends Component {
         },
       }));
   };
-
+  // set each form field [value] state
   setFieldValue = (field,value) => {
     this.setState((prevState) => ({
       [field]: {
@@ -148,16 +194,58 @@ class SchoolsForm extends Component {
       }
     }));
   };
-
+  // set each form field [touched] state
+  setFieldTouched = (field) => {
+    this.setState((prevState) => ({
+      [field]: {
+        ...prevState[field],
+        touched: true
+      }
+    }));
+  };
+  // set each form field [touched] state
+  setFormSubmitted = () => {
+    this.setState({
+      formSubmitted: true
+    });
+  };
+  // get the form values from the form state
   getFormValues = () => {
-    return Object.entries(this.state).reduce( (acc,item) => {
-      if( ["title","btnAdd","btnUpdate","btnDelete"].includes(item[0]) )
-        return acc;
-      acc[item[0]] = item[1].value;
+    return this.fieldsKeys.reduce( (acc,item) => {
+      acc[item] = this.state[item].value;
       return acc;
     }, {});
+  };
+  // validate each form input using the validator function exists in [this.state.field]
+  validateForm = () => {
+    this.fieldsKeys.forEach(key => {
+      const field = this.state[key];
+      // do validation
+      if(field.validtor) {
+        const error = field.validtor(field.value);
+        this.setState( (prevState) => ({
+          // set each field (invalid, error)
+          [key]: {
+            ...prevState[key],
+            invalid: !!error,
+            error,
+          },
+          // set formInvalid
+          formInvalid: !!error
+        }) );
+      }
+    })
+  };
+  // display the error message
+  showError = (field) => {
+    return ( (field.touched || this.state.formSubmitted) && field.invalid )
+      ? <div className="red-text text-darken-4 valign-wrapper">
+          <i class="material-icons">error_outline</i>
+          {field.error}
+        </div>
+      : null
   }
-
+  // componentDidMount
   componentDidMount() {
     // extract id, url from routes props
     const { match: { params: { id } }, match: { url } } = this.props;
@@ -177,15 +265,20 @@ class SchoolsForm extends Component {
     // set the selected table which will be used in ADD,UPDATE,DELETE Actions
     lookupActions.setSelectedTable({ name: 'schools', key: 'schoolId'});
   }
-
+  // componentWillReceiveProps
   componentWillReceiveProps(newProps) {
     // extract id, url from routes props
     const { match: { url } } = this.props;
+    console.log("newProps.schoolsCount", newProps.schoolsCount)
+    console.log("props.schoolsCount", this.props.schoolsCount)
+    // display toast message when ADD Action FULFILLED
+    // if( newProps.schoolsCount === (this.props.schoolsCount+1) )
+    //   toast.info("new school added successfully ...");
     // when the Form in new state then return immediatly
     if (url.includes('/new'))
       return;
     // when receive schools but lookupEntity is empty - then fill it
-    if( newProps.schools.length && newProps.lookupEntity && Object.keys(newProps.lookupEntity).length === 0) {
+    if( newProps.schoolsCount && newProps.lookupEntity && Object.keys(newProps.lookupEntity).length === 0) {
       lookupActions.setLookupEntity({
         lookupTable: 'schools',
         lookupKey: 'schoolId',
@@ -199,17 +292,33 @@ class SchoolsForm extends Component {
             .forEach(([key,val]) => this.setFieldValue(key,(key === 'startDate')? new Date(val) : val) );
     }
   }
-
+  // addSchool
   addSchool = () => {
-    lookupActions.addLookupEntity( { req: ['post','/schools/add?autoId=ok', this.getFormValues()]} );
-    this.props.history.push("/schools/list");
+    this.setFormSubmitted();
+    if(this.state.formInvalid)
+      return;
+    lookupActions.addLookupEntity( {
+      req: ['post','/schools/add?autoId=ok', this.getFormValues()],
+      fulfilledMessage: "new school added successfully ..."
+    });
   }
+  // updateSchool
   updateSchool = () => {
-    lookupActions.updateLookupEntity( { req: ['put','/schools/update', this.getFormValues()]} );
+    this.setFormSubmitted();
+    if(this.state.formInvalid)
+      return;
+    lookupActions.updateLookupEntity( {
+      req: ['put','/schools/update', this.getFormValues()],
+      fulfilledMessage: "this school updated successfully ..."
+    });
     this.props.history.push("/schools/list");
   }
+  // deleteSchool
   deleteSchool = () => {
-    lookupActions.deleteLookupEntity( { req: ['post',`/schools/delete?deleteType=physical`, this.getFormValues() ]} );
+    lookupActions.deleteLookupEntity( {
+      req: ['post',`/schools/delete?deleteType=physical`, this.getFormValues() ],
+      fulfilledMessage: "this school deleted successfully ..."
+    });
     this.props.history.push("/schools/list");
   }
 
@@ -232,8 +341,8 @@ class SchoolsForm extends Component {
       <form>
         {/* form title */}
         <h4 className="orange-text">{title}</h4>
-        <div className="divider orange" />
         <Link to='/schools/list'>Back To List</Link>
+        <div className="divider orange" />
         {/* schoolId */}
         <div className="input-field" hidden={schoolId.hidden}>
           <i className="material-icons prefix">edit</i>
@@ -244,10 +353,16 @@ class SchoolsForm extends Component {
                   value={schoolId.value}
                   onChange={(e)=> {
                     this.setFieldValue('schoolId',e.target.value);
+                    this.validateForm();
                   }}
+                  onBlur = { () => {
+                    this.setFieldTouched('schoolId');
+                    this.validateForm();
+                  } }
                   {...this.placeholder}
           />
           <label htmlFor="schoolId">School Number</label>
+          { this.showError(schoolId) }
         </div>
         {/* schoolName */}
         <div className="input-field" hidden={schoolName.hidden}>
@@ -259,10 +374,16 @@ class SchoolsForm extends Component {
                 value={schoolName.value}
                 onChange={(e)=> {
                   this.setFieldValue('schoolName',e.target.value);
+                  this.validateForm();
                 }}
+                onBlur = { () => {
+                  this.setFieldTouched('schoolName');
+                  this.validateForm();
+                } }
                 {...this.placeholder}
           />
           <label htmlFor="schoolName">School Name [Arabic] </label>
+          { this.showError(schoolName) }
         </div>
         {/* schoolNameEn */}
         <div className="input-field" hidden={schoolNameEn.hidden}>
@@ -274,10 +395,16 @@ class SchoolsForm extends Component {
                 value={schoolNameEn.value}
                 onChange={(e)=> {
                   this.setFieldValue('schoolNameEn',e.target.value);
-                }}
+                  this.validateForm();
+                } }
+                onBlur = { () => {
+                  this.setFieldTouched('schoolNameEn');
+                  this.validateForm();
+                } }
                 {...this.placeholder}
           />
           <label htmlFor="schoolNameEn">School Name [English] </label>
+          { this.showError(schoolNameEn) }
         </div>
         {/* startDate */}
         <div className="input-field" hidden={startDate.hidden}>
@@ -286,8 +413,14 @@ class SchoolsForm extends Component {
                 id="startDate"
                 type="text"
                 className="datepicker"
+                value={startDate.value? startDate.value.toLocaleDateString('en-gb') : ''}
+                onBlur = { () => {
+                  this.setFieldTouched('startDate');
+                  this.validateForm();
+                } }
           />
           <label htmlFor="startDate">Start Date </label>
+          { this.showError(startDate) }
         </div>
         {/* address */}
         <div className="input-field" hidden={address.hidden}>
@@ -299,10 +432,16 @@ class SchoolsForm extends Component {
                   value={address.value}
                   onChange={(e)=> {
                     this.setFieldValue('address',e.target.value);
+                    this.validateForm();
                   }}
+                  onBlur = { () => {
+                    this.setFieldTouched('address');
+                    this.validateForm();
+                  } }
                   {...this.placeholder}
           />
           <label htmlFor="address">Address </label>
+          { this.showError(address) }
         </div>
         {/* comNum */}
         <div className="input-field" hidden={comNum.hidden}>
@@ -314,10 +453,16 @@ class SchoolsForm extends Component {
                 value={comNum.value}
                 onChange={(e)=> {
                     this.setFieldValue('comNum',e.target.value);
+                    this.validateForm();
                 }}
+                onBlur = { () => {
+                  this.setFieldTouched('comNum');
+                  this.validateForm();
+                } }
                 {...this.placeholder}
           />
           <label htmlFor="comNum">Commercial Number</label>
+          { this.showError(comNum) }
         </div>
         {/* isActive */}
         <div className="input-field switch" hidden={isActive.hidden}>
@@ -330,13 +475,19 @@ class SchoolsForm extends Component {
                     checked={isActive.value}
                     onChange={(e)=> {
                       this.setFieldValue('isActive',e.target.checked);
+                      this.validateForm();
                     }}
+                    onBlur = { () => {
+                      this.setFieldTouched('isActive');
+                      this.validateForm();
+                    } }
                     {...this.placeholder}
               />
               <span className="lever" />
               Yes
             </label>
           </div>
+          { this.showError(isActive) }
         </div>
         {/* Action Buttons */}
         <div className="input-field center">
@@ -378,10 +529,11 @@ class SchoolsForm extends Component {
     )
   }
 }
-
+// select the values needed form redux state
 const mapStateToProps = (state) => ({
-  ...state.lookup
+  "schools": state.lookup.schools,
+  "schoolsCount": state.lookup.schools.length,
+  "lookupEntity": state.lookup.lookupEntity
 })
-
-
+// connect the form with the redux state
 export default connect(mapStateToProps)(SchoolsForm)
