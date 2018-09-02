@@ -1,0 +1,21 @@
+button.btn {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+.action-icons {
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+}
+.action-icons i {
+  cursor: pointer;
+}
+.action-icons i.fas {
+  font-size: 1.3em;
+}
+
+/* modify prime dataTable styles */
+.ui-datatable th.ui-state-default {
+  background: #186ba0 !important;
+  color: #fff;
+}

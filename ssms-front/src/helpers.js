@@ -24,3 +24,14 @@ export const initDatePicker = ({ format, yearRange, defaultDate, onSelect }) => 
   }
   M.Datepicker.init(pickers, options);
 }
+
+let tooltipsIns = [];
+
+export const initTooltips = () => {
+  const elems = document.querySelectorAll('.tooltipped');
+  tooltipsIns = M.Tooltip.init(elems, {position: 'top'});
+}
+
+export const closeTooltips = (instances) => {
+  tooltipsIns.forEach( instance => instance.close() );
+}
