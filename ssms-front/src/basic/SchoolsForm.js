@@ -1,10 +1,24 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from 'react-router-dom';
+import isAlpha from 'validator/lib/isAlpha'
+import isLength from 'validator/lib/isLength'
+import isBefore from 'validator/lib/isBefore'
+import isNumeric from 'validator/lib/isNumeric'
+import moment from 'moment';
 import { lookupActions } from "../store/lookup";
 import { initDatePicker } from '../helpers';
-import { Link } from 'react-router-dom';
-
 class SchoolsForm extends Component {
+  // hold form fields values
+  initValues = {
+    'schoolId': 0,
+    'schoolName': '',
+    'schoolNameEn': '',
+    'startDate': new Date(),
+    'address': '',
+    'comNum': '',
+    'isActive': false
+  };
   // to render form input with OR without placeholder
   placeholder = {};
   // the form state
@@ -12,77 +26,84 @@ class SchoolsForm extends Component {
     title: "Add New School",
     formInvalid: true,
     formSubmitted: false,
+    placeholder: {},
     schoolId: {
       hidden: false,
       disabled: true,
-      value: 0
+      value: this.initValues['schoolId']
     },
     schoolName: {
       hidden: false,
       disabled: false,
-      value: '',
+      value: this.initValues['schoolName'],
       touched: false,
       invalid: true,
       error: '',
       validtor: (value) => {
         if(!value)
           return "field is required ..."
+        else if(!isAlpha(value, 'ar'))
+          return "only arabic alphabits ..."
       }
     },
     schoolNameEn: {
       hidden: false,
       disabled: false,
-      value: '',
+      value: this.initValues['schoolNameEn'],
       touched: false,
       invalid: false,
       error: '',
       validtor: (value) => {
         if(!value)
           return "field is required ..."
+        else if(!isAlpha(value))
+          return "only english alphabits ..."
       }
     },
     startDate: {
       hidden: false,
       disabled: false,
-      value: new Date(),
+      value: this.initValues['startDate'],
       touched: false,
       invalid: false,
       error: '',
       validtor: (value) => {
-        if(!value)
-          return "field is required ..."
+        if(value && !isBefore(moment(value).format('DD/MM/YYYY'), moment().add(1, 'day').format('DD/MM/YYYY') ) )
+          return "start date can't be ahead of today ..."
       }
     },
     address: {
       hidden: false,
       disabled: false,
-      value: '',
+      value: this.initValues['address'],
       touched: false,
       invalid: false,
       error: '',
       validtor: (value) => {
-        if(!value)
-          return "field is required ..."
-        else if(value.length > 250)
+        if(value && !isLength(value, { min:0, max: 250}))
           return "field length can't be more than 250 character ..."
       }
     },
     comNum: {
       hidden: false,
       disabled: false,
-      value: '',
+      value: this.initValues['comNum'],
       touched: false,
       invalid: false,
       error: '',
       validtor: (value) => {
-        if(!value)
-          return "field is required ...";
+        if(value) {
+          if(!isNumeric(value, { no_symbols: true }))
+            return "only integer allowed ...";
+          else if( !isLength(value, { min: 0, max: 6 }) )
+            return "commercial number can't be more than 6 digits";
+        }
       }
     },
     isActive: {
       hidden: false,
       disabled: false,
-      value: false,
+      value: this.initValues['isActive']
     },
     btnAdd: {
       hidden: false,
@@ -186,10 +207,10 @@ class SchoolsForm extends Component {
       }));
   };
   // set each form field [value] state
-  setFieldValue = (field,value) => {
+  setFieldValue = (key,value) => {
     this.setState((prevState) => ({
-      [field]: {
-        ...prevState[field],
+      [key]: {
+        ...prevState[key],
         value: value
       }
     }));
@@ -218,11 +239,16 @@ class SchoolsForm extends Component {
   };
   // validate each form input using the validator function exists in [this.state.field]
   validateForm = () => {
+    // [flag to show if form has any error]
+    let formInvalid = false;
     this.fieldsKeys.forEach(key => {
       const field = this.state[key];
       // do validation
       if(field.validtor) {
         const error = field.validtor(field.value);
+        // if any error then set formInvalid => false
+        if(error)
+          formInvalid = true;
         this.setState( (prevState) => ({
           // set each field (invalid, error)
           [key]: {
@@ -231,7 +257,7 @@ class SchoolsForm extends Component {
             error,
           },
           // set formInvalid
-          formInvalid: !!error
+          formInvalid
         }) );
       }
     })
@@ -244,53 +270,64 @@ class SchoolsForm extends Component {
           {field.error}
         </div>
       : null
-  }
+  };
+  // reset form state
+  resetForm = () => {
+    this.fieldsKeys.forEach(key => this.setFieldValue(key,this.initValues[key]) );
+    console.log(this.state);
+  };
+  // map props to form state
+  mapPropsToState = (props, url) => {
+    // when the Form in new state then return immediatly
+    if (url.includes('/new'))
+      return;
+    // add empty placeholder on each input on edit OR details
+    this.setState({
+      placeholder: { placeholder: "" }
+    });
+    // when receive schools but lookupEntity is empty - then fill it
+    if (props.schoolsCount && ( props.lookupEntity || (props.lookupEntity && Object.keys(props.lookupEntity).length === 0) ) ) {
+      lookupActions.setLookupEntity({
+        lookupTable: 'schools',
+        lookupKey: 'schoolId',
+        id: props.match.params.id
+      });
+    }
+    // when lookupEntity is filled - pass its values to the form State values
+    if (props.lookupEntity && Object.keys(props.lookupEntity).length) {
+      Object.entries(props.lookupEntity)
+        .filter(([key, val]) => key !== 'branches')
+        .forEach(([key, val]) => this.setFieldValue(key, (key === 'startDate') ? new Date(val) : val));
+    }
+  };
   // componentDidMount
   componentDidMount() {
     // extract id, url from routes props
     const { match: { params: { id } }, match: { url } } = this.props;
-    // add empty placeholder on each input on edit OR details
-    if(url.includes('/edit') || url.includes('/details'))
-      this.placeholder = { placeholder: "" }
     // init Materialize datePicker
     const currentYear = (new Date()).getFullYear();
     initDatePicker({
       format: 'dd/mm/yyyy',
       yearRange: [currentYear-70,currentYear+30],
       defaultDate: this.state.startDate.value.toLocaleDateString('en-gb'),
-      onSelect: (selectedDate) => this.setFieldValue('startDate',selectedDate)
+      onSelect: (selectedDate) => {
+        this.setFieldValue('startDate',selectedDate);
+        this.validateForm();
+      }
     });
     // handle the 3 Form Conditions based on routes props
     this.setupFormType(id, url);
     // set the selected table which will be used in ADD,UPDATE,DELETE Actions
     lookupActions.setSelectedTable({ name: 'schools', key: 'schoolId'});
+    //
+    this.mapPropsToState(this.props, url);
   }
   // componentWillReceiveProps
-  componentWillReceiveProps(newProps) {
+  componentWillReceiveProps(nextProps) {
     // extract id, url from routes props
     const { match: { url } } = this.props;
-    console.log("newProps.schoolsCount", newProps.schoolsCount)
-    console.log("props.schoolsCount", this.props.schoolsCount)
-    // display toast message when ADD Action FULFILLED
-    // if( newProps.schoolsCount === (this.props.schoolsCount+1) )
-    //   toast.info("new school added successfully ...");
-    // when the Form in new state then return immediatly
-    if (url.includes('/new'))
-      return;
-    // when receive schools but lookupEntity is empty - then fill it
-    if( newProps.schoolsCount && newProps.lookupEntity && Object.keys(newProps.lookupEntity).length === 0) {
-      lookupActions.setLookupEntity({
-        lookupTable: 'schools',
-        lookupKey: 'schoolId',
-        id: newProps.match.params.id
-      })
-    }
-    // when lookupEntity is filled - pass its values to the form State values
-    if(newProps.lookupEntity && Object.keys(newProps.lookupEntity).length) {
-      Object.entries(newProps.lookupEntity)
-            .filter(([key,val]) => key !== 'branches')
-            .forEach(([key,val]) => this.setFieldValue(key,(key === 'startDate')? new Date(val) : val) );
-    }
+    //
+    this.mapPropsToState(nextProps, url);
   }
   // addSchool
   addSchool = () => {
@@ -301,6 +338,7 @@ class SchoolsForm extends Component {
       req: ['post','/schools/add?autoId=ok', this.getFormValues()],
       fulfilledMessage: "new school added successfully ..."
     });
+    this.resetForm();
   }
   // updateSchool
   updateSchool = () => {
@@ -325,6 +363,7 @@ class SchoolsForm extends Component {
   render() {
     const {
       title,
+      placeholder,
       schoolId,
       schoolName,
       schoolNameEn,
@@ -359,7 +398,7 @@ class SchoolsForm extends Component {
                     this.setFieldTouched('schoolId');
                     this.validateForm();
                   } }
-                  {...this.placeholder}
+                  {...placeholder}
           />
           <label htmlFor="schoolId">School Number</label>
           { this.showError(schoolId) }
@@ -380,7 +419,7 @@ class SchoolsForm extends Component {
                   this.setFieldTouched('schoolName');
                   this.validateForm();
                 } }
-                {...this.placeholder}
+                {...placeholder}
           />
           <label htmlFor="schoolName">School Name [Arabic] </label>
           { this.showError(schoolName) }
@@ -438,7 +477,7 @@ class SchoolsForm extends Component {
                     this.setFieldTouched('address');
                     this.validateForm();
                   } }
-                  {...this.placeholder}
+                  {...placeholder}
           />
           <label htmlFor="address">Address </label>
           { this.showError(address) }
@@ -459,7 +498,7 @@ class SchoolsForm extends Component {
                   this.setFieldTouched('comNum');
                   this.validateForm();
                 } }
-                {...this.placeholder}
+                {...placeholder}
           />
           <label htmlFor="comNum">Commercial Number</label>
           { this.showError(comNum) }
@@ -481,7 +520,7 @@ class SchoolsForm extends Component {
                       this.setFieldTouched('isActive');
                       this.validateForm();
                     } }
-                    {...this.placeholder}
+                    {...placeholder}
               />
               <span className="lever" />
               Yes
