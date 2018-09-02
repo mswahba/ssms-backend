@@ -34,14 +34,14 @@ const ajax = ({ dispatch }) => next => action => {
           // dispatch action only when res in not null or undefined
           if(res) {
             dispatch({ type: action.type.replace('_PENDING', '_FULFILLED') , payload: res });
-            if(action.payload.fulfilledMessage)
-              toast.info(action.payload.fulfilledMessage);
+            if(action.payload.fulfilledMessage && action.payload.fulfilledMessage.length)
+              toast[action.payload.fulfilledMessage[0]](action.payload.fulfilledMessage[1]);
           }
         })
         .catch(res => {
           if(res) {
             dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: res });
-              toast.info(JSON.stringify(res.data));
+              toast.error(JSON.stringify(res.data));
           }
         });
     else

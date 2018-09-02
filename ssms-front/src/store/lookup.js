@@ -145,6 +145,9 @@ const updater = {
   }),
   [actionTypes.DELETE_LOOKUP_ENTITY_FULFILLED]: (state, payload) => {
     const newLookupState = {};
+    console.log("res: ",payload.data);
+    console.log("table: ", state.selectedTable.name);
+    console.log("redux state: ",state[state.selectedTable.name]);
     (payload.data.deleteType === 'physical')
       ? newLookupState[state.selectedTable.name] = state[state.selectedTable.name].filter(item => item[state.selectedTable.key] != payload.data[state.selectedTable.key] )
       : newLookupState[state.selectedTable.name] = state[state.selectedTable.name].map(item => {

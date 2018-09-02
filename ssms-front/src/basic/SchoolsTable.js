@@ -3,13 +3,20 @@ import { Link } from 'react-router-dom';
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { connect } from "react-redux";
+import { lookupActions } from "../store/lookup";
 import { initTooltips, closeTooltips } from '../helpers';
 import '../shared/data-table.css';
-
 class SchoolsTable extends Component {
 
   constructor(props) {
     super(props);
+    // 
+    this.delete = (id) => {
+      lookupActions.deleteLookupEntity( {
+        req: ['delete',`/schools/delete-by-id?deleteType=physical&key=${id}`],
+        fulfilledMessage: ["error","this school deleted successfully ..."]
+      });
+    }
     // define table columns values and header
     this.columns = [
       { field: "schoolId", header: "Id" },
@@ -27,9 +34,13 @@ class SchoolsTable extends Component {
             <i data-position="top" data-tooltip="details" className="tooltipped fas fa-info-circle green-text text-darken-3"></i>
           </Link>
           <Link to={`/schools/edit/${rowData.schoolId}`}>
-            <i data-position="top" data-tooltip="edit"    className="tooltipped fas fa-edit blue-text text-darken-3"></i>
+            <i data-position="top" data-tooltip="edit" className="tooltipped fas fa-edit blue-text text-darken-3"></i>
           </Link>
-          <i data-position="top" data-tooltip="delete"  className="tooltipped fas fa-trash-alt red-text text-darken-3"></i>
+          <i data-position="top"
+              data-tooltip="delete"
+              className="tooltipped fas fa-trash-alt red-text text-darken-3"
+              onClick={ () => this.delete(rowData.schoolId) }
+          ></i>
         </div>
       )
     };
