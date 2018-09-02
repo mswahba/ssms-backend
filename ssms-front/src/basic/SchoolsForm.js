@@ -124,7 +124,7 @@ class SchoolsForm extends Component {
     if (url.includes('new'))
       this.setState((prevState) => ({
         title: "Add New School",
-        placeholder: {},
+        activeLabel: '',
         schoolId: {
           ...prevState.schoolId,
           hidden: true,
@@ -312,8 +312,6 @@ class SchoolsForm extends Component {
         this.validateForm();
       }
     });
-    // set the selected table which will be used in ADD,UPDATE,DELETE Actions
-    lookupActions.setSelectedTable({ name: 'schools', key: 'schoolId'});
     // handle the 3 Form Conditions based on routes props
     this.setupFormType(id, url);
     // map the from fields values from props to state
@@ -331,7 +329,7 @@ class SchoolsForm extends Component {
       return;
     lookupActions.addLookupEntity( {
       req: ['post','/schools/add?autoId=ok', this.getFormValues()],
-      fulfilledMessage: ["success","new school added successfully ..."]
+      fulfilledToast: ["success","new school added successfully ..."]
     });
     this.resetForm();
   }
@@ -342,7 +340,7 @@ class SchoolsForm extends Component {
       return;
     lookupActions.updateLookupEntity( {
       req: ['put','/schools/update', this.getFormValues()],
-      fulfilledMessage: ["success","this school updated successfully ..."]
+      fulfilledToast: ["success","this school updated successfully ..."]
     });
     this.props.history.push("/schools/list");
   }
@@ -350,7 +348,7 @@ class SchoolsForm extends Component {
   deleteSchool = () => {
     lookupActions.deleteLookupEntity( {
       req: ['post',`/schools/delete?deleteType=physical`, this.getFormValues() ],
-      fulfilledMessage: ["error","this school deleted successfully ..."]
+      fulfilledToast: ["info","this school deleted successfully ..."]
     });
     this.props.history.push("/schools/list");
   }
@@ -499,7 +497,7 @@ class SchoolsForm extends Component {
           <div>
             <label className={activeLable}>
               Activate School? No
-              <input id="isActive" 
+              <input id="isActive"
                     disabled={isActive.disabled}
                     type="checkbox"
                     checked={isActive.value}

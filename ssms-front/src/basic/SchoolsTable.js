@@ -10,11 +10,11 @@ class SchoolsTable extends Component {
 
   constructor(props) {
     super(props);
-    // 
+    // handle delete
     this.delete = (id) => {
       lookupActions.deleteLookupEntity( {
         req: ['delete',`/schools/delete-by-id?deleteType=physical&key=${id}`],
-        fulfilledMessage: ["error","this school deleted successfully ..."]
+        fulfilledToast: ["info","this school deleted successfully ..."]
       });
     }
     // define table columns values and header

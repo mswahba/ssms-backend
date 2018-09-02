@@ -34,15 +34,22 @@ const ajax = ({ dispatch }) => next => action => {
           // dispatch action only when res in not null or undefined
           if(res) {
             dispatch({ type: action.type.replace('_PENDING', '_FULFILLED') , payload: res });
-            if(action.payload.fulfilledMessage && action.payload.fulfilledMessage.length)
-              toast[action.payload.fulfilledMessage[0]](action.payload.fulfilledMessage[1]);
+            if(action.payload.fulfilledToast && action.payload.fulfilledToast.length)
+              toast[action.payload.fulfilledToast[0]](action.payload.fulfilledToast[1]);
           }
         })
-        .catch(res => {
-          if(res) {
-            dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: res });
-              toast.error(JSON.stringify(res.data));
-          }
+        .catch(error => {
+          // The request was made and the server responded with a status code that falls out of the range of 2xx
+          // error.response.data - error.response.status - error.response.headers
+          if (error.response)
+            dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: error.response.data || error.response.status });
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
+          else if (error.request)
+            dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: error.request });
+          // Something happened in setting up the request that triggered an Error
+          // else
+          console.log(error);
         });
     else
       requestPromise

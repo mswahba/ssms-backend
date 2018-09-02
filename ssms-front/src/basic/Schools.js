@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { lookupActions } from "../store/lookup";
@@ -11,21 +11,23 @@ let fetchData = true;
 const Schools = (props) => {
   // extract url from routes props
   const { match: { url } } = props;
-  if(fetchData && !url.includes('edit')) {
+  if(fetchData) {
     fetchData = false;
+    // set the selected tables which will be used when GET_LOOKUP_DATA_FULFILLED fired
     lookupActions.setSelectedTables(['schools']);
-    lookupActions.getLookupData( { req: ['get','/schools/List/all']} );
+    // fire GET_LOOKUP_DATA_PENDING
+    lookupActions.getLookupData( { req: ['get','/schools/list/all']} );
+    // set the selected table which will be used in ADD,UPDATE,DELETE Actions
+    lookupActions.setSelectedTable({ name: 'schools', key: 'schoolId'});
   }
   return (
-    <Fragment>
-      <Switch>
-        <Route path={`${url}/edit/:id`} component={SchoolsForm} />
-        <Route path={`${url}/details/:id`} component={SchoolsForm} />
-        <Route path={`${url}/new`} component={SchoolsForm} />
-        <Route path={`${url}/list`} component={SchoolsTable} />
-        <Redirect from="/" to={`${url}/list`} />
-      </Switch>
-    </Fragment>
+    <Switch>
+      <Route path={`${url}/edit/:id`} component={SchoolsForm} />
+      <Route path={`${url}/details/:id`} component={SchoolsForm} />
+      <Route path={`${url}/new`} component={SchoolsForm} />
+      <Route path={`${url}/list`} component={SchoolsTable} />
+      <Redirect from="/" to={`${url}/list`} />
+    </Switch>
   );
 }
 

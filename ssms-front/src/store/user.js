@@ -35,7 +35,7 @@ const updater = {
   [actionTypes.SIGN_IN_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload.response.data
+    error: payload
   }),
   [actionTypes.GET_USERS_PENDING]: (state) => ({
     ...state,
@@ -51,7 +51,7 @@ const updater = {
   [actionTypes.GET_USERS_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload.response.data
+    error: payload
   }),
   [actionTypes.ADD_PARENT_PENDING]: (state) => ({
     ...state,
@@ -67,7 +67,7 @@ const updater = {
   [actionTypes.ADD_PARENT_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload.response.data
+    error: payload
   }),
 }
 

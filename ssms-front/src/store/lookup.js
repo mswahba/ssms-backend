@@ -100,7 +100,7 @@ const updater = {
   [actionTypes.GET_LOOKUP_DATA_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload.response.data
+    error: payload
   }),
   [actionTypes.ADD_LOOKUP_ENTITY_PENDING]: (state) => ({
     ...state,
@@ -116,7 +116,7 @@ const updater = {
   [actionTypes.ADD_LOOKUP_DATA_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload.response.data
+    error: payload
   }),
   [actionTypes.UPDATE_LOOKUP_ENTITY_PENDING]: (state) => ({
     ...state,
@@ -136,7 +136,7 @@ const updater = {
   [actionTypes.UPDATE_LOOKUP_ENTITY_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload.response.data
+    error: payload
   }),
   [actionTypes.DELETE_LOOKUP_ENTITY_PENDING]: (state) => ({
     ...state,
@@ -168,7 +168,7 @@ const updater = {
   [actionTypes.DELETE_LOOKUP_ENTITY_REJECTED]: (state, payload) => ({
     ...state,
     loading: false,
-    error: payload.response.data
+    error: payload
   }),
 }
 
