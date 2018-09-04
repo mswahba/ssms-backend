@@ -76,7 +76,7 @@ class SchoolsTable extends Component {
   render() {
     const { translate } = this.props
     return (
-      <div className="container">
+      <div className="container rtl">
         <Link to="/schools/new">
           <button className="btn waves-effect waves-light primary darken-3"
                     type="button"

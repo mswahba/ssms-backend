@@ -372,7 +372,7 @@ class SchoolsForm extends Component {
     } = this.state;
     const { translate } = this.props;
     return (
-      <form>
+      <form className="rtl">
         {/* form title */}
         <h4 className="orange-text">{ title }</h4>
         <Link to='/schools/list'>{ translate("schools.backLink") }</Link>
