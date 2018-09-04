@@ -1,0 +1,98 @@
+{
+  "schools": {
+    "title": {
+      "list": [
+        "Schools",
+        "المدارس"
+      ],
+      "new": [
+        "A",
+        ""
+      ],
+      "edit": [
+        "",
+        ""
+      ],
+      "details": [
+        "",
+        ""
+      ]
+    },
+    "backLink": [
+      "Back To List",
+      "عودة إلي القائمة"
+    ],
+    "fields": {
+      "schoolId": [
+        "ID",
+        "رقم التعريف"
+      ],
+      "schoolNameAr": [
+        "Arabic Name",
+        "الاسم - عربي"
+      ],
+      "schoolNameEn": [
+        "English Name",
+        "الاسم - انجليزي"
+      ],
+      "startDate": [
+        "Start Date",
+        "تاريخ بدء العمل"
+      ],
+      "address": [
+        "Address",
+        "العنوان"
+      ],
+      "comNum": [
+        "Commercial Number",
+        "رقم السجل"
+      ],
+      "isActive": [
+        "Active",
+        "حالة التفعيل"
+      ],
+      "yes": [
+        "Yes",
+        "نعم"
+      ],
+      "no": [
+        "No",
+        "لا"
+      ]
+    },
+    "actions": {
+      "title": [
+        "Actions",
+         "إجراءات"
+      ],
+      "update": [
+        "Update School",
+        "تحديث المدرسة"
+      ],
+      "remove": [
+        "Delete School",
+        "حذف المدرسة"
+      ],
+      "detailsTitle": [
+        "School Details",
+        "تفاصيل المدرسة"
+      ],
+      "new": [
+        "Add New School",
+        "إضافة مدرسة جديدة"
+      ],
+      "edit": [
+        "Edit",
+        "تعديل"
+      ],
+      "details": [
+        "Details",
+        "تفاصيل"
+      ],
+      "delete": [
+        "Delete",
+        "حذف"
+      ]
+    }
+  }
+}

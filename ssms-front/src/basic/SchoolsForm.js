@@ -1,13 +1,14 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { getTranslate } from 'react-localize-redux'
 import isAlpha from 'validator/lib/isAlpha'
 import isLength from 'validator/lib/isLength'
 import isBefore from 'validator/lib/isBefore'
 import isNumeric from 'validator/lib/isNumeric'
-import moment from 'moment';
-import { lookupActions } from "../store/lookup";
-import { initDatePicker } from '../helpers';
+import moment from 'moment'
+import { lookupActions } from '../store/lookup'
+import { initDatePicker } from '../helpers'
 class SchoolsForm extends Component {
   // hold form fields values
   initValues = {
@@ -23,7 +24,7 @@ class SchoolsForm extends Component {
   fieldsKeys = Object.keys(this.initValues);
   // the form state
   state = {
-    title: "Add New School",
+    title: "",
     formInvalid: true,
     formSubmitted: false,
     activeLable: '', // to render a label with or without 'active' class
@@ -121,9 +122,10 @@ class SchoolsForm extends Component {
   // change form inputs [disable-hidden] state based on the form type
   // that comes form form url [new, edit, details]
   setupFormType = (id, url) => {
+    const { translate } = this.props;
     if (url.includes('new'))
       this.setState((prevState) => ({
-        title: "Add New School",
+        title: translate("schools.actions.new"),
         activeLabel: '',
         schoolId: {
           ...prevState.schoolId,
@@ -145,7 +147,7 @@ class SchoolsForm extends Component {
       }));
     else if (url.includes('edit') && id) {
       this.setState((prevState) => ({
-        title: "Edit this School",
+        title: translate("schools.actions.update"),
         activeLable: 'active',
         schoolId: {
           ...prevState.schoolId,
@@ -160,7 +162,7 @@ class SchoolsForm extends Component {
     }
     else if (url.includes('details') && id)
       this.setState((prevState) => ({
-        title: "view School Details",
+        title: translate("schools.actions.detailsTitle"),
         activeLable: 'active',
         schoolId: {
           ...prevState.schoolId,
@@ -368,12 +370,12 @@ class SchoolsForm extends Component {
       btnUpdate,
       btnDelete
     } = this.state;
-
+    const { translate } = this.props;
     return (
       <form>
         {/* form title */}
-        <h4 className="orange-text">{title}</h4>
-        <Link to='/schools/list'>Back To List</Link>
+        <h4 className="orange-text">{ title }</h4>
+        <Link to='/schools/list'>{ translate("schools.backLink") }</Link>
         <div className="divider orange" />
         {/* schoolId */}
         <div className="input-field" hidden={schoolId.hidden}>
@@ -392,7 +394,7 @@ class SchoolsForm extends Component {
                     this.validateForm();
                   } }
           />
-          <label className={activeLable} htmlFor="schoolId">School Number</label>
+          <label className={activeLable} htmlFor="schoolId">{ translate("schools.fields.schoolId") }</label>
           { this.showError(schoolId) }
         </div>
         {/* schoolName */}
@@ -412,7 +414,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="schoolName">School Name [Arabic] </label>
+          <label className={activeLable} htmlFor="schoolName">{ translate("schools.fields.schoolNameAr") }</label>
           { this.showError(schoolName) }
         </div>
         {/* schoolNameEn */}
@@ -432,7 +434,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="schoolNameEn">School Name [English] </label>
+          <label className={activeLable} htmlFor="schoolNameEn">{ translate("schools.fields.schoolNameEn") }</label>
           { this.showError(schoolNameEn) }
         </div>
         {/* startDate */}
@@ -448,7 +450,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="startDate">Start Date </label>
+          <label className={activeLable} htmlFor="startDate">{ translate("schools.fields.startDate") }</label>
           { this.showError(startDate) }
         </div>
         {/* address */}
@@ -468,7 +470,7 @@ class SchoolsForm extends Component {
                     this.validateForm();
                   } }
           />
-          <label className={activeLable} htmlFor="address">Address </label>
+          <label className={activeLable} htmlFor="address">{ translate("schools.fields.address") }</label>
           { this.showError(address) }
         </div>
         {/* comNum */}
@@ -488,7 +490,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="comNum">Commercial Number</label>
+          <label className={activeLable} htmlFor="comNum">{ translate("schools.fields.comNum") }</label>
           { this.showError(comNum) }
         </div>
         {/* isActive */}
@@ -496,7 +498,7 @@ class SchoolsForm extends Component {
           <i className="material-icons prefix">school</i>
           <div>
             <label className={activeLable}>
-              Activate School? No
+              { `${translate("schools.fields.isActive")} ? ${translate("schools.fields.no")}` }
               <input id="isActive"
                     disabled={isActive.disabled}
                     type="checkbox"
@@ -511,7 +513,7 @@ class SchoolsForm extends Component {
                     } }
               />
               <span className="lever" />
-              Yes
+              {translate("schools.fields.yes")}
             </label>
           </div>
           { this.showError(isActive) }
@@ -527,7 +529,7 @@ class SchoolsForm extends Component {
                 onClick={this.addSchool}
         >
             <i className="material-icons left">add</i>
-            Add New School
+            { translate("schools.actions.new") }
         </button>
         <button className="btn waves-effect waves-light orange darken-3"
                 type="button"
@@ -538,7 +540,7 @@ class SchoolsForm extends Component {
                 onClick={this.updateSchool}
         >
             <i className="material-icons left">edit</i>
-            Update School
+            { translate("schools.actions.update") }
         </button>
         <button className="btn waves-effect waves-light red darken-3"
                 type="button"
@@ -549,7 +551,7 @@ class SchoolsForm extends Component {
                 onClick={this.deleteSchool}
         >
             <i className="material-icons left">close</i>
-            Delete School
+            { translate("schools.actions.remove") }
         </button>
         </div>
       </form>
@@ -560,7 +562,8 @@ class SchoolsForm extends Component {
 const mapStateToProps = (state) => ({
   "schools": state.lookup.schools,
   "schoolsCount": state.lookup.schools.length,
-  "lookupEntity": state.lookup.lookupEntity
+  "lookupEntity": state.lookup.lookupEntity,
+  "translate": getTranslate(state.localize)
 })
 // connect the form with the redux state
-export default connect(mapStateToProps)(SchoolsForm)
+export default connect(mapStateToProps)(SchoolsForm);

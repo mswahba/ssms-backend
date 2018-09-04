@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "react-localize-redux": "^3.3.2",
     "validator": "^10.7.0",
     "react-toastify": "^4.2.3",
     "axios-cancel": "^0.2.2",

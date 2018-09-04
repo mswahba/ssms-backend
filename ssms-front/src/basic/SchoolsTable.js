@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { connect } from "react-redux";
+import { getTranslate } from 'react-localize-redux';
 import { lookupActions } from "../store/lookup";
 import { initTooltips, closeTooltips } from '../helpers';
 import '../shared/data-table.css';
@@ -10,42 +11,17 @@ class SchoolsTable extends Component {
 
   constructor(props) {
     super(props);
-    // handle delete
-    this.delete = (id) => {
-      lookupActions.deleteLookupEntity( {
-        req: ['delete',`/schools/delete-by-id?deleteType=physical&key=${id}`],
-        fulfilledToast: ["info","this school deleted successfully ..."]
-      });
-    }
+    console.log(this.props);
+    const { translate } = this.props;
     // define table columns values and header
     this.columns = [
-      { field: "schoolId", header: "Id" },
-      { field: "schoolName", header: "Name Ar" },
-      { field: "schoolNameEn", header: "Name En" },
-      { field: "startDate", header: "Start Date" },
-      { field: "address", header: "Start Date" },
-      { field: "isActive", header: "isActive" }
+      { field: "schoolId",      header: translate("schools.fields.schoolId") },
+      { field: "schoolName",    header: translate("schools.fields.schoolNameAr") },
+      { field: "schoolNameEn",  header: translate("schools.fields.schoolNameEn") },
+      { field: "startDate",     header: translate("schools.fields.startDate") },
+      { field: "address",       header: translate("schools.fields.address") },
+      { field: "isActive",      header: translate("schools.fields.isActive") }
     ];
-    // define actions column jsx template
-    this.actionTemplate = (rowData, column) => {
-      return (
-        <div className="action-icons">
-          <Link to={`/schools/details/${rowData.schoolId}`}>
-            <i data-position="top" data-tooltip="details" className="tooltipped fas fa-info-circle green-text text-darken-3"></i>
-          </Link>
-          <Link to={`/schools/edit/${rowData.schoolId}`}>
-            <i data-position="top" data-tooltip="edit" className="tooltipped fas fa-edit blue-text text-darken-3"></i>
-          </Link>
-          <i data-position="top"
-              data-tooltip="delete"
-              className="tooltipped fas fa-trash-alt red-text text-darken-3"
-              onClick={ () => this.delete(rowData.schoolId) }
-          ></i>
-        </div>
-      )
-    };
-    // define action column
-    this.actionColumn = <Column body={this.actionTemplate} header="Actions" />;
     // dynamically define dataTable columns List
     this.Columns = this.columns.map(col => (
       <Column
@@ -58,6 +34,33 @@ class SchoolsTable extends Component {
         filterPlaceholder={`type ${col.header}`}*/
       />
     ));
+    // handle delete
+    this.delete = (id) => {
+      lookupActions.deleteLookupEntity( {
+        req: ['delete',`/schools/delete-by-id?deleteType=physical&key=${id}`],
+        fulfilledToast: ["info","this school deleted successfully ..."]
+      });
+    }
+    // define actions column jsx template
+    this.actionTemplate = (rowData, column) => {
+      return (
+        <div className="action-icons">
+          <Link to={`/schools/details/${rowData.schoolId}`}>
+            <i data-position="top" data-tooltip={ translate("schools.actions.details") } className="tooltipped fas fa-info-circle green-text text-darken-3"></i>
+          </Link>
+          <Link to={`/schools/edit/${rowData.schoolId}`}>
+            <i data-position="top" data-tooltip={ translate("schools.actions.edit") } className="tooltipped fas fa-edit blue-text text-darken-3"></i>
+          </Link>
+          <i data-position="top"
+              data-tooltip={ translate("schools.actions.delete") }
+              className="tooltipped fas fa-trash-alt red-text text-darken-3"
+              onClick={ () => this.delete(rowData.schoolId) }
+          ></i>
+        </div>
+      )
+    };
+    // define action column
+    this.actionColumn = <Column key="actions" body={this.actionTemplate} header={ translate("schools.actions.title") } />;
     // add the actions column to the Columns List
     this.Columns.push(this.actionColumn);
   }
@@ -71,6 +74,7 @@ class SchoolsTable extends Component {
   }
 
   render() {
+    const { translate } = this.props
     return (
       <div className="container">
         <Link to="/schools/new">
@@ -80,7 +84,7 @@ class SchoolsTable extends Component {
                     onClick={this.addSchool}
           >
             <i className="material-icons left">add</i>
-            New School
+            { translate("schools.actions.new") }
           </button>
         </Link>
         <DataTable
@@ -95,7 +99,9 @@ class SchoolsTable extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  "schools": state.lookup.schools.map(school => ({ ...school, startDate: new Date(school.startDate).toLocaleDateString('en-gb') }) )
+  "schools": state.lookup.schools.map(school => ({ ...school, startDate: new Date(school.startDate).toLocaleDateString('en-gb') }) ),
+  "translate": getTranslate(state.localize),
+  "localize": state.localize
 })
 
 export default connect(mapStateToProps)(SchoolsTable);
