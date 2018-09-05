@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { getTranslate } from 'react-localize-redux'
 import { userActions } from "../store/user";
 import { toast } from 'react-toastify';
 
@@ -15,6 +16,7 @@ class SignIn extends Component {
       toast.info(JSON.stringify(newProps.loggedUser.userId));
   }
   render() {
+    const { trans } = this.props;
     return (
       <form>
         <div className="input-field ">
@@ -25,7 +27,7 @@ class SignIn extends Component {
             value={this.state.userId}
             onChange={e => this.setState({ userId: e.target.value })}
           />
-          <label htmlFor="userId">User ID</label>
+          <label htmlFor="userId">{trans("users.signIn.userId")}</label>
         </div>
         <div className="input-field ">
           <input
@@ -35,7 +37,7 @@ class SignIn extends Component {
             value={this.state.userPassword}
             onChange={e => this.setState({ userPassword: e.target.value })}
           />
-          <label htmlFor="userPassword">Password</label>
+          <label htmlFor="userPassword">{trans("users.signIn.password")}</label>
         </div>
         <a
           className="waves-effect waves-light btn"
@@ -44,7 +46,7 @@ class SignIn extends Component {
           }
         >
           <i className="material-icons right">cloud</i>
-          Sign-in
+          {trans("users.signIn.btn")}
         </a>
       </form>
     );
@@ -52,7 +54,8 @@ class SignIn extends Component {
 }
 
 const mapStateToProps = state => ({
-  ...state.user
+  ...state.user,
+  "trans": getTranslate(state.localize)
 });
 
 export default connect(mapStateToProps)(SignIn);

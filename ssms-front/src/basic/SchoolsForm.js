@@ -10,122 +10,127 @@ import moment from 'moment'
 import { lookupActions } from '../store/lookup'
 import { initDatePicker } from '../helpers'
 class SchoolsForm extends Component {
-  // hold form fields values
-  initValues = {
-    'schoolId': 0,
-    'schoolName': '',
-    'schoolNameEn': '',
-    'startDate': new Date(),
-    'address': '',
-    'comNum': '',
-    'isActive': false
-  };
-  // hold the form fields keys
-  fieldsKeys = Object.keys(this.initValues);
-  // the form state
-  state = {
-    title: "",
-    formInvalid: true,
-    formSubmitted: false,
-    activeLable: '', // to render a label with or without 'active' class
-    schoolId: {
-      hidden: false,
-      disabled: true,
-      value: this.initValues['schoolId']
-    },
-    schoolName: {
-      hidden: false,
-      disabled: false,
-      value: this.initValues['schoolName'],
-      touched: false,
-      invalid: true,
-      error: '',
-      validtor: (value) => {
-        if(!value)
-          return "field is required ..."
-        else if(!isAlpha(value, 'ar'))
-          return "only arabic alphabits ..."
-      }
-    },
-    schoolNameEn: {
-      hidden: false,
-      disabled: false,
-      value: this.initValues['schoolNameEn'],
-      touched: false,
-      invalid: false,
-      error: '',
-      validtor: (value) => {
-        if(!value)
-          return "field is required ..."
-        else if(!isAlpha(value))
-          return "only english alphabits ..."
-      }
-    },
-    startDate: {
-      hidden: false,
-      disabled: false,
-      value: this.initValues['startDate'],
-      touched: false,
-      invalid: false,
-      error: '',
-      validtor: (value) => {
-        if(value && !isBefore(moment(value).format('DD/MM/YYYY'), moment().add(1, 'day').format('DD/MM/YYYY') ) )
-          return "start date can't be ahead of today ..."
-      }
-    },
-    address: {
-      hidden: false,
-      disabled: false,
-      value: this.initValues['address'],
-      touched: false,
-      invalid: false,
-      error: '',
-      validtor: (value) => {
-        if(value && !isLength(value, { min:0, max: 250}))
-          return "field length can't be more than 250 character ..."
-      }
-    },
-    comNum: {
-      hidden: false,
-      disabled: false,
-      value: this.initValues['comNum'],
-      touched: false,
-      invalid: false,
-      error: '',
-      validtor: (value) => {
-        if(value) {
-          if(!isNumeric(value, { no_symbols: true }))
-            return "only integer allowed ...";
-          else if( !isLength(value, { min: 0, max: 6 }) )
-            return "commercial number can't be more than 6 digits";
+
+  constructor(props) {
+    super(props);
+    const { trans } = props;
+    // hold form fields values
+    this.initValues = {
+      'schoolId': 0,
+      'schoolName': '',
+      'schoolNameEn': '',
+      'startDate': new Date(),
+      'address': '',
+      'comNum': '',
+      'isActive': false
+    };
+    // hold the form fields keys
+    this.fieldsKeys = Object.keys(this.initValues);
+    // the form state
+    this.state = {
+      title: "",
+      formInvalid: true,
+      formSubmitted: false,
+      activeLable: '', // to render a label with or without 'active' class
+      schoolId: {
+        hidden: false,
+        disabled: true,
+        value: this.initValues['schoolId']
+      },
+      schoolName: {
+        hidden: false,
+        disabled: false,
+        value: this.initValues['schoolName'],
+        touched: false,
+        invalid: true,
+        error: '',
+        validtor: (value) => {
+          if(!value)
+            return trans("schools.validations.schoolNameAr.required");
+          else if(!isAlpha(value, 'ar'))
+            return trans("schools.validations.schoolNameAr.alpha");
         }
+      },
+      schoolNameEn: {
+        hidden: false,
+        disabled: false,
+        value: this.initValues['schoolNameEn'],
+        touched: false,
+        invalid: false,
+        error: '',
+        validtor: (value) => {
+          if(!value)
+            return trans("schools.validations.schoolNameEn.required");
+          else if(!isAlpha(value))
+            return trans("schools.validations.schoolNameEn.alpha");
+        }
+      },
+      startDate: {
+        hidden: false,
+        disabled: false,
+        value: this.initValues['startDate'],
+        touched: false,
+        invalid: false,
+        error: '',
+        validtor: (value) => {
+          if(value && !isBefore(moment(value).format('DD/MM/YYYY'), moment().add(1, 'day').format('DD/MM/YYYY') ) )
+            return trans("schools.validations.startDate.before");
+        }
+      },
+      address: {
+        hidden: false,
+        disabled: false,
+        value: this.initValues['address'],
+        touched: false,
+        invalid: false,
+        error: '',
+        validtor: (value) => {
+          if(value && !isLength(value, { min:0, max: 250}))
+            return trans("schools.validations.address.length");
+        }
+      },
+      comNum: {
+        hidden: false,
+        disabled: false,
+        value: this.initValues['comNum'],
+        touched: false,
+        invalid: false,
+        error: '',
+        validtor: (value) => {
+          if(value) {
+            if(!isNumeric(value, { no_symbols: true }))
+              return trans("schools.validations.comNum.numeric");
+            else if( !isLength(value, { min: 0, max: 6 }) )
+              return trans("schools.validations.comNum.length");
+          }
+        }
+      },
+      isActive: {
+        hidden: false,
+        disabled: false,
+        value: this.initValues['isActive']
+      },
+      btnAdd: {
+        hidden: false,
+        disabled: false
+      },
+      btnUpdate: {
+        hidden: false,
+        disabled: false
+      },
+      btnDelete: {
+        hidden: false,
+        disabled: false
       }
-    },
-    isActive: {
-      hidden: false,
-      disabled: false,
-      value: this.initValues['isActive']
-    },
-    btnAdd: {
-      hidden: false,
-      disabled: false
-    },
-    btnUpdate: {
-      hidden: false,
-      disabled: false
-    },
-    btnDelete: {
-      hidden: false,
-      disabled: false
-    }
-  };
+    };
+  }
   // change form inputs [disable-hidden] state based on the form type
   // that comes form form url [new, edit, details]
   setupFormType = (id, url) => {
-    const { translate } = this.props;
+    const { trans } = this.props;
     if (url.includes('new'))
       this.setState((prevState) => ({
-        title: translate("schools.actions.new"),
+        title: trans("schools.actions.new"),
         activeLabel: '',
         schoolId: {
           ...prevState.schoolId,
@@ -147,7 +152,7 @@ class SchoolsForm extends Component {
       }));
     else if (url.includes('edit') && id) {
       this.setState((prevState) => ({
-        title: translate("schools.actions.update"),
+        title: trans("schools.actions.update"),
         activeLable: 'active',
         schoolId: {
           ...prevState.schoolId,
@@ -162,7 +167,7 @@ class SchoolsForm extends Component {
     }
     else if (url.includes('details') && id)
       this.setState((prevState) => ({
-        title: translate("schools.actions.detailsTitle"),
+        title: trans("schools.actions.detailsTitle"),
         activeLable: 'active',
         schoolId: {
           ...prevState.schoolId,
@@ -321,6 +326,10 @@ class SchoolsForm extends Component {
   }
   // componentWillReceiveProps
   componentWillReceiveProps(nextProps) {
+    // extract id, url from routes props
+    const { match: { params: { id } }, match: { url } } = nextProps;
+    // handle the 3 Form Conditions based on routes props
+    this.setupFormType(id, url);
     // map the from fields values from props to state
     this.mapPropsToState(nextProps);
   }
@@ -370,12 +379,12 @@ class SchoolsForm extends Component {
       btnUpdate,
       btnDelete
     } = this.state;
-    const { translate } = this.props;
+    const { trans } = this.props;
     return (
       <form className="rtl">
         {/* form title */}
         <h4 className="orange-text">{ title }</h4>
-        <Link to='/schools/list'>{ translate("schools.backLink") }</Link>
+        <Link to='/schools/list'>{ trans("schools.backLink") }</Link>
         <div className="divider orange" />
         {/* schoolId */}
         <div className="input-field" hidden={schoolId.hidden}>
@@ -394,7 +403,7 @@ class SchoolsForm extends Component {
                     this.validateForm();
                   } }
           />
-          <label className={activeLable} htmlFor="schoolId">{ translate("schools.fields.schoolId") }</label>
+          <label className={activeLable} htmlFor="schoolId">{ trans("schools.fields.schoolId") }</label>
           { this.showError(schoolId) }
         </div>
         {/* schoolName */}
@@ -414,7 +423,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="schoolName">{ translate("schools.fields.schoolNameAr") }</label>
+          <label className={activeLable} htmlFor="schoolName">{ trans("schools.fields.schoolNameAr") }</label>
           { this.showError(schoolName) }
         </div>
         {/* schoolNameEn */}
@@ -434,7 +443,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="schoolNameEn">{ translate("schools.fields.schoolNameEn") }</label>
+          <label className={activeLable} htmlFor="schoolNameEn">{ trans("schools.fields.schoolNameEn") }</label>
           { this.showError(schoolNameEn) }
         </div>
         {/* startDate */}
@@ -450,7 +459,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="startDate">{ translate("schools.fields.startDate") }</label>
+          <label className={activeLable} htmlFor="startDate">{ trans("schools.fields.startDate") }</label>
           { this.showError(startDate) }
         </div>
         {/* address */}
@@ -470,7 +479,7 @@ class SchoolsForm extends Component {
                     this.validateForm();
                   } }
           />
-          <label className={activeLable} htmlFor="address">{ translate("schools.fields.address") }</label>
+          <label className={activeLable} htmlFor="address">{ trans("schools.fields.address") }</label>
           { this.showError(address) }
         </div>
         {/* comNum */}
@@ -490,7 +499,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="comNum">{ translate("schools.fields.comNum") }</label>
+          <label className={activeLable} htmlFor="comNum">{ trans("schools.fields.comNum") }</label>
           { this.showError(comNum) }
         </div>
         {/* isActive */}
@@ -498,7 +507,7 @@ class SchoolsForm extends Component {
           <i className="material-icons prefix">school</i>
           <div>
             <label className={activeLable}>
-              { `${translate("schools.fields.isActive")} ? ${translate("schools.fields.no")}` }
+              { `${trans("schools.fields.isActive")} ? ${trans("schools.fields.no")}` }
               <input id="isActive"
                     disabled={isActive.disabled}
                     type="checkbox"
@@ -513,7 +522,7 @@ class SchoolsForm extends Component {
                     } }
               />
               <span className="lever" />
-              {translate("schools.fields.yes")}
+              {trans("schools.fields.yes")}
             </label>
           </div>
           { this.showError(isActive) }
@@ -529,7 +538,7 @@ class SchoolsForm extends Component {
                 onClick={this.addSchool}
         >
             <i className="material-icons left">add</i>
-            { translate("schools.actions.new") }
+            { trans("schools.actions.new") }
         </button>
         <button className="btn waves-effect waves-light orange darken-3"
                 type="button"
@@ -540,7 +549,7 @@ class SchoolsForm extends Component {
                 onClick={this.updateSchool}
         >
             <i className="material-icons left">edit</i>
-            { translate("schools.actions.update") }
+            { trans("schools.actions.update") }
         </button>
         <button className="btn waves-effect waves-light red darken-3"
                 type="button"
@@ -551,7 +560,7 @@ class SchoolsForm extends Component {
                 onClick={this.deleteSchool}
         >
             <i className="material-icons left">close</i>
-            { translate("schools.actions.remove") }
+            { trans("schools.actions.remove") }
         </button>
         </div>
       </form>
@@ -563,7 +572,7 @@ const mapStateToProps = (state) => ({
   "schools": state.lookup.schools,
   "schoolsCount": state.lookup.schools.length,
   "lookupEntity": state.lookup.lookupEntity,
-  "translate": getTranslate(state.localize)
+  "trans": getTranslate(state.localize)
 })
 // connect the form with the redux state
 export default connect(mapStateToProps)(SchoolsForm);

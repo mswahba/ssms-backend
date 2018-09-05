@@ -1,0 +1,18 @@
+{
+  "users": {
+    "signIn": {
+      "userId": [
+        "UserID",
+        "رقم الهوية"
+      ],
+      "password": [
+        "Password",
+        "كلمة المرور"
+      ],
+      "btn": [
+        "SignIn",
+        "تسجيل دخول"
+      ]
+    }
+  }
+}

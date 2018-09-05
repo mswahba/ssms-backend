@@ -93,6 +93,50 @@
         "Delete",
         "حذف"
       ]
+    },
+    "validations": {
+      "schoolNameAr": {
+        "required": [
+          "SchoolNameAr is required ...",
+          "يجب إدخال اسم المدرسة باللغة العربية"
+        ],
+        "alpha": [
+          "Only Arabic alphabits ...",
+          "يسمح فقط بإدخال حروف اللغة العربية"
+        ]
+      },
+      "schoolNameEn": {
+        "required": [
+          "SchoolNameEn is required ...",
+          "يجب إدخال اسم المدرسة باللغة الانجليزية"
+        ],
+        "alpha": [
+          "Only English alphabits ...",
+          "يسمح فقط بإدخال حروف اللغة الانجليزية"
+        ]
+      },
+      "startDate": {
+        "before": [
+          "Start date can't be ahead of today ...",
+          "لا يسمح بإدخال تاريخ بعد تاريخ اليوم"
+        ]
+      },
+      "address":  {
+        "length": [
+          "Address length can't be more than 250 character ...",
+          "يجب ألا يزيد عدد أحرف العنوان عن 250 حرف"
+        ]
+      },
+      "comNum":  {
+        "length": [
+          "Commercial number can't be more than 6 digits",
+          "يجب ألا يزيد عدد أرقام السجل التجاري عن 6 أرقام"
+        ],
+        "numeric": [
+          "Only integer allowed ...",
+          "يسمح فقط بإدخال ارقام صحيحة"
+        ]
+      }
     }
   }
 }

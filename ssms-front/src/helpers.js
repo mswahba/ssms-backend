@@ -35,3 +35,8 @@ export const initTooltips = () => {
 export const closeTooltips = (instances) => {
   tooltipsIns.forEach( instance => instance.close() );
 }
+
+// export const importAll = (dir, extension) => {
+//   const _importAll = (r) => r.keys().map(r);
+//   return _importAll(require.context(dir, false, new RegExp(extension+"$")));
+// }
