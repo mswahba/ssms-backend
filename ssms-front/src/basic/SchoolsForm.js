@@ -72,8 +72,10 @@ class SchoolsForm extends Component {
         invalid: false,
         error: '',
         validtor: (value) => {
-          if(value && !isBefore(moment(value).format('DD/MM/YYYY'), moment().add(1, 'day').format('DD/MM/YYYY') ) )
-            return trans("schools.validations.startDate.before");
+          if(value) {
+            if( !isBefore(moment(value).format('MM/DD/YYYY'), moment().add(1, 'day').format('MM/DD/YYYY') ) )
+              return trans("schools.validations.startDate.before");
+          }
         }
       },
       address: {
@@ -286,7 +288,7 @@ class SchoolsForm extends Component {
     if (props.match.url.includes('/new'))
       return;
     // when receive schools change lookupEntity based on route id
-    if ( 
+    if (
         ( props.schoolsCount && !props.lookupEntity.schoolId ) ||
         ( props.schoolsCount && props.lookupEntity.schoolId != props.match.params.id )
        ) {
@@ -314,6 +316,8 @@ class SchoolsForm extends Component {
       yearRange: [currentYear-70,currentYear+30],
       defaultDate: this.state.startDate.value.toLocaleDateString('en-gb'),
       onSelect: (selectedDate) => {
+        console.log(selectedDate);
+        console.log(selectedDate.toLocaleDateString('en-us'));
         this.setFieldValue('startDate',selectedDate);
         this.validateForm();
       }
