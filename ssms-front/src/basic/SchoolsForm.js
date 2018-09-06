@@ -31,7 +31,6 @@ class SchoolsForm extends Component {
       title: "",
       formInvalid: true,
       formSubmitted: false,
-      activeLable: '', // to render a label with or without 'active' class
       schoolId: {
         hidden: false,
         disabled: true,
@@ -131,7 +130,6 @@ class SchoolsForm extends Component {
     if (url.includes('new'))
       this.setState((prevState) => ({
         title: trans("schools.actions.new"),
-        activeLabel: '',
         schoolId: {
           ...prevState.schoolId,
           hidden: true,
@@ -153,7 +151,6 @@ class SchoolsForm extends Component {
     else if (url.includes('edit') && id) {
       this.setState((prevState) => ({
         title: trans("schools.actions.update"),
-        activeLable: 'active',
         schoolId: {
           ...prevState.schoolId,
           hidden: false,
@@ -168,7 +165,6 @@ class SchoolsForm extends Component {
     else if (url.includes('details') && id)
       this.setState((prevState) => ({
         title: trans("schools.actions.detailsTitle"),
-        activeLable: 'active',
         schoolId: {
           ...prevState.schoolId,
           hidden: false,
@@ -290,7 +286,10 @@ class SchoolsForm extends Component {
     if (props.match.url.includes('/new'))
       return;
     // when receive schools change lookupEntity based on route id
-    if ( props.schoolsCount ) {
+    if ( 
+        ( props.schoolsCount && !props.lookupEntity.schoolId ) ||
+        ( props.schoolsCount && props.lookupEntity.schoolId != props.match.params.id )
+       ) {
       lookupActions.setLookupEntity({
         lookupTable: 'schools',
         lookupKey: 'schoolId',
@@ -326,10 +325,6 @@ class SchoolsForm extends Component {
   }
   // componentWillReceiveProps
   componentWillReceiveProps(nextProps) {
-    // extract id, url from routes props
-    const { match: { params: { id } }, match: { url } } = nextProps;
-    // handle the 3 Form Conditions based on routes props
-    this.setupFormType(id, url);
     // map the from fields values from props to state
     this.mapPropsToState(nextProps);
   }
@@ -367,7 +362,6 @@ class SchoolsForm extends Component {
   render() {
     const {
       title,
-      activeLable,
       schoolId,
       schoolName,
       schoolNameEn,
@@ -403,7 +397,7 @@ class SchoolsForm extends Component {
                     this.validateForm();
                   } }
           />
-          <label className={activeLable} htmlFor="schoolId">{ trans("schools.fields.schoolId") }</label>
+          <label className={schoolId.value? 'active': ''} htmlFor="schoolId">{ trans("schools.fields.schoolId") }</label>
           { this.showError(schoolId) }
         </div>
         {/* schoolName */}
@@ -423,7 +417,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="schoolName">{ trans("schools.fields.schoolNameAr") }</label>
+          <label className={schoolId.value? 'active': ''} htmlFor="schoolName">{ trans("schools.fields.schoolNameAr") }</label>
           { this.showError(schoolName) }
         </div>
         {/* schoolNameEn */}
@@ -443,7 +437,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="schoolNameEn">{ trans("schools.fields.schoolNameEn") }</label>
+          <label className={schoolId.value? 'active': ''} htmlFor="schoolNameEn">{ trans("schools.fields.schoolNameEn") }</label>
           { this.showError(schoolNameEn) }
         </div>
         {/* startDate */}
@@ -459,7 +453,7 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="startDate">{ trans("schools.fields.startDate") }</label>
+          <label className={schoolId.value? 'active': ''} htmlFor="startDate">{ trans("schools.fields.startDate") }</label>
           { this.showError(startDate) }
         </div>
         {/* address */}
@@ -479,7 +473,7 @@ class SchoolsForm extends Component {
                     this.validateForm();
                   } }
           />
-          <label className={activeLable} htmlFor="address">{ trans("schools.fields.address") }</label>
+          <label className={schoolId.value? 'active': ''} htmlFor="address">{ trans("schools.fields.address") }</label>
           { this.showError(address) }
         </div>
         {/* comNum */}
@@ -499,14 +493,14 @@ class SchoolsForm extends Component {
                   this.validateForm();
                 } }
           />
-          <label className={activeLable} htmlFor="comNum">{ trans("schools.fields.comNum") }</label>
+          <label className={schoolId.value? 'active': ''} htmlFor="comNum">{ trans("schools.fields.comNum") }</label>
           { this.showError(comNum) }
         </div>
         {/* isActive */}
         <div className="input-field switch" hidden={isActive.hidden}>
           <i className="material-icons prefix">school</i>
           <div>
-            <label className={activeLable}>
+            <label className={schoolId.value? 'active': ''} >
               { `${trans("schools.fields.isActive")} ? ${trans("schools.fields.no")}` }
               <input id="isActive"
                     disabled={isActive.disabled}
