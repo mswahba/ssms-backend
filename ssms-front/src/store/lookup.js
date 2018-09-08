@@ -68,10 +68,16 @@ const updater = {
     selectedTables: payload
   }),
   [actionTypes.SET_LOOKUP_ENTITY]: (state, payload) => {
-    const entity = state[payload.lookupTable].find(item => item[payload.lookupKey] == payload.id)
+    let entity = null;
+    if( Object.keys(payload).includes('lookupTable') &&
+        Object.keys(payload).includes('lookupKey') &&
+        Object.keys(payload).includes('id')
+      ) {
+        entity = state[payload.lookupTable].find(item => item[payload.lookupKey] == payload.id)
+      }
     return {
       ...state,
-      lookupEntity: entity
+      lookupEntity: entity || payload
     }
   },
   [actionTypes.SET_SELECTED_TABLE]: (state,payload) => ({

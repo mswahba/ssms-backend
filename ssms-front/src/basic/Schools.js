@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { lookupActions } from "../store/lookup";
 import SchoolsTable from "./SchoolsTable";
 import SchoolsForm from "./SchoolsForm";
+import SchoolsReduxForm from "./SchoolsReduxForm";
 
 // flag to get data only once
 let fetchData = true;
@@ -22,10 +23,15 @@ const Schools = (props) => {
   }
   return (
     <Switch>
+      {/* Regular Form */}
       <Route path={`${url}/edit/:id`} component={SchoolsForm} />
       <Route path={`${url}/details/:id`} component={SchoolsForm} />
       <Route path={`${url}/new`} component={SchoolsForm} />
       <Route path={`${url}/list`} component={SchoolsTable} />
+      {/* ReduxForm */}
+      <Route path={`${url}/redux/edit/:id`} component={SchoolsReduxForm} />
+      <Route path={`${url}/redux/details/:id`} component={SchoolsReduxForm} />
+      <Route path={`${url}/redux/new`} component={SchoolsReduxForm} />
       <Redirect from="/" to={`${url}/list`} />
     </Switch>
   );

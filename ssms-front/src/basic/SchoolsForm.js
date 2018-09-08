@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { getTranslate } from 'react-localize-redux'
+import { Link } from 'react-router-dom'
 import isAlpha from 'validator/lib/isAlpha'
 import isLength from 'validator/lib/isLength'
 import isBefore from 'validator/lib/isBefore'

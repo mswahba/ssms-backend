@@ -7,6 +7,8 @@ import { Provider } from 'react-redux'
 import { middlewares } from './store/middlewares'
 // i18n
 import { LocalizeProvider, localizeReducer } from 'react-localize-redux'
+// redux form reducer
+import { reducer as formReducer } from 'redux-form'
 import AppLocalize from './AppLocalize';
 
 // #region import All Redux Reducers
@@ -21,6 +23,8 @@ const allReducers = allModules
       },{});
 // add the loclize reducer
 allReducers.localize = localizeReducer;
+// add the redux form reducer
+allReducers.form = formReducer;
 // #endregion
 
 // #region Configure Redux Store

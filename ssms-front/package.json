@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "redux-form": "^7.4.2",
     "react-localize-redux": "^3.3.2",
     "validator": "^10.7.0",
     "react-toastify": "^4.2.3",

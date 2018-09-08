@@ -5,7 +5,7 @@ import { DataTable } from "primereact/datatable";
 import { connect } from "react-redux";
 import { getTranslate } from 'react-localize-redux';
 import { lookupActions } from "../store/lookup";
-import { initTooltips, closeTooltips } from '../helpers';
+import { initTooltips, closeTooltips, formatDate } from '../helpers';
 import '../shared/data-table.css';
 class SchoolsTable extends Component {
 
@@ -99,7 +99,7 @@ class SchoolsTable extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  "schools": state.lookup.schools.map(school => ({ ...school, startDate: new Date(school.startDate).toLocaleDateString('en-gb') }) ),
+  "schools": state.lookup.schools.map( formatDate('startDate') ),
   "translate": getTranslate(state.localize),
   "localize": state.localize
 })
