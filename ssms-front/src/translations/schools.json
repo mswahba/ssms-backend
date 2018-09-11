@@ -48,7 +48,7 @@
         "رقم السجل"
       ],
       "isActive": [
-        "Is Active ?",
+        "Active ?",
         "حالة التفعيل ؟"
       ],
       "yes": [
@@ -96,6 +96,18 @@
       "deleteConfirm": [
         "Are you sure you want to delete the school ?",
         "هل تريد بالتأكيد حذف بيانات هذه المدرسة ؟"
+      ],
+      "addSuccess": [
+        "A new School has been added successfully ...",
+        "تم بحمد الله إضافة مدرسة جديدة بنجاح ..."
+      ],
+      "updateSuccess": [
+        "School data have been updated successfully ...",
+        "تم بحمد الله تحديث بيانات المدرسة ..."
+      ],
+      "deleteSuccess": [
+        "The School has been deleted successfully ...",
+        "تم بحمد الله حذف هذه المدرسة بنجاح ..."
       ]
     },
     "validations": {

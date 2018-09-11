@@ -12,15 +12,14 @@ class SchoolsTable extends Component {
   constructor(props) {
     super(props);
     console.log(this.props);
-    const { translate } = this.props;
+    const { trans } = this.props;
     // define table columns values and header
     this.columns = [
-      { field: "schoolId",      header: translate("schools.fields.schoolId") },
-      { field: "schoolName",    header: translate("schools.fields.schoolNameAr") },
-      { field: "schoolNameEn",  header: translate("schools.fields.schoolNameEn") },
-      { field: "startDate",     header: translate("schools.fields.startDate") },
-      { field: "address",       header: translate("schools.fields.address") },
-      { field: "isActive",      header: translate("schools.fields.isActive") }
+      { field: "schoolId",      header: trans("schools.fields.schoolId") },
+      { field: "schoolName",    header: trans("schools.fields.schoolNameAr") },
+      { field: "schoolNameEn",  header: trans("schools.fields.schoolNameEn") },
+      { field: "startDate",     header: trans("schools.fields.startDate") },
+      { field: "address",       header: trans("schools.fields.address") }
     ];
     // dynamically define dataTable columns List
     this.Columns = this.columns.map(col => (
@@ -36,23 +35,41 @@ class SchoolsTable extends Component {
     ));
     // handle delete
     this.delete = (id) => {
-      lookupActions.deleteLookupEntity( {
-        req: ['delete',`/schools/delete-by-id?deleteType=physical&key=${id}`],
-        fulfilledToast: ["info","this school deleted successfully ..."]
-      });
+      const { trans } = this.props;
+      if( window.confirm( trans('schools.actions.deleteConfirm') ) ) {
+        lookupActions.deleteLookupEntity( {
+          req: ['delete',`/schools/delete-by-id?deleteType=physical&key=${id}`],
+          fulfilledToast: ["info", trans('schools.actions.deleteSuccess')]
+        });
+      }
     }
+    // define isActive column jsx template
+    this.isActiveTemplate = (rowData) => {
+      const fa = (rowData.isActive)
+                  ? 'fa-check-square'
+                  : 'fa-square'
+      return (
+        <div className="center">
+          <i className={`green-text text-darken-3 far ${fa}`}></i>
+        </div>
+      )
+    };
+    // define isActive column
+    this.isActiveColumn = <Column key="isActive" body={this.isActiveTemplate} header={ trans("schools.fields.isActive") } />;
+    // add the isActive column to the Columns List
+    this.Columns.push(this.isActiveColumn);
     // define actions column jsx template
-    this.actionTemplate = (rowData, column) => {
+    this.actionTemplate = (rowData) => {
       return (
         <div className="action-icons">
           <Link to={`/schools/details/${rowData.schoolId}`}>
-            <i data-position="top" data-tooltip={ translate("schools.actions.details") } className="tooltipped fas fa-info-circle green-text text-darken-3"></i>
+            <i data-position="top" data-tooltip={ trans("schools.actions.details") } className="tooltipped fas fa-info-circle green-text text-darken-3"></i>
           </Link>
           <Link to={`/schools/edit/${rowData.schoolId}`}>
-            <i data-position="top" data-tooltip={ translate("schools.actions.edit") } className="tooltipped fas fa-edit blue-text text-darken-3"></i>
+            <i data-position="top" data-tooltip={ trans("schools.actions.edit") } className="tooltipped fas fa-edit blue-text text-darken-3"></i>
           </Link>
           <i data-position="top"
-              data-tooltip={ translate("schools.actions.delete") }
+              data-tooltip={ trans("schools.actions.delete") }
               className="tooltipped fas fa-trash-alt red-text text-darken-3"
               onClick={ () => this.delete(rowData.schoolId) }
           ></i>
@@ -60,7 +77,7 @@ class SchoolsTable extends Component {
       )
     };
     // define action column
-    this.actionColumn = <Column key="actions" body={this.actionTemplate} header={ translate("schools.actions.title") } />;
+    this.actionColumn = <Column key="actions" body={this.actionTemplate} header={ trans("schools.actions.title") } />;
     // add the actions column to the Columns List
     this.Columns.push(this.actionColumn);
   }
@@ -74,7 +91,7 @@ class SchoolsTable extends Component {
   }
 
   render() {
-    const { translate } = this.props
+    const { trans } = this.props;
     return (
       <div className="container rtl">
         <Link to="/schools/new">
@@ -84,7 +101,7 @@ class SchoolsTable extends Component {
                     onClick={this.addSchool}
           >
             <i className="material-icons left">add</i>
-            { translate("schools.actions.new") }
+            { trans("schools.actions.new") }
           </button>
         </Link>
         <DataTable
@@ -100,7 +117,7 @@ class SchoolsTable extends Component {
 
 const mapStateToProps = (state) => ({
   "schools": state.lookup.schools.map( formatDate('startDate') ),
-  "translate": getTranslate(state.localize),
+  "trans": getTranslate(state.localize),
   "localize": state.localize
 })
 

@@ -189,14 +189,14 @@ class _SchoolsReduxForm extends Component {
     if (this.formCase === 'new') {
       lookupActions.addLookupEntity( {
         req: ['post','/schools/add?autoId=ok', values ],
-        fulfilledToast: ["success","new school added successfully ..."]
+        fulfilledToast: ["success",trans('schools.actions.addSuccess')]
       });
       reset();
     }
     else if (this.formCase === 'edit') {
       lookupActions.updateLookupEntity( {
         req: ['put','/schools/update', values ],
-        fulfilledToast: ["success","this school updated successfully ..."]
+        fulfilledToast: ["success",trans('schools.actions.updateSuccess')]
       });
       history.push("/schools/list");
     }
@@ -204,7 +204,7 @@ class _SchoolsReduxForm extends Component {
       if( window.confirm( trans('schools.actions.deleteConfirm') ) ) {
         lookupActions.deleteLookupEntity( {
           req: ['post',`/schools/delete?deleteType=physical`, values ],
-          fulfilledToast: ["info","this school deleted successfully ..."]
+          fulfilledToast: ["info",trans('schools.actions.deleteSuccess')]
         });
         history.push("/schools/list");
       }

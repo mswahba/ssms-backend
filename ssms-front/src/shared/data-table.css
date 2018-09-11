@@ -10,7 +10,7 @@ button.btn {
 .action-icons i {
   cursor: pointer;
 }
-.action-icons i.fas {
+.action-icons i.fas, i.far {
   font-size: 1.3em;
 }
 

@@ -25,13 +25,13 @@ class AppLocalize extends Component {
       options: { renderInnerHtml: true, renderToStaticMarkup }
     });
     // set active language manually
-    // props.setActiveLanguage('ar');
+    props.setActiveLanguage('ar');
   }
   render() {
     return (
       <Fragment>
-        <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css' />
-        {/* <link rel="stylesheet" href='/materialize.rtl.min.css' /> */}
+        {/* <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css' /> */}
+        <link rel="stylesheet" href='/materialize.rtl.min.css' />
         <BrowserRouter>
           {/* header */}
           {/* sidebar */}
