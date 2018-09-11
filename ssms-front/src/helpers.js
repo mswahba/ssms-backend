@@ -41,7 +41,7 @@ export const closeTooltips = (instances) => {
 //   return _importAll(require.context(dir, false, new RegExp(extension+"$")));
 // }
 
-export const formatDate = (key) => (item) => ({
+export const formatDate = (key,format = true) => (item) => ({
   ...item,
-  [key]: new Date(item[key]).toLocaleDateString('en-gb')
+  [key]: (format)? new Date(item[key]).toLocaleDateString('en-gb') : new Date(item[key])
 });

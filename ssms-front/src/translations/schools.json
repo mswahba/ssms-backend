@@ -48,7 +48,7 @@
         "رقم السجل"
       ],
       "isActive": [
-        "is Active ?",
+        "Is Active ?",
         "حالة التفعيل ؟"
       ],
       "yes": [
@@ -92,6 +92,10 @@
       "delete": [
         "Delete",
         "حذف"
+      ],
+      "deleteConfirm": [
+        "Are you sure you want to delete the school ?",
+        "هل تريد بالتأكيد حذف بيانات هذه المدرسة ؟"
       ]
     },
     "validations": {

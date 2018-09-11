@@ -8,43 +8,60 @@ const showError = ( { error, touched } ) => (
     </div>
   : null
 )
-
-// form Inputs
-export const renderInput = ({ input, icon, type, label, meta }) => {
+// Action Button
+export const Button = ({ name, hidden, disabled, classes, icon, label }) => {
+  let btnClasses = `btn waves-effect waves-light ${classes} `;
+  if(hidden)
+    btnClasses += 'hidden';
   return (
-    <div className="input-field">
+    <button id={name}
+            name={name}
+            className={btnClasses}
+            disabled={disabled}
+    >
+      <i className="material-icons left">{ icon || 'send' }</i>
+      { label }
+    </button>
+  )
+}
+
+// Inputs and Textarea
+export const renderInput = ({ input, icon, type, label, meta, uiState: {hidden, disabled} }) => {
+  return (
+    <div className="input-field" hidden={hidden}>
       <i className="material-icons prefix">{icon || 'edit'}</i>
       { (type === 'textarea')
-          ? <textarea id={input.name} {...input} className="materialize-textarea" />
-          : <input id={input.name} type={type || 'text'} {...input} />
+          ? <textarea id={input.name} className="materialize-textarea" disabled={disabled} {...input} />
+          : <input    id={input.name} type={type || 'text'} disabled={disabled} {...input} />
       }
       <label className={input.value? 'active': ''} htmlFor={input.name}>{ label }</label>
       { showError(meta) }
     </div>
   )
 }
-
-export const renderDatepicker = ({ input, icon, type, label, meta }) => {
+// date and time pickers
+export const renderDatepicker = ({ input, icon, type, label, meta, uiState: {hidden, disabled} }) => {
   return (
-    <div className="input-field">
+    <div className="input-field" hidden={hidden}>
       <i className="material-icons prefix">{icon || 'edit'}</i>
-      <input id={input.name} type='text' className={type} {...input} />
+      <input id={input.name} type='text' className={type} disabled={disabled} {...input} />
       <label className={input.value? 'active': ''} htmlFor={input.name}>{ label }</label>
       { showError(meta) }
     </div>
   )
 }
-
-export const renderSwitch = ({ input, meta, icon, label, on, off, hidden, disabled }) => (
-  <div className="input-field switch" hidden={hidden}>
-    <i className="material-icons prefix">{icon}</i>
-    <div>
-      <label className={input.value? 'active': ''} >
-        <span>{label}</span>
+// Switch
+export const renderSwitch = ({ input, meta, icon, label, on, off, uiState: {hidden, disabled} }) => (
+  <div className="input-field" hidden={hidden}>
+    <i className="material-icons prefix">{icon || 'edit'}</i>
+    <label className="active">{label}</label>
+    <div className="switch">
+      <label>
         {off && <span>{off}</span>}
         <input id="isActive"
-              disabled={disabled}
               type="checkbox"
+              disabled={disabled}
+              checked={input.value}
               {...input}
         />
         <span className="lever" />

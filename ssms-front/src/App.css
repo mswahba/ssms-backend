@@ -6,3 +6,12 @@
 @import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 /* fontawesome icons */
 @import 'https://use.fontawesome.com/releases/v5.2.0/css/all.css';
+/*  */
+.hidden {
+  display: none !important;
+}
+.switch {
+  display: inline-block !important;
+  transform: scale(1.1);
+  padding-right: 25px;
+}

@@ -9,6 +9,8 @@ import addExtensions from './addExtensions';
 // for primereact css styles
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/omega/theme.css";
+// app styles
+import "./app.css";
 
 // AutoInit the Materialize component [which needs AutoInit]
 M.AutoInit();
