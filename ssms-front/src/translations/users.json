@@ -1,18 +1,54 @@
 {
   "users": {
     "signIn": {
-      "userId": [
-        "UserID",
-        "رقم الهوية"
-      ],
-      "password": [
-        "Password",
-        "كلمة المرور"
-      ],
-      "btn": [
+      "title": [
         "SignIn",
         "تسجيل دخول"
-      ]
+      ],
+      "success": [
+        "Welcome back ...",
+        "مرحبا بك ..."
+      ],
+      "fields": {
+        "userId": [
+          "UserID",
+          "رقم الهوية"
+        ],
+        "userPassword": [
+          "Password",
+          "كلمة المرور"
+        ],
+        "btn": [
+          "SignIn",
+          "تسجيل دخول"
+        ]
+      },
+      "validations": {
+        "userId": {
+          "required": [
+            "ID number is required ...",
+            "يجب ادخال رقم الهوية"
+          ],
+          "numeric": [
+            "only number accepted ...",
+            "يجب ادخال ارقام فقط"
+          ],
+          "length": [
+            "",
+            ""
+          ]
+        },
+        "userPassword": {
+          "required": [
+            "Password is required ...",
+            "يجب إدخال مفتاح الدخول"
+          ],
+          "length": [
+            "",
+            ""
+          ]
+        }
+      }
     }
   }
 }

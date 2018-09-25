@@ -1,58 +1,68 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React from "react"
+import { connect } from "react-redux"
 import { getTranslate } from 'react-localize-redux'
-import { userActions } from "../store/user";
-import { toast } from 'react-toastify';
+import { Field, reduxForm } from 'redux-form'
+import { store } from '../AppStore'
+import { renderInput, Button } from '../shared/FormInputs'
+import { userActions } from "../store/user"
+import isNumeric from 'validator/lib/isNumeric'
+import isLength from 'validator/lib/isLength'
+import { toast } from 'react-toastify'
 
-class SignIn extends Component {
-  state = {
-    userId: "",
-    userPassword: ""
-  };
-  componentWillReceiveProps(newProps) {
-    if (newProps.error)
-      toast.error(JSON.stringify(newProps.error));
-    else if(newProps.loggedUser.userId)
-      toast.info(JSON.stringify(newProps.loggedUser.userId));
-  }
-  render() {
-    const { trans } = this.props;
-    return (
-      <form>
-        <div className="input-field ">
-          <input
-            type="text"
-            id="userId"
-            className="validate"
-            value={this.state.userId}
-            onChange={e => this.setState({ userId: e.target.value })}
-          />
-          <label htmlFor="userId">{trans("users.signIn.userId")}</label>
-        </div>
-        <div className="input-field ">
-          <input
-            type="text"
-            id="userPassword"
-            className="validate"
-            value={this.state.userPassword}
-            onChange={e => this.setState({ userPassword: e.target.value })}
-          />
-          <label htmlFor="userPassword">{trans("users.signIn.password")}</label>
-        </div>
-        <a
-          className="waves-effect waves-light btn"
-          onClick= {
-            () => userActions.signIn({ req: ["post", "/Users/SignIn", this.state]})
-          }
-        >
-          <i className="material-icons right">cloud</i>
-          {trans("users.signIn.btn")}
-        </a>
-      </form>
-    );
-  }
+let SignIn = (props) => {
+  const { trans, handleSubmit, pristine, submitting } = props;
+  const doSignIn = (values) => userActions.signIn({ req: ["post", "/Users/SignIn", values], fulfilledToast: ["success", trans('users.signIn.success')] });
+  return (
+    <form className="rtl" onSubmit={handleSubmit(doSignIn)}>
+      {/* form title */}
+      <h4 className="orange-text">{ trans("users.signIn.title") }</h4>
+      <div className="divider orange" />
+      {/* userId */}
+      <Field name="userId"
+              label={trans("users.signIn.fields.userId")}
+              component={renderInput} />
+      {/* userPassword */}
+      <Field name="userPassword"
+              type="password"
+              label={trans("users.signIn.fields.userPassword")}
+              component={renderInput} />
+      {/* Action Button */}
+      <Button classes="primary darken-3"
+                name="signIn"
+                icon="send"
+                label={ trans("users.signIn.fields.btn") }
+                disabled={pristine || submitting}
+      />
+    </form>
+  );
 }
+// form validation
+const validate = ({ userId, userPassword }) => {
+  const trans = getTranslate(store.getState().localize);
+  const errors = {};
 
+  // userId
+  if (!userId)
+    errors.userId = trans("users.signIn.validations.userId.required");
+  else if ( !isNumeric(userId, { no_symbols: true }) )
+    errors.userId = trans("users.signIn.validations.userId.numeric");
+  else if ( !isLength(userId, { min: 10, max: 10 }) )
+    errors.userId = trans("users.signIn.validations.userId.length");
+  // userPassword
+  if (!userPassword)
+    errors.userPassword = trans("users.signIn.validations.userPassword.required");
+  else if( !isLength(userId, { min: 6, max: 25 }) )
+    errors.userPassword = trans("users.signIn.validations.userPassword.length");
+
+  return errors;
+}
+// define the redux form
+SignIn = reduxForm({
+  form: 'signIn',
+  enableReinitialize: true,
+  validate
+})(SignIn);
+// get props from redux state
 const mapStateToProps = state => ({
   ...state.user,
   "trans": getTranslate(state.localize)

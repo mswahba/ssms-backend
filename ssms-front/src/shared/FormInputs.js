@@ -26,7 +26,7 @@ export const Button = ({ name, hidden, disabled, classes, icon, label }) => {
 }
 
 // Inputs and Textarea
-export const renderInput = ({ input, icon, type, label, meta, uiState: {hidden, disabled} }) => {
+export const renderInput = ({ input, icon, type, label, meta, uiState: {hidden, disabled} = {} }) => {
   return (
     <div className="input-field" hidden={hidden}>
       <i className="material-icons prefix">{icon || 'edit'}</i>
@@ -40,7 +40,7 @@ export const renderInput = ({ input, icon, type, label, meta, uiState: {hidden, 
   )
 }
 // date and time pickers
-export const renderDatepicker = ({ input, icon, type, label, meta, uiState: {hidden, disabled} }) => {
+export const renderDatepicker = ({ input, icon, type, label, meta, uiState: {hidden, disabled} = {} }) => {
   return (
     <div className="input-field" hidden={hidden}>
       <i className="material-icons prefix">{icon || 'edit'}</i>
@@ -51,7 +51,7 @@ export const renderDatepicker = ({ input, icon, type, label, meta, uiState: {hid
   )
 }
 // Switch
-export const renderSwitch = ({ input, meta, icon, label, on, off, uiState: {hidden, disabled} }) => (
+export const renderSwitch = ({ input, meta, icon, label, on, off, uiState: {hidden, disabled} = {} }) => (
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon || 'edit'}</i>
     <label className="active">{label}</label>

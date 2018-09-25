@@ -1,115 +1,62 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getTranslate } from 'react-localize-redux'
-import { Link } from 'react-router-dom'
+import { Field, reduxForm, change } from 'redux-form'
 import isAlpha from 'validator/lib/isAlpha'
 import isLength from 'validator/lib/isLength'
 import isBefore from 'validator/lib/isBefore'
 import isNumeric from 'validator/lib/isNumeric'
 import moment from 'moment'
+import { store } from '../AppStore'
+import { renderInput, renderDatepicker, renderSwitch, Button } from '../shared/FormInputs'
 import { lookupActions } from '../store/lookup'
-import { initDatePicker } from '../helpers'
-class SchoolsForm extends Component {
+import { initDatePicker, formatDate } from '../helpers'
+
+class _SchoolsReduxForm extends Component {
 
   constructor(props) {
     super(props);
-    const { trans } = props;
-    // hold form fields values
-    this.initValues = {
-      'schoolId': 0,
-      'schoolName': '',
-      'schoolNameEn': '',
-      'startDate': new Date(),
-      'address': '',
-      'comNum': '',
-      'isActive': false
-    };
-    // hold the form fields keys
-    this.fieldsKeys = Object.keys(this.initValues);
-    // the form state
+    // setting the detfault date
+    this.defaultDate = new Date();
+    // setting the formCase [new - edit - details]
+    this.formCase = (props.match.url.includes('new'))
+                      ? 'new'
+                      : (props.match.url.includes('edit'))
+                        ? 'edit'
+                        : (props.match.url.includes('details'))
+                          ? 'details'
+                          : '';
+    // define the form state
     this.state = {
-      title: "",
-      formInvalid: true,
-      formSubmitted: false,
+      title: '',
       schoolId: {
         hidden: false,
-        disabled: true,
-        value: this.initValues['schoolId']
+        disabled: true
       },
       schoolName: {
         hidden: false,
-        disabled: false,
-        value: this.initValues['schoolName'],
-        touched: false,
-        invalid: true,
-        error: '',
-        validtor: (value) => {
-          if(!value)
-            return trans("schools.validations.schoolNameAr.required");
-          else if(!isAlpha(value, 'ar'))
-            return trans("schools.validations.schoolNameAr.alpha");
-        }
+        disabled: false
       },
       schoolNameEn: {
         hidden: false,
-        disabled: false,
-        value: this.initValues['schoolNameEn'],
-        touched: false,
-        invalid: false,
-        error: '',
-        validtor: (value) => {
-          if(!value)
-            return trans("schools.validations.schoolNameEn.required");
-          else if(!isAlpha(value))
-            return trans("schools.validations.schoolNameEn.alpha");
-        }
+        disabled: false
       },
       startDate: {
         hidden: false,
-        disabled: false,
-        value: this.initValues['startDate'],
-        touched: false,
-        invalid: false,
-        error: '',
-        validtor: (value) => {
-          if(value) {
-            if( !isBefore(moment(value).format('MM/DD/YYYY'), moment().add(1, 'day').format('MM/DD/YYYY') ) )
-              return trans("schools.validations.startDate.before");
-          }
-        }
+        disabled: false
       },
       address: {
         hidden: false,
-        disabled: false,
-        value: this.initValues['address'],
-        touched: false,
-        invalid: false,
-        error: '',
-        validtor: (value) => {
-          if(value && !isLength(value, { min:0, max: 250}))
-            return trans("schools.validations.address.length");
-        }
+        disabled: false
       },
       comNum: {
         hidden: false,
-        disabled: false,
-        value: this.initValues['comNum'],
-        touched: false,
-        invalid: false,
-        error: '',
-        validtor: (value) => {
-          if(value) {
-            if(!isNumeric(value, { no_symbols: true }))
-              return trans("schools.validations.comNum.numeric");
-            else if( !isLength(value, { min: 0, max: 6 }) )
-              return trans("schools.validations.comNum.length");
-          }
-        }
+        disabled: false
       },
       isActive: {
         hidden: false,
-        disabled: false,
-        value: this.initValues['isActive']
+        disabled: false
       },
       btnAdd: {
         hidden: false,
@@ -123,23 +70,17 @@ class SchoolsForm extends Component {
         hidden: false,
         disabled: false
       }
-    };
+    }
   }
-  // change form inputs [disable-hidden] state based on the form type
-  // that comes form form url [new, edit, details]
-  setupFormType = (id, url) => {
+  // change form inputs [disable-hidden] state based on form Case [new, edit, details]
+  setupFormCase = () => {
     const { trans } = this.props;
-    if (url.includes('new'))
-      this.setState((prevState) => ({
+    if (this.formCase === 'new')
+      this.setState({
         title: trans("schools.actions.new"),
         schoolId: {
-          ...prevState.schoolId,
           hidden: true,
           disabled: true
-        },
-        startDate: {
-          ...prevState.startDate,
-          value: null
         },
         btnUpdate: {
           hidden: true,
@@ -149,56 +90,52 @@ class SchoolsForm extends Component {
           hidden: true,
           disabled: true
         }
-      }));
-    else if (url.includes('edit') && id) {
-      this.setState((prevState) => ({
+      });
+    else if (this.formCase === 'edit') {
+      this.setState({
         title: trans("schools.actions.update"),
         schoolId: {
-          ...prevState.schoolId,
           hidden: false,
           disabled: true
         },
         btnAdd: {
           hidden: true,
           disabled: true
+        },
+        btnDelete: {
+          hidden: true,
+          disabled: true
         }
-      }));
+      });
     }
-    else if (url.includes('details') && id)
-      this.setState((prevState) => ({
+    else if (this.formCase === 'details')
+      this.setState({
         title: trans("schools.actions.detailsTitle"),
         schoolId: {
-          ...prevState.schoolId,
           hidden: false,
           disabled: true
         },
         schoolName: {
-          ...prevState.schoolName,
           hidden: false,
           disabled: true
         },
         schoolNameEn: {
-          ...prevState.schoolNameEn,
           hidden: false,
           disabled: true
         },
         startDate: {
-          ...prevState.startDate,
           hidden: false,
           disabled: true
         },
         address: {
-          ...prevState.address,
           hidden: false,
           disabled: true
         },
         comNum: {
-          ...prevState.comNum,
           hidden: false,
           disabled: true
         },
         isActive: {
-          ...prevState.isActive,
           hidden: false,
           disabled: true
         },
@@ -210,160 +147,72 @@ class SchoolsForm extends Component {
           hidden: true,
           disabled: true
         },
-      }));
+      });
   };
-  // set each form field [value] state
-  setFieldValue = (key,value) => {
-    this.setState((prevState) => ({
-      [key]: {
-        ...prevState[key],
-        value: value
-      }
-    }));
-  };
-  // set each form field [touched] state
-  setFieldTouched = (field) => {
-    this.setState((prevState) => ({
-      [field]: {
-        ...prevState[field],
-        touched: true
-      }
-    }));
-  };
-  // set each form field [touched] state
-  setFormSubmitted = () => {
-    this.setState({
-      formSubmitted: true
-    });
-  };
-  // get the form values from the form state
-  getFormValues = () => {
-    return this.fieldsKeys.reduce( (acc,item) => {
-      acc[item] = this.state[item].value;
-      return acc;
-    }, {});
-  };
-  // validate each form input using the validator function exists in [this.state.field]
-  validateForm = () => {
-    // [flag to show if form has any error]
-    let formInvalid = false;
-    this.fieldsKeys.forEach(key => {
-      const field = this.state[key];
-      // do validation
-      if(field.validtor) {
-        const error = field.validtor(field.value);
-        // if any error then set formInvalid => false
-        if(error)
-          formInvalid = true;
-        this.setState( (prevState) => ({
-          // set each field (invalid, error)
-          [key]: {
-            ...prevState[key],
-            invalid: !!error,
-            error,
-          },
-          // set formInvalid
-          formInvalid
-        }) );
-      }
-    })
-  };
-  // display the error message
-  showError = (field) => {
-    return ( (field.touched || this.state.formSubmitted) && field.invalid )
-      ? <div className="red-text text-darken-4 valign-wrapper">
-          <i class="material-icons">error_outline</i>
-          {field.error}
-        </div>
-      : null
-  };
-  // reset form state
-  resetForm = () => {
-    this.fieldsKeys.forEach(key => this.setFieldValue(key,this.initValues[key]) );
-    console.log(this.state);
-  };
-  // map props to form state
-  mapPropsToState = (props) => {
-    // when the Form in new state then return immediatly
-    if (props.match.url.includes('/new'))
-      return;
+
+  componentWillMount() {
+    // handle the 3 Form Cases based on route url
+    this.setupFormCase();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // when the Form in new state then set form initialValues
+    if ( !nextProps.match.params.id ) {
+      // dispatch set lookup entity to fill it with form defaut values
+      lookupActions.setLookupEntity({
+        'schoolId': 0,
+        'schoolName': '',
+        'schoolNameEn': '',
+        'startDate': this.defaultDate,
+        'address': '',
+        'comNum': '',
+        'isActive': false
+      });
+    }
     // when receive schools change lookupEntity based on route id
-    if (
-        ( props.schoolsCount && !props.lookupEntity.schoolId ) ||
-        ( props.schoolsCount && props.lookupEntity.schoolId != props.match.params.id )
+    else if (
+        ( nextProps.schoolsCount && !nextProps.initialValues.schoolId ) ||
+        ( nextProps.schoolsCount && nextProps.initialValues.schoolId != nextProps.match.params.id )
        ) {
       lookupActions.setLookupEntity({
         lookupTable: 'schools',
         lookupKey: 'schoolId',
-        id: props.match.params.id
+        id: nextProps.match.params.id
       });
     }
-    // when lookupEntity is filled - pass its values to the form State values
-    if (props.lookupEntity && Object.keys(props.lookupEntity).length) {
-      Object.entries(props.lookupEntity)
-        .filter(([key, val]) => key !== 'branches')
-        .forEach(([key, val]) => this.setFieldValue(key, (key === 'startDate') ? new Date(val) : val));
+  }
+
+  doSubmit = (values) => {
+    const { reset, history, trans } = this.props;
+    // reformate the date string to be suitable to SQL Server [month/day/year]
+    values = {...values, startDate: moment(values.startDate).format('DD/MM/YYYY')};
+    if (this.formCase === 'new') {
+      lookupActions.addLookupEntity( {
+        req: ['post','/schools/add?autoId=ok', values ],
+        fulfilledToast: ["success",trans('schools.actions.addSuccess')]
+      });
+      reset();
     }
-  };
-  // componentDidMount
-  componentDidMount() {
-    // extract id, url from routes props
-    const { match: { params: { id } }, match: { url } } = this.props;
-    // init Materialize datePicker
-    const currentYear = (new Date()).getFullYear();
-    initDatePicker({
-      format: 'dd/mm/yyyy',
-      yearRange: [currentYear-70,currentYear+30],
-      defaultDate: this.state.startDate.value.toLocaleDateString('en-gb'),
-      onSelect: (selectedDate) => {
-        console.log(selectedDate);
-        console.log(selectedDate.toLocaleDateString('en-us'));
-        this.setFieldValue('startDate',selectedDate);
-        this.validateForm();
+    else if (this.formCase === 'edit') {
+      lookupActions.updateLookupEntity( {
+        req: ['put','/schools/update', values ],
+        fulfilledToast: ["success",trans('schools.actions.updateSuccess')]
+      });
+      history.push("/schools/list");
+    }
+    else if (this.formCase === 'details') {
+      if( window.confirm( trans('schools.actions.deleteConfirm') ) ) {
+        lookupActions.deleteLookupEntity( {
+          req: ['post',`/schools/delete?deleteType=physical`, values ],
+          fulfilledToast: ["info",trans('schools.actions.deleteSuccess')]
+        });
+        history.push("/schools/list");
       }
-    });
-    // handle the 3 Form Conditions based on routes props
-    this.setupFormType(id, url);
-    // map the from fields values from props to state
-    this.mapPropsToState(this.props);
-  }
-  // componentWillReceiveProps
-  componentWillReceiveProps(nextProps) {
-    // map the from fields values from props to state
-    this.mapPropsToState(nextProps);
-  }
-  // addSchool
-  addSchool = () => {
-    this.setFormSubmitted();
-    if(this.state.formInvalid)
-      return;
-    lookupActions.addLookupEntity( {
-      req: ['post','/schools/add?autoId=ok', this.getFormValues()],
-      fulfilledToast: ["success","new school added successfully ..."]
-    });
-    this.resetForm();
-  }
-  // updateSchool
-  updateSchool = () => {
-    this.setFormSubmitted();
-    if(this.state.formInvalid)
-      return;
-    lookupActions.updateLookupEntity( {
-      req: ['put','/schools/update', this.getFormValues()],
-      fulfilledToast: ["success","this school updated successfully ..."]
-    });
-    this.props.history.push("/schools/list");
-  }
-  // deleteSchool
-  deleteSchool = () => {
-    lookupActions.deleteLookupEntity( {
-      req: ['post',`/schools/delete?deleteType=physical`, this.getFormValues() ],
-      fulfilledToast: ["info","this school deleted successfully ..."]
-    });
-    this.props.history.push("/schools/list");
+    }
   }
 
   render() {
+    const { trans, handleSubmit, pristine, submitting } = this.props;
     const {
       title,
       schoolId,
@@ -377,200 +226,135 @@ class SchoolsForm extends Component {
       btnUpdate,
       btnDelete
     } = this.state;
-    const { trans } = this.props;
     return (
-      <form className="rtl">
+      <form className="rtl" onSubmit={handleSubmit(this.doSubmit)}>
         {/* form title */}
         <h4 className="orange-text">{ title }</h4>
         <Link to='/schools/list'>{ trans("schools.backLink") }</Link>
         <div className="divider orange" />
         {/* schoolId */}
-        <div className="input-field" hidden={schoolId.hidden}>
-          <i className="material-icons prefix">edit</i>
-          <input disabled={schoolId.disabled}
-                  id="schoolId"
-                  type="text"
-                  className="validate"
-                  value={schoolId.value}
-                  onChange={(e)=> {
-                    this.setFieldValue('schoolId',e.target.value);
-                    this.validateForm();
-                  }}
-                  onBlur = { () => {
-                    this.setFieldTouched('schoolId');
-                    this.validateForm();
-                  } }
-          />
-          <label className={schoolId.value? 'active': ''} htmlFor="schoolId">{ trans("schools.fields.schoolId") }</label>
-          { this.showError(schoolId) }
-        </div>
+        <Field name="schoolId"
+                uiState={schoolId}
+                label={trans("schools.fields.schoolId")}
+                component={renderInput} />
         {/* schoolName */}
-        <div className="input-field" hidden={schoolName.hidden}>
-          <i className="material-icons prefix">edit</i>
-          <input disabled={schoolName.disabled}
-                id="schoolName"
-                type="text"
-                className="validate"
-                value={schoolName.value}
-                onChange={(e)=> {
-                  this.setFieldValue('schoolName',e.target.value);
-                  this.validateForm();
-                }}
-                onBlur = { () => {
-                  this.setFieldTouched('schoolName');
-                  this.validateForm();
-                } }
-          />
-          <label className={schoolId.value? 'active': ''} htmlFor="schoolName">{ trans("schools.fields.schoolNameAr") }</label>
-          { this.showError(schoolName) }
-        </div>
+        <Field name="schoolName"
+                uiState={schoolName}
+                label={trans("schools.fields.schoolNameAr")}
+                component={renderInput} />
         {/* schoolNameEn */}
-        <div className="input-field" hidden={schoolNameEn.hidden}>
-          <i className="material-icons prefix">edit</i>
-          <input disabled={schoolNameEn.disabled}
-                id="schoolNameEn"
-                type="text"
-                className="validate"
-                value={schoolNameEn.value}
-                onChange={(e)=> {
-                  this.setFieldValue('schoolNameEn',e.target.value);
-                  this.validateForm();
-                } }
-                onBlur = { () => {
-                  this.setFieldTouched('schoolNameEn');
-                  this.validateForm();
-                } }
-          />
-          <label className={schoolId.value? 'active': ''} htmlFor="schoolNameEn">{ trans("schools.fields.schoolNameEn") }</label>
-          { this.showError(schoolNameEn) }
-        </div>
+        <Field name="schoolNameEn"
+                uiState={schoolNameEn}
+                label={trans("schools.fields.schoolNameEn")}
+                component={renderInput} />
         {/* startDate */}
-        <div className="input-field" hidden={startDate.hidden}>
-          <i className="material-icons prefix">date_range</i>
-          <input disabled={startDate.disabled}
-                id="startDate"
-                type="text"
-                className="datepicker"
-                value={startDate.value? startDate.value.toLocaleDateString('en-gb') : ''}
-                onBlur = { () => {
-                  this.setFieldTouched('startDate');
-                  this.validateForm();
-                } }
-          />
-          <label className={schoolId.value? 'active': ''} htmlFor="startDate">{ trans("schools.fields.startDate") }</label>
-          { this.showError(startDate) }
-        </div>
+        <Field name="startDate"
+                uiState={startDate}
+                type="datepicker"
+                label={trans("schools.fields.startDate")}
+                icon="date_range"
+                component={renderDatepicker} />
         {/* address */}
-        <div className="input-field" hidden={address.hidden}>
-          <i className="material-icons prefix">home</i>
-          <textarea disabled={address.disabled}
-                  id="address"
-                  type="text"
-                  className="materialize-textarea validate"
-                  value={address.value}
-                  onChange={(e)=> {
-                    this.setFieldValue('address',e.target.value);
-                    this.validateForm();
-                  }}
-                  onBlur = { () => {
-                    this.setFieldTouched('address');
-                    this.validateForm();
-                  } }
-          />
-          <label className={schoolId.value? 'active': ''} htmlFor="address">{ trans("schools.fields.address") }</label>
-          { this.showError(address) }
-        </div>
+        <Field name="address"
+                uiState={address}
+                type="textarea"
+                label={trans("schools.fields.address")}
+                component={renderInput} />
         {/* comNum */}
-        <div className="input-field" hidden={comNum.hidden}>
-          <i className="material-icons prefix">edit</i>
-          <input disabled={comNum.disabled}
-                id="comNum"
-                type="text"
-                className="validate"
-                value={comNum.value}
-                onChange={(e)=> {
-                    this.setFieldValue('comNum',e.target.value);
-                    this.validateForm();
-                }}
-                onBlur = { () => {
-                  this.setFieldTouched('comNum');
-                  this.validateForm();
-                } }
-          />
-          <label className={schoolId.value? 'active': ''} htmlFor="comNum">{ trans("schools.fields.comNum") }</label>
-          { this.showError(comNum) }
-        </div>
+          <Field name="comNum"
+                uiState={comNum}
+                label={trans("schools.fields.comNum")}
+                component={renderInput} />
         {/* isActive */}
-        <div className="input-field switch" hidden={isActive.hidden}>
-          <i className="material-icons prefix">school</i>
-          <div>
-            <label className={schoolId.value? 'active': ''} >
-              { `${trans("schools.fields.isActive")} ? ${trans("schools.fields.no")}` }
-              <input id="isActive"
-                    disabled={isActive.disabled}
-                    type="checkbox"
-                    checked={isActive.value}
-                    onChange={(e)=> {
-                      this.setFieldValue('isActive',e.target.checked);
-                      this.validateForm();
-                    }}
-                    onBlur = { () => {
-                      this.setFieldTouched('isActive');
-                      this.validateForm();
-                    } }
-              />
-              <span className="lever" />
-              {trans("schools.fields.yes")}
-            </label>
-          </div>
-          { this.showError(isActive) }
-        </div>
+        <Field name="isActive"
+                uiState={isActive}
+                label={trans("schools.fields.isActive")}
+                component={renderSwitch} />
         {/* Action Buttons */}
         <div className="input-field center">
-        <button className="btn waves-effect waves-light primary darken-3"
-                type="button"
-                id="btnAdd"
-                name="btnAdd"
-                disabled={btnAdd.disabled}
-                hidden={btnAdd.hidden}
-                onClick={this.addSchool}
-        >
-            <i className="material-icons left">add</i>
-            { trans("schools.actions.new") }
-        </button>
-        <button className="btn waves-effect waves-light orange darken-3"
-                type="button"
-                id="btnUpdate"
-                name="btnUpdate"
-                disabled={btnUpdate.disabled}
-                hidden={btnUpdate.hidden}
-                onClick={this.updateSchool}
-        >
-            <i className="material-icons left">edit</i>
-            { trans("schools.actions.update") }
-        </button>
-        <button className="btn waves-effect waves-light red darken-3"
-                type="button"
-                id="btnDelete"
-                name="btnDelete"
-                disabled={btnDelete.disabled}
-                hidden={btnDelete.hidden}
-                onClick={this.deleteSchool}
-        >
-            <i className="material-icons left">close</i>
-            { trans("schools.actions.remove") }
-        </button>
+          <Button classes="primary darken-3"
+                  name="btnAdd"
+                  icon="add"
+                  label={ trans("schools.actions.new") }
+                  hidden={btnAdd.hidden}
+                  disabled={btnAdd.disabled || pristine || submitting}
+          />
+          <Button classes="orange darken-3"
+                  name="btnUpdate"
+                  icon="edit"
+                  label={ trans("schools.actions.update") }
+                  hidden={btnUpdate.hidden}
+                  disabled={btnUpdate.disabled || pristine || submitting}
+          />
+          <Button classes="red darken-3"
+                  name="btnDelete"
+                  icon="close"
+                  label={ trans("schools.actions.remove") }
+                  hidden={btnDelete.hidden}
+                  disabled={btnDelete.disabled}
+          />
         </div>
       </form>
     )
   }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    // init Materialize datePicker
+    const currentYear = (new Date()).getFullYear();
+    initDatePicker({
+      format: 'dd/mm/yyyy',
+      yearRange: [currentYear-70,currentYear+30],
+      defaultDate: this.defaultDate,
+      onSelect: (selectedDate) => {
+        // set the value individually by calling change action creator from reduxForm
+        dispatch(change('schools', 'startDate', selectedDate.toLocaleDateString('en-gb') ));
+      }
+    });
+  }
+
 }
+
+const validate = ({ schoolName, schoolNameEn, startDate, address, comNum }) => {
+  const trans = getTranslate(store.getState().localize);
+  const errors = {};
+  // schoolName
+  if (!schoolName)
+    errors.schoolName = trans("schools.validations.schoolNameAr.required");
+  else if (!isAlpha(schoolName, 'ar'))
+    errors.schoolName = trans("schools.validations.schoolNameAr.alpha");
+  // schoolNameEn
+  if (!schoolNameEn)
+    errors.schoolNameEn = trans("schools.validations.schoolNameEn.required");
+  else if (!isAlpha(schoolNameEn))
+    errors.schoolNameEn = trans("schools.validations.schoolNameEn.alpha");
+  // startDate with reformate the date string to be suitable to date Validation [month/day/year]
+  if( startDate && !isBefore(moment(startDate).format('DD/MM/YYYY'), moment().add(1, 'day').format('MM/DD/YYYY') ) )
+    errors.startDate = trans("schools.validations.startDate.before");
+  // address
+  if(address && !isLength(address, { min:0, max: 250}))
+    errors.address = trans("schools.validations.address.length");
+  // comNum
+  if(comNum) {
+    if(!isNumeric(comNum, { no_symbols: true }))
+      errors.comNum = trans("schools.validations.comNum.numeric");
+    else if( !isLength(comNum, { min: 0, max: 6 }) )
+      errors.comNum = trans("schools.validations.comNum.length");
+  }
+  return errors;
+}
+// define the redux form
+const SchoolsReduxForm = reduxForm({
+  form: 'schools',
+  enableReinitialize: true,
+  validate
+})(_SchoolsReduxForm);
 // select the values needed form redux state
 const mapStateToProps = (state) => ({
   "schools": state.lookup.schools,
   "schoolsCount": state.lookup.schools.length,
-  "lookupEntity": state.lookup.lookupEntity,
+  "initialValues": formatDate('startDate')(state.lookup.lookupEntity),
   "trans": getTranslate(state.localize)
 })
 // connect the form with the redux state
-export default connect(mapStateToProps)(SchoolsForm);
+export default connect(mapStateToProps)(SchoolsReduxForm);
