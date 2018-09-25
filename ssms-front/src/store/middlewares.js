@@ -41,8 +41,11 @@ const ajax = ({ dispatch }) => next => action => {
         .catch(error => {
           // The request was made and the server responded with a status code that falls out of the range of 2xx
           // error.response.data - error.response.status - error.response.headers
-          if (error.response)
+          if (error.response) {
             dispatch({ type: action.type.replace('_PENDING', '_REJECTED'), payload: error.response.data || error.response.status });
+            if(action.payload.errorToast && action.payload.errorToast.length)
+              toast[action.payload.errorToast[0]](action.payload.errorToast[1]);
+          }
           // The request was made but no response was received
           // `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
           else if (error.request)

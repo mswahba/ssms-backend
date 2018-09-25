@@ -9,6 +9,10 @@
         "Welcome back ...",
         "مرحبا بك ..."
       ],
+      "error": [
+        "Incorrect User ID OR Password ...",
+        "خطأ في رقم الهوية أو كلمة المرور ..."
+      ],
       "fields": {
         "userId": [
           "UserID",
@@ -34,18 +38,18 @@
             "يجب ادخال ارقام فقط"
           ],
           "length": [
-            "",
-            ""
+            "ID number must be 10 digits only ...",
+            "يجب ان يكون رقم الهوية 10 ارقام فقط .."
           ]
         },
         "userPassword": {
           "required": [
             "Password is required ...",
-            "يجب إدخال مفتاح الدخول"
+            "يجب إدخال كلمة المرور ..."
           ],
           "length": [
-            "",
-            ""
+            "Password must be between 6 and 25 characters ...",
+            "يجب أن تكون كلمة المرور بين 6 و 25 (حرف-رمز-رقم) ..."
           ]
         }
       }

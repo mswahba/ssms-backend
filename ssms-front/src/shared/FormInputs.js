@@ -3,7 +3,7 @@ import React from 'react'
 const showError = ( { error, touched } ) => (
   (touched && error)
   ? <div className="red-text text-darken-4 valign-wrapper">
-      <i class="material-icons">error_outline</i>
+      <i className="material-icons">error_outline</i>
       {error}
     </div>
   : null

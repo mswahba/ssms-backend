@@ -11,7 +11,11 @@ import { toast } from 'react-toastify'
 
 let SignIn = (props) => {
   const { trans, handleSubmit, pristine, submitting } = props;
-  const doSignIn = (values) => userActions.signIn({ req: ["post", "/Users/SignIn", values], fulfilledToast: ["success", trans('users.signIn.success')] });
+  const doSignIn = (values) => userActions.signIn({
+    req: ["post", "/Users/SignIn", values],
+    fulfilledToast: ["success", trans('users.signIn.success')],
+    errorToast: ["error", trans('users.signIn.error')]
+  });
   return (
     <form className="rtl" onSubmit={handleSubmit(doSignIn)}>
       {/* form title */}
@@ -36,24 +40,31 @@ let SignIn = (props) => {
     </form>
   );
 }
-// form validation
-const validate = ({ userId, userPassword }) => {
-  const trans = getTranslate(store.getState().localize);
-  const errors = {};
 
-  // userId
+const validateUserId = (trans, userId, errors) => {
   if (!userId)
     errors.userId = trans("users.signIn.validations.userId.required");
   else if ( !isNumeric(userId, { no_symbols: true }) )
     errors.userId = trans("users.signIn.validations.userId.numeric");
   else if ( !isLength(userId, { min: 10, max: 10 }) )
     errors.userId = trans("users.signIn.validations.userId.length");
-  // userPassword
+}
+
+const validateuserPassword = (trans, userPassword, errors) => {
   if (!userPassword)
     errors.userPassword = trans("users.signIn.validations.userPassword.required");
-  else if( !isLength(userId, { min: 6, max: 25 }) )
+  else if ( !isLength(userPassword, { min: 6, max: 25 }) )
     errors.userPassword = trans("users.signIn.validations.userPassword.length");
+}
 
+// form validation
+const validate = ({ userId, userPassword }) => {
+  const trans = getTranslate(store.getState().localize);
+  const errors = {};
+  // userId
+  validateUserId(trans, userId, errors);
+  // userPassword
+  validateuserPassword(trans, userPassword, errors);
   return errors;
 }
 // define the redux form
@@ -62,6 +73,7 @@ SignIn = reduxForm({
   enableReinitialize: true,
   validate
 })(SignIn);
+
 // get props from redux state
 const mapStateToProps = state => ({
   ...state.user,
