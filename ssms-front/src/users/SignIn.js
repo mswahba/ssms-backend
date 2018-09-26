@@ -7,7 +7,6 @@ import { renderInput, Button } from '../shared/FormInputs'
 import { userActions } from "../store/user"
 import isNumeric from 'validator/lib/isNumeric'
 import isLength from 'validator/lib/isLength'
-import { toast } from 'react-toastify'
 
 let SignIn = (props) => {
   const { trans, handleSubmit, pristine, submitting } = props;
@@ -40,7 +39,7 @@ let SignIn = (props) => {
     </form>
   );
 }
-
+// userId validation
 const validateUserId = (trans, userId, errors) => {
   if (!userId)
     errors.userId = trans("users.signIn.validations.userId.required");
@@ -49,7 +48,7 @@ const validateUserId = (trans, userId, errors) => {
   else if ( !isLength(userId, { min: 10, max: 10 }) )
     errors.userId = trans("users.signIn.validations.userId.length");
 }
-
+// userPassword validation
 const validateuserPassword = (trans, userPassword, errors) => {
   if (!userPassword)
     errors.userPassword = trans("users.signIn.validations.userPassword.required");

@@ -71,3 +71,24 @@ export const renderSwitch = ({ input, meta, icon, label, on, off, uiState: {hidd
     { showError(meta) }
   </div>
 )
+// Radios and Checkboxes
+export const renderCheck = ({ meta, input, type, label, options, icon = 'input', classes = '', itemClassName = '', inputClassName= '', uiState: {hidden, disabled} = {} }) => (
+  <div className="input-field" hidden={hidden}>
+    <i className="material-icons prefix">{icon}</i>
+    <label className="radio-check-label" htmlFor={input.name}>{ label || input.name}</label>
+    <div className={classes}>
+      {options.map(opt => (
+        <label key={opt.value} className={itemClassName}>
+          <input type={type}
+                  id={opt.value}
+                  className={inputClassName}
+                  disabled={disabled}
+                  {...input}
+        />
+          <span>{opt.text}</span>
+        </label>
+      ))}
+    </div>
+    { showError(meta) }
+  </div>
+)

@@ -69,7 +69,7 @@ const fields = {
 };
 class SignUpParent extends Component {
   componentDidMount() {
-    lookupActions.setLookupKeys(['docTypes','countries']);
+    lookupActions.setSelectedTables(['docTypes','countries']);
     lookupActions.getLookupData(
     {
       req: [

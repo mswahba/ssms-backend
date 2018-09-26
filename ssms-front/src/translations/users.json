@@ -53,6 +53,60 @@
           ]
         }
       }
+    },
+    "signUpParent": {
+      "title": [
+        "SignUpParent",
+        "تسجيل ولي أمر"
+      ],
+      "success": [
+        "Welcome back ...",
+        "مرحبا بك ..."
+      ],
+      "error": [
+        "Incorrect User Inputs ...",
+        "خطأ في إدخال البيانات ..."
+      ],
+      "fields": {
+        "userId": [
+          "UserID",
+          "رقم الهوية"
+        ],
+        "userPassword": [
+          "Password",
+          "كلمة المرور"
+        ],
+        "btn": [
+          "SignIn",
+          "تسجيل دخول"
+        ]
+      },
+      "validations": {
+        "userId": {
+          "required": [
+            "ID number is required ...",
+            "يجب ادخال رقم الهوية"
+          ],
+          "numeric": [
+            "only number accepted ...",
+            "يجب ادخال ارقام فقط"
+          ],
+          "length": [
+            "ID number must be 10 digits only ...",
+            "يجب ان يكون رقم الهوية 10 ارقام فقط .."
+          ]
+        },
+        "userPassword": {
+          "required": [
+            "Password is required ...",
+            "يجب إدخال كلمة المرور ..."
+          ],
+          "length": [
+            "Password must be between 6 and 25 characters ...",
+            "يجب أن تكون كلمة المرور بين 6 و 25 (حرف-رمز-رقم) ..."
+          ]
+        }
+      }
     }
   }
 }
