@@ -31,8 +31,19 @@ export const renderInput = ({ input, icon, type, label, meta, uiState: {hidden, 
     <div className="input-field" hidden={hidden}>
       <i className="material-icons prefix">{icon || 'edit'}</i>
       { (type === 'textarea')
-          ? <textarea id={input.name} className="materialize-textarea" disabled={disabled} {...input} />
-          : <input    id={input.name} type={type || 'text'} disabled={disabled} {...input} />
+          ? <textarea
+              id={input.name}
+              className="materialize-textarea"
+              disabled={disabled}
+              {...input}
+            />
+          : <input
+              id={input.name}
+              type={type === 'autocomplete'? 'text' : type}
+              className={type === 'autocomplete'? 'autocomplete' : ''}
+              disabled={disabled}
+              {...input}
+            />
       }
       <label className={input.value? 'active': ''} htmlFor={input.name}>{ label }</label>
       { showError(meta) }
@@ -71,8 +82,23 @@ export const renderSwitch = ({ input, meta, icon, label, on, off, uiState: {hidd
     { showError(meta) }
   </div>
 )
+// Select [Dropdown list]
+export const renderSelect = ({ meta, input, label, options, icon = 'input', uiState: {hidden, disabled} = {} }) => (
+  <div className="input-field" hidden={hidden}>
+  <i className="material-icons prefix">{icon}</i>
+  <select id={input.name}
+          disabled={disabled}
+          {...input}
+  >
+    <option value=''>{label || input.name}</option>
+    {options.map(opt => <option key={opt.value} value={opt.value}>{opt.text}</option>)}
+  </select>
+  <label htmlFor={input.name}>{label || input.name}</label>
+  { showError(meta) }
+</div>
+)
 // Radios and Checkboxes
-export const renderCheck = ({ meta, input, type, label, options, icon = 'input', classes = '', itemClassName = '', inputClassName= '', uiState: {hidden, disabled} = {} }) => (
+export const renderCheck = ({ meta, input, label, options, type = 'radio', icon = 'input', classes = '', itemClassName = '', inputClassName= '', uiState: {hidden, disabled} = {} }) => (
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon}</i>
     <label className="radio-check-label" htmlFor={input.name}>{ label || input.name}</label>

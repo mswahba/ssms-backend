@@ -12,9 +12,9 @@ export const toast = ({ html, time, preventMultiple}) => {
   if(preventMultiple)
     keepLastToast();
 }
-
+// initailize a datepicker [one element] with the given options
 export const initDatePicker = ({ format, yearRange, defaultDate, onSelect }) => {
-  const pickers = document.querySelector(".datepicker");
+  const picker = document.querySelector(".datepicker");
   const options = {
     setDefaultDate: true,
     defaultDate,
@@ -22,25 +22,35 @@ export const initDatePicker = ({ format, yearRange, defaultDate, onSelect }) => 
     yearRange,
     onSelect
   }
-  M.Datepicker.init(pickers, options);
+  M.Datepicker.init(picker, options);
 }
-
+// initailize AutoComplete [elements] with the given options
+// options is an Object where each key represents elementId
+// and the value hold the element Autocomplete options
+export const initAutoComplete = (options) => {
+  const autoCompleteLists = document.querySelectorAll('.autocomplete');
+  autoCompleteLists.forEach(elem => {
+    M.Autocomplete.init(autoCompleteLists, options[elem.id]);
+  });
+}
+// initailize a Select [elements] with empty options
+export const initSelect = () => {
+  const selectLists = document.querySelectorAll('select');
+  M.FormSelect.init(selectLists, {});
+}
+// hold tooltips Instances
 let tooltipsIns = [];
-
+// initailize a Tooltip [elements] with fixed options
+// and store all Tooltips Instances in [tooltipsIns]
 export const initTooltips = () => {
   const elems = document.querySelectorAll('.tooltipped');
   tooltipsIns = M.Tooltip.init(elems, {position: 'top'});
 }
-
+// loop through all Tooltips Instances and close them
 export const closeTooltips = (instances) => {
   tooltipsIns.forEach( instance => instance.close() );
 }
-
-// export const importAll = (dir, extension) => {
-//   const _importAll = (r) => r.keys().map(r);
-//   return _importAll(require.context(dir, false, new RegExp(extension+"$")));
-// }
-
+// fixed format any date field => [toLocaleDateString('en-gb')]
 export const formatDate = (key,format = true) => (item) => ({
   ...item,
   [key]: (format)? new Date(item[key]).toLocaleDateString('en-gb') : new Date(item[key])
