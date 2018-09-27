@@ -52,7 +52,7 @@ export default class HGDatePicker extends Component {
   }
 
   // init Gdate picker [materialize-css]
-  initGDatePicker = ({ GKey, GDate, getDates }) => {
+  initGDatePicker = ({ HKey, GKey, GDate, getDates }) => {
     const now = new Date();
     const currentYear = +now.getFullYear();
     const options = {
@@ -72,7 +72,10 @@ export default class HGDatePicker extends Component {
           HDateValue: Hdate
         });
         // console.log(Hdate, Gdate);
-        getDates({ Hdate, Gdate });
+        getDates({
+          [HKey]: Hdate,
+          [GKey]: Gdate 
+        });
       }
     }
     // get the input el
@@ -81,7 +84,7 @@ export default class HGDatePicker extends Component {
     M.Datepicker.init(el, options);
   }
   // get the selected Hdate value
-  HdateOnChange = ({ HKey, getDates }) => {
+  HdateOnChange = ({ HKey, GKey, getDates }) => {
     // the container div
     const container = document.querySelector(`#${HKey}`);
     // the date input
@@ -99,7 +102,10 @@ export default class HGDatePicker extends Component {
             GDateValue: Gdate
           });
           // console.log(Hdate, Gdate);
-          getDates({ HDate: input.value, Gdate });
+          getDates({
+            [HKey]: input.value,
+            [GKey]: Gdate
+          });
         }, 0)
       }
     })

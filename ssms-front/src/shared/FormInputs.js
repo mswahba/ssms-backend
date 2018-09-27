@@ -1,4 +1,5 @@
 import React from 'react'
+import HGDatePicker from '../shared/HGDatePicker'
 
 const showError = ( { error, touched } ) => (
   (touched && error)
@@ -115,6 +116,20 @@ export const renderCheck = ({ meta, input, label, options, type = 'radio', icon 
         </label>
       ))}
     </div>
+    { showError(meta) }
+  </div>
+)
+
+export const renderHGDatepicker = ({ meta, input, label, HKey, GKey, HDate = null, GDate = new Date(), onSelect, uiState: {hidden, disabled} = {} }) => (
+  <div className="input-field" hidden={hidden}>
+    <HGDatePicker label={label}
+                HKey={HKey}
+                GKey={GKey}
+                HDate={HDate}
+                GDate={GDate}
+                getDates={onSelect}
+                {...input}
+    />
     { showError(meta) }
   </div>
 )

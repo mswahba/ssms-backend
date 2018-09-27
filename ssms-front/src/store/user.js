@@ -79,6 +79,7 @@ const userActions = {
     })
   },
   addParent: (payload) => (entity) => {
+    console.log(entity);
     // mapping
     const parent = {
       userId: entity.parentId,
@@ -91,18 +92,18 @@ const userActions = {
         gName: entity.gName,
         lName: entity.lName,
         idType: entity.idType,
-        idExpireDateG: entity.idExpireDateG,
+        idExpireDateG: (entity.idExpireDate)? entity.idExpireDate.idExpireDateG: '',
+        idExpireDateH: (entity.idExpireDate)? entity.idExpireDate.idExpireDateH: '',
         mobile1: entity.mobile,
         email: entity.email,
         countryId: entity.countryId
       }
     };
     // dispatch
-    store.dispatch({
-      type: actionTypes.ADD_PARENT_PENDING,
-      // payload: axiosOne(payload.method,payload.url, parent)
-      payload: { req: [payload.method,payload.url, parent] }
-    })
+    // store.dispatch({
+    //   type: actionTypes.ADD_PARENT_PENDING,
+    //   payload: { req: [payload.method,payload.url, parent] }
+    // })
   },
   getUsers:(payload) => {
     // dispath only when users is empty

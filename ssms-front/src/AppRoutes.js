@@ -21,7 +21,7 @@ export default class AppRoutes extends Component {
                               GKey="HireDateG"
                               HDate={null}
                               GDate={new Date()}
-                              getDates={this.logDates}
+                              getDates={console.log}
                 />
               </div>
             )}

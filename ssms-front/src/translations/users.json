@@ -68,17 +68,57 @@
         "خطأ في إدخال البيانات ..."
       ],
       "fields": {
-        "userId": [
-          "UserID",
+        "fName": [
+          "First Name",
+          "الاسم الأول"
+        ],
+        "mName": [
+          "Middle Name",
+          "اسم الأب"
+        ],
+        "gName": [
+          "Grand Father Name",
+          "اسم الجد"
+        ],
+        "lName": [
+          "Last Name",
+          "اللقب أو العائلة"
+        ],
+        "countryId": [
+          "Country",
+          "الجنسية"
+        ],
+        "idType": [
+          "ID Type",
+          "نوع الهوية"
+        ],
+        "parentId": [
+          "ID Number",
           "رقم الهوية"
         ],
-        "userPassword": [
+        "idExpireDate": [
+          "ID Expire Date",
+          "تاريخ انتهاء الهوية"
+        ],
+        "mobile": [
+          "Mobile",
+          "رقم الجوال"
+        ],
+        "email": [
+          "Email",
+          "البريد الالكتروني"
+        ],
+        "userId": [
+          "User ID",
+          "اسم المستخدم"
+        ],
+        "password": [
           "Password",
           "كلمة المرور"
         ],
         "btn": [
-          "SignIn",
-          "تسجيل دخول"
+          "Sign Up",
+          "تسجيل حساب"
         ]
       },
       "validations": {
