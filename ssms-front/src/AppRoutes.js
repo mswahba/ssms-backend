@@ -17,6 +17,8 @@ export default class AppRoutes extends Component {
           <Route path='/hg-datepicker' component={ () => (
             <div className="my-container">
                 <HGDatePicker label="HireDate"
+                              HLabel="HireDate Hijri"
+                              GLabel="HireDate Gregorian"
                               HKey="HireDateH"
                               GKey="HireDateG"
                               HDate={null}

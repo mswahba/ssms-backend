@@ -1,3 +1,4 @@
+/* #region imported css libraries */
 /* materialize css */
 /* @import 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css'; */
 /* RTL version of materializecss framework v1.0.0 @MahdiMajidzadeh */
@@ -6,12 +7,72 @@
 @import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 /* fontawesome icons */
 @import 'https://use.fontawesome.com/releases/v5.2.0/css/all.css';
-/*  */
+/* #endregion */
+
+/* #region helper classes */
 .hidden {
   display: none !important;
 }
+/* #endregion */
+
+/* #region switch materialize component styles */
 .switch {
   display: inline-block !important;
   transform: scale(1.1);
   padding-right: 25px;
 }
+/* #endregion */
+
+/* #region HG datepicker styles */
+div.hg-datepicker {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  grid-template-rows: 25px 25px;
+  grid-template-areas:
+    "main-label g-label h-label"
+    "main-label g-input h-input";
+}
+div.hg-datepicker .main-label {
+  grid-area: main-label;
+  align-self: center;
+  justify-self: center;
+  font-size: 1rem;
+}
+div.hg-datepicker .g-label {
+  grid-area: g-label;
+}
+div.hg-datepicker .h-label {
+  grid-area: h-label;
+}
+div.hg-datepicker .g-input {
+  grid-area: g-input;
+}
+div.hg-datepicker.h-input {
+  grid-area: h-input;
+}
+/* #endregion */
+
+/* #region check-option [ radio buttons - checkboxes ] */
+div.check-options {
+  padding-top: 10px;
+}
+.rtl div.check-options > label {
+  margin-left: 30px;
+}
+/* #endregion */
+
+/* #region autocomplete hide img */
+ul.autocomplete-content li img {
+  display: none;
+}
+/* #endregion */
+/* #region adjust merterialize css form styles */
+.rtl .input-field .prefix ~ .validate {
+  margin-left: inherit;
+  margin-right: 3rem;
+}
+.input-field .prefix ~ .validate {
+  margin-right: inherit;
+  margin-left: 3rem;
+}
+/* #endregion */

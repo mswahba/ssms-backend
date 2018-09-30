@@ -1,15 +1,19 @@
 import React from 'react'
 import HGDatePicker from '../shared/HGDatePicker'
+import { AutoComplete } from 'primereact/autocomplete'
 
+// #region show validations messages
 const showError = ( { error, touched } ) => (
   (touched && error)
-  ? <div className="red-text text-darken-4 valign-wrapper">
+  ? <div className="red-text text-darken-4 valign-wrapper validate">
       <i className="material-icons">error_outline</i>
       {error}
     </div>
   : null
 )
-// Action Button
+// #endregion
+
+// #region Action Button
 export const Button = ({ name, hidden, disabled, classes, icon, label }) => {
   let btnClasses = `btn waves-effect waves-light ${classes} `;
   if(hidden)
@@ -25,8 +29,9 @@ export const Button = ({ name, hidden, disabled, classes, icon, label }) => {
     </button>
   )
 }
+// #endregion
 
-// Inputs and Textarea
+// #region Inputs and Textarea
 export const renderInput = ({ input, icon, type, label, meta, uiState: {hidden, disabled} = {} }) => {
   return (
     <div className="input-field" hidden={hidden}>
@@ -51,7 +56,9 @@ export const renderInput = ({ input, icon, type, label, meta, uiState: {hidden, 
     </div>
   )
 }
-// date and time pickers
+// #endregion
+
+// #region date and time pickers
 export const renderDatepicker = ({ input, icon, type, label, meta, uiState: {hidden, disabled} = {} }) => {
   return (
     <div className="input-field" hidden={hidden}>
@@ -62,7 +69,9 @@ export const renderDatepicker = ({ input, icon, type, label, meta, uiState: {hid
     </div>
   )
 }
-// Switch
+// #endregion
+
+// #region Switch
 export const renderSwitch = ({ input, meta, icon, label, on, off, uiState: {hidden, disabled} = {} }) => (
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon || 'edit'}</i>
@@ -83,7 +92,9 @@ export const renderSwitch = ({ input, meta, icon, label, on, off, uiState: {hidd
     { showError(meta) }
   </div>
 )
-// Select [Dropdown list]
+// #endregion
+
+// #region Select [Dropdown list]
 export const renderSelect = ({ meta, input, label, options, icon = 'input', uiState: {hidden, disabled} = {} }) => (
   <div className="input-field" hidden={hidden}>
   <i className="material-icons prefix">{icon}</i>
@@ -98,14 +109,16 @@ export const renderSelect = ({ meta, input, label, options, icon = 'input', uiSt
   { showError(meta) }
 </div>
 )
-// Radios and Checkboxes
-export const renderCheck = ({ meta, input, label, options, type = 'radio', icon = 'input', classes = '', itemClassName = '', inputClassName= '', uiState: {hidden, disabled} = {} }) => (
+// #endregion
+
+// #region Radios and Checkboxes
+export const renderCheck = ({ meta, input, label, options, type = 'radio', icon = 'edit', labelClassName= '', itemsClassName = '', itemClassName = '', inputClassName= '', uiState: {hidden, disabled} = {} }) => (
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix">{icon}</i>
-    <label className="radio-check-label" htmlFor={input.name}>{ label || input.name}</label>
-    <div className={classes}>
+    <label className={labelClassName} htmlFor={input.name}>{ label || input.name}</label>
+    <div className={itemsClassName}>
       {options.map(opt => (
-        <label key={opt.value} className={itemClassName}>
+        <label key={opt.value} htmlFor={opt.value} className={itemClassName}>
           <input type={type}
                   id={opt.value}
                   className={inputClassName}
@@ -119,17 +132,42 @@ export const renderCheck = ({ meta, input, label, options, type = 'radio', icon 
     { showError(meta) }
   </div>
 )
+// #endregion
 
-export const renderHGDatepicker = ({ meta, input, label, HKey, GKey, HDate = null, GDate = new Date(), onSelect, uiState: {hidden, disabled} = {} }) => (
+// #region HGDatepicker
+export const renderHGDatepicker = ({ meta, input, label, HLabel, GLabel, HKey, GKey, icon = 'edit', HDate = null, GDate = new Date(), onSelect, uiState: {hidden, disabled} = {} }) => (
   <div className="input-field" hidden={hidden}>
-    <HGDatePicker label={label}
-                HKey={HKey}
-                GKey={GKey}
-                HDate={HDate}
-                GDate={GDate}
-                getDates={onSelect}
-                {...input}
+    <i className="material-icons prefix hg-icon">{icon}</i>
+    <HGDatePicker
+        label={label}
+        HLabel={HLabel}
+        GLabel={GLabel}
+        HKey={HKey}
+        GKey={GKey}
+        HDate={HDate}
+        GDate={GDate}
+        getDates={onSelect}
+        {...input}
     />
     { showError(meta) }
   </div>
 )
+// #endregion
+
+// #region primereact AutoComplete
+export const renderAutoComplete = ({ meta, input, label, onChange, completeMethod, options = {}, icon = 'edit', uiState: {hidden, disabled} = {} }) => (
+  <div className="input-field" hidden={hidden}>
+    <i className="material-icons prefix">{icon}</i>
+    <AutoComplete
+        className="validate"
+        label={label}
+        disabled={disabled}
+        completeMethod={completeMethod}
+        {...options}
+        {...input}
+        onChange={onChange}
+    />
+    { showError(meta) }
+  </div>
+)
+// #endregion

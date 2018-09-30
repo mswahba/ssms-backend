@@ -1,19 +1,23 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux"
-import { getTranslate } from 'react-localize-redux'
+import { getTranslate, getActiveLanguage } from 'react-localize-redux'
 import { Field, reduxForm, change } from 'redux-form'
-import { renderInput, renderCheck, renderHGDatepicker, Button } from '../shared/FormInputs'
+import { renderInput, renderCheck, renderHGDatepicker, renderAutoComplete, Button } from '../shared/FormInputs'
 import { lookupActions } from "../store/lookup"
-import { store } from '../AppStore'
 import { userActions } from '../store/user'
+import { store } from '../AppStore'
+import { initAutoComplete } from '../helpers'
 
 class SignUpParent extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
       idTypeOptions: [],
-      countriesOptions: {}
+      countriesOptions: [], // {}
+      countriesSuggestions: []
     }
+    this.initAutoComplete = true;
     lookupActions.setSelectedTables(['docTypes','countries']);
     lookupActions.getLookupData(
     {
@@ -26,29 +30,58 @@ class SignUpParent extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const { language } = nextProps;
+    const docTypeField = language == 'en'? 'docTypeEn' : 'docTypeAr';
+    const countryField = language == 'en'? 'countryEn' : 'countryAr';
     if (nextProps.docTypes.length && nextProps.countries.length) {
       this.setState({
         idTypeOptions: nextProps.docTypes.map(item => ({
-          text: item.docTypeEn,
+          text: item[docTypeField],
           value: item.docTypeId
         })),
-        countriesOptions: nextProps.countries.reduce((data, item) => {
-          data[item.countryEn] = null;
-          return data;
-        }, {})
+        countriesOptions: nextProps.countries.map(country => ({ countryId: country.countryId, [countryField]: country[countryField] }) )
+        // countriesOptions: nextProps.countries.reduce((data, item) => {
+        //   data[item[countryField]] = item.countryId;
+        //   return data;
+        // }, {})
       })
     }
   }
 
   setDates = (values) => {
     const { dispatch } = this.props;
-    // set the value individually by calling change action creator from reduxForm
     dispatch(change('signUpParent', 'idExpireDate', values ));
   }
 
+  doAutoComplete = ({ query }) => {
+    console.log('TCL: ---------------------------------------------------');
+    console.log('TCL: SignUpParent -> doAutoComplete -> query', query);
+    console.log('TCL: ---------------------------------------------------');
+    const { countriesOptions } = this.state;
+    console.log('TCL: -------------------------------------------------------------------------');
+    console.log('TCL: SignUpParent -> doAutoComplete -> countriesOptions', countriesOptions);
+    console.log('TCL: -------------------------------------------------------------------------');
+    const { language } = this.props;
+    const countryField = language == 'en'? 'countryEn' : 'countryAr';
+    if(countriesOptions.length) {
+      const results = countriesOptions.filter( country => country[countryField].includes(query) );
+      this.setState({ countriesSuggestions: results });
+    }
+  }
+
+  onAutocomplete = ({ value }) => {
+    console.log('TCL: ---------------------------------------------------');
+    console.log('TCL: SignUpParent -> onAutocomplete -> value', value);
+    console.log('TCL: ---------------------------------------------------');
+    const { dispatch, language } = this.props;
+    const countryField = language == 'en'? 'countryEn' : 'countryAr';
+    dispatch(change('signUpParent', countryField, value ));
+  }
+
   render() {
-    const { trans, handleSubmit, pristine, submitting } = this.props;
-    const { idTypeOptions, countriesOptions } = this.state;
+    const { trans, handleSubmit, pristine, submitting, language } = this.props;
+    const { idTypeOptions, countriesSuggestions } = this.state;
+    const countryField = language == 'en'? 'countryEn' : 'countryAr';
     return (
       <form className="rtl" onSubmit={handleSubmit( userActions.addParent({ method: 'post', url: '/Users/Add'}) )}>
       {/* form title */}
@@ -71,15 +104,23 @@ class SignUpParent extends Component {
               label={trans("users.signUpParent.fields.lName")}
               component={renderInput} />
       {/* countries */}
-      <Field name="countryId"
-              type="autocomplete"
-              options={countriesOptions}
+      {/* <Field name={countryField}
               label={trans("users.signUpParent.fields.countryId")}
-              component={renderInput} />
+              suggestions={countriesSuggestions}
+              completeMethod={this.doAutoComplete}
+              onChange={this.onAutocomplete}
+              options={ { field: countryField, dropdown: true } }
+              component={renderAutoComplete} /> */}
+      {/* <Field name="countryId"
+              type="autocomplete"
+              label={trans("users.signUpParent.fields.countryId")}
+              component={renderInput} /> */}
       {/* idType */}
       <Field name="idType"
               type="radio"
               options={idTypeOptions}
+              labelClassName="active"
+              itemsClassName="validate check-options"
               label={trans("users.signUpParent.fields.idType")}
               component={renderCheck} />
       {/* parentId */}
@@ -89,6 +130,8 @@ class SignUpParent extends Component {
       {/* idExpireDate */}
       <Field name="idExpireDate"
               label={trans("users.signUpParent.fields.idExpireDate")}
+              HLabel={trans("users.signUpParent.fields.idExpireDateH")}
+              GLabel={trans("users.signUpParent.fields.idExpireDateG")}
               HKey="idExpireDateH"
               GKey="idExpireDateG"
               onSelect={this.setDates}
@@ -121,6 +164,25 @@ class SignUpParent extends Component {
     </form>
     )
   }
+
+  componentDidUpdate(prevState) {
+    const { countriesOptions } = this.state;
+    const { dispatch } = this.props;
+    if(this.initAutoComplete) {
+      // init the autocomplete materialize control
+      initAutoComplete({
+        'countryId': {
+          data: countriesOptions,
+          onAutocomplete: (selectedCountry) => {
+            const selectedCountryId = this.state.countriesOptions[selectedCountry];
+            dispatch(change('signUpParent', 'countryId', selectedCountryId ));
+          }
+        }
+      });
+      this.initAutoComplete = false;
+    }
+  }
+
 }
 
 const validate = () => {
@@ -137,7 +199,8 @@ const _SignUpParent = reduxForm({
 const mapStateToProps = state => ({
   "docTypes": state.lookup.docTypes,
   "countries": state.lookup.countries,
-  "trans": getTranslate(state.localize)
+  "trans": getTranslate(state.localize),
+  "language": getActiveLanguage(state.localize).code
 });
 
 export default connect(mapStateToProps)(_SignUpParent);

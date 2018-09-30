@@ -74,7 +74,7 @@ export default class HGDatePicker extends Component {
         // console.log(Hdate, Gdate);
         getDates({
           [HKey]: Hdate,
-          [GKey]: Gdate 
+          [GKey]: Gdate
         });
       }
     }
@@ -124,23 +124,25 @@ export default class HGDatePicker extends Component {
 
   render() {
     // get the wanted values from the component props
-    const { label, HKey, GKey, HDate } = this.props;
+    const { label, HLabel, GLabel, HKey, GKey, HDate } = this.props;
     // return the component UI using:
     // [materialize-datepicker]
     // [hijri-date-picker]
     return (
-      <Fragment>
-        <label htmlFor={GKey}>{label}</label>
-        <br/>
-        <label>
+      <div className="hg-datepicker validate">
+        {/* Main field label */}
+        <label className="main-label" htmlFor={GKey}>{label}</label>
+        {/* Gregorian Label [Gregorian radio button]  */}
+        <label className="g-label">
           <input type="radio"
                 name={label}
                 value={GKey}
                 onChange={this.onRadioChecked}
                 checked={this.state.inputDate === GKey} />
-          <span>{GKey}</span>
+          <span>{GLabel}</span>
         </label>
-        <div className="input-field" hidden={this.state.inputDate !== GKey}>
+        {/* materialize datepicker input to pick a Gregorian date */}
+        <div className="input-field g-input" hidden={this.state.inputDate !== GKey}>
           <i className="material-icons prefix">date_range</i>
           <input type="text"
                 className="datepicker"
@@ -148,22 +150,26 @@ export default class HGDatePicker extends Component {
                 name={GKey}
           />
         </div>
-        <div className="input-field" hidden={this.state.inputDate === GKey}>
-        <input type="text"
+        {/* text input to display the resulted Gregorian date from hijri date */}
+        <div className="input-field g-input" hidden={this.state.inputDate === GKey}>
+          <i className="material-icons prefix">edit</i>
+          <input type="text"
                 id={GKey}
                 placeholder={GKey}
                 value={this.state.GDateValue.toLocaleDateString('en-gb')}
                 disabled />
         </div>
-        <label>
+        {/* Hijri Label [Hijri radio button]  */}
+        <label className="h-label">
           <input type="radio"
                 name={label}
                 value={HKey}
                 checked={this.state.inputDate === HKey}
                 onChange={this.onRadioChecked} />
-          <span>{HKey}</span>
+          <span>{HLabel}</span>
         </label>
-        <div id={HKey} className="input-field" hidden={this.state.inputDate !== HKey}>
+        {/* HijriDatePicker component to pick a hijri date */}
+        <div id={HKey} className="input-field h-input" hidden={this.state.inputDate !== HKey}>
           <i className="material-icons prefix">date_range</i>
           <HijriDatePicker
               className="input-field"
@@ -171,14 +177,16 @@ export default class HGDatePicker extends Component {
               selectedDate={this.state.HDateValue}
           />
         </div>
-        <div className="input-field" hidden={this.state.inputDate === HKey}>
+        {/* text input to display the resulted hijri date from Gregorian date */}
+        <div className="input-field h-input" hidden={this.state.inputDate === HKey}>
+          <i className="material-icons prefix">edit</i>
           <input type="text"
                 id={HDate}
                 placeholder={HDate}
                 value={this.state.HDateValue}
                 disabled />
         </div>
-      </Fragment>
+      </div>
     )
   }
 }
