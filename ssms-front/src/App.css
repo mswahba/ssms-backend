@@ -61,11 +61,12 @@ div.check-options {
 }
 /* #endregion */
 
-/* #region autocomplete hide img */
+/* #region matreialize autocomplete hide img */
 ul.autocomplete-content li img {
   display: none;
 }
 /* #endregion */
+
 /* #region adjust merterialize css form styles */
 .rtl .input-field .prefix ~ .validate {
   margin-left: inherit;
@@ -74,5 +75,11 @@ ul.autocomplete-content li img {
 .input-field .prefix ~ .validate {
   margin-right: inherit;
   margin-left: 3rem;
+}
+/* #endregion */
+
+/* #region autocompelete-select [react-select] */
+.autocompelete-select > div:first-child {
+  height: 38px;
 }
 /* #endregion */

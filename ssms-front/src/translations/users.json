@@ -59,6 +59,14 @@
         "SignUpParent",
         "تسجيل ولي أمر"
       ],
+      "docTypeField": [
+        "docTypeEn",
+        "docTypeAr"
+      ],
+      "countryField": [
+        "countryEn",
+        "countryAr"
+      ],
       "success": [
         "Welcome back ...",
         "مرحبا بك ..."
@@ -85,8 +93,8 @@
           "اللقب أو العائلة"
         ],
         "countryId": [
-          "Country",
-          "الجنسية"
+          "Country ...",
+          "الجنسية ..."
         ],
         "idType": [
           "ID Type",
