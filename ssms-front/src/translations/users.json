@@ -132,27 +132,101 @@
           "Password",
           "كلمة المرور"
         ],
+        "passwordConfirm": [
+          "Confirm Password",
+          "تأكيد كلمة المرور"
+        ],
         "btn": [
           "Sign Up",
           "تسجيل حساب"
         ]
       },
       "validations": {
-        "userId": {
+        "fName": {
           "required": [
-            "ID number is required ...",
-            "يجب ادخال رقم الهوية"
+            "First Name is required ...",
+            "يجب إدخال الاسم الأول ..."
           ],
-          "numeric": [
-            "only number accepted ...",
-            "يجب ادخال ارقام فقط"
-          ],
-          "length": [
-            "ID number must be 10 digits only ...",
-            "يجب ان يكون رقم الهوية 10 ارقام فقط .."
+          "alpha": [
+            "First Name must be letters only ...",
+            "يجب أن يكون الاسم الأول حروف فقط ..."
           ]
         },
-        "userPassword": {
+        "mName": {
+          "required": [
+            "Middle Name is required ...",
+            "يجب إدخال اسم الأب ..."
+          ],
+          "alpha": [
+            "Middle Name must be letters only ...",
+            "يجب أن يكون اسم الأب حروف فقط ..."
+          ]
+        },
+        "gName": {
+          "alpha": [
+            "Grandfather Name must be letters only ...",
+            "يجب أن يكون اسم الجد حروف فقط ..."
+          ]
+        },
+        "lName": {
+          "required": [
+            "Family Name is required ...",
+            "يجب إدخال اسم العائلة ..."
+          ],
+          "alpha": [
+            "Family Name must be letters only ...",
+            "يجب أن يكون اسم العائلة حروف فقط ..."
+          ]
+        },
+        "countryId": {
+          "required": [
+            "Nationality is required ...",
+            "يجب إدخال الجنسية ..."
+          ]
+        },
+        "idType": {
+          "required": [
+            "ID Type is required ...",
+            "يجب اختيار نوع الهوية ..."
+          ]
+        },
+        "parentId": {
+          "required": [
+            "ID number is required ...",
+            "يجب إدخال رقم الهوية ..."
+          ],
+          "length": [
+            "ID must be exactly 10 digits ...",
+            "يجب ان تكون عدد ارقام رقم الهوية مساويا لـ 10 ارقام ..."
+          ]
+        },
+        "idExpireDate": {
+          "after": [
+            "ID Expire Date must be ahead of today ...",
+            "يجب أن يكون تاريخ انتهاء الهوية تالياً لتاريخ اليوم ..."
+          ]
+        },
+        "mobile": {
+          "required": [
+            "Mobile number is required ...",
+            "يجب إدخال رقم الجوال ..."
+          ],
+          "length": [
+            "Mobile must be between 4 and 15 digits ...",
+            "يجب أن يكون رقم الجوال بين 4 و 15 رقم ..."
+          ],
+          "numeric": [
+            "Mobile number accepts digits only ...",
+            "رقم الجوال يقبل أرقام فقط ..."
+          ]
+        },
+        "email": {
+          "required": [
+            "email is required ...",
+            "يجب إدخال البريد الالكتروني ..."
+          ]
+        },
+        "password": {
           "required": [
             "Password is required ...",
             "يجب إدخال كلمة المرور ..."
@@ -160,6 +234,16 @@
           "length": [
             "Password must be between 6 and 25 characters ...",
             "يجب أن تكون كلمة المرور بين 6 و 25 (حرف-رمز-رقم) ..."
+          ]
+        },
+        "passwordConfirm": {
+          "required": [
+            "Confirm Password is required ...",
+            "يجب تأكيد كلمة المرور ..."
+          ],
+          "matched": [
+            "Password and Confirm Password must match ...",
+            "يجب أن تتطابق كلمة المرور مع تأكيد كلمة المرور ..."
           ]
         }
       }

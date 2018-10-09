@@ -6,22 +6,24 @@ import { renderInput, renderCheck, renderHGDatepicker, renderAutoComplete, Butto
 import { lookupActions } from "../store/lookup"
 import { userActions } from '../store/user'
 import { store } from '../AppStore'
-import { initAutoComplete } from '../helpers'
+import isLength from 'validator/lib/isLength'
+import isAfter from 'validator/lib/isAfter'
+import isNumeric from 'validator/lib/isNumeric'
 
 // #region local variables
 const initialValues = {
-    fName: '',
-    mName: '',
-    gName: '',
-    lName: '',
-    countryId: null,
-    idType: '',
-    parentId: '',
-    idExpireDate: {idExpireDateG: '', idExpireDateH: ''},
-    mobile: '',
-    email: '',
-    userId: '',
-    password: '',
+  fName: '',
+  mName: '',
+  gName: '',
+  lName: '',
+  countryId: null,
+  idType: '',
+  parentId: '',
+  idExpireDate: {idExpireDateG: '', idExpireDateH: ''},
+  mobile: '',
+  email: '',
+  userId: '',
+  password: '',
 }
 const formName = "signUpParent";
 // #endregion
@@ -66,6 +68,10 @@ class SignUpParent extends Component {
   // manually set idExpireDate field values [idExpireDateG - idExpireDateH]
   setDates = (values) => {
     this.props.dispatch(change('signUpParent', 'idExpireDate', values ));
+  }
+  // onChange : (event, newValue, previousValue, name) to manually set UserId field value
+  setUserId = (e, value) => {
+    this.props.dispatch(change('signUpParent', 'userId', value ));
   }
   // render
   render() {
@@ -113,6 +119,7 @@ class SignUpParent extends Component {
         {/* parentId */}
         <Field name="parentId"
           label={trans("users.signUpParent.fields.parentId")}
+          onChange={this.setUserId}
           component={renderInput} />
         {/* idExpireDate */}
         <Field name="idExpireDate"
@@ -134,12 +141,19 @@ class SignUpParent extends Component {
         {/* userId */}
         <Field name="userId"
           label={trans("users.signUpParent.fields.userId")}
+          uiState={ { disabled: true } }
           component={renderInput} />
         {/* password */}
         <Field name="password"
           type="password"
           icon="vpn_key"
           label={trans("users.signUpParent.fields.password")}
+          component={renderInput} />
+        {/* Confirm password */}
+        <Field name="passwordConfirm"
+          type="password"
+          icon="vpn_key"
+          label={trans("users.signUpParent.fields.passwordConfirm")}
           component={renderInput} />
         {/* Action Button */}
         <Button classes="primary darken-3"
@@ -154,10 +168,103 @@ class SignUpParent extends Component {
 }
 // #endregion
 
-// #region The validate function
-const validate = () => {
-
+// #region The each field validate function
+const validateFields = {
+  fName: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.fName.required");
+    else if (!value.alpha('ar') )
+      return trans("users.signUpParent.validations.fName.alpha");
+  },
+  mName: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.mName.required");
+    else if (!value.alpha('ar'))
+      return trans("users.signUpParent.validations.mName.alpha");
+  },
+  gName: (trans, value) => {
+    if (!value.alpha('ar'))
+    return trans("users.signUpParent.validations.gName.alpha");
+  },
+  lName: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.lName.required");
+    else if (!value.alpha('ar'))
+      return trans("users.signUpParent.validations.lName.alpha");
+  },
+  countryId: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.countryId.required");
+  },
+  idType: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.idType.required");
+  },
+  parentId: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.parentId.required");
+    else if (!isLength(value, { min:4, max: 10}))
+      return trans("users.signUpParent.validations.parentId.length");
+  },
+  idExpireDate: (trans, { idExpireDateG }) => {
+    const dateValue = (new Date(idExpireDateG)).toLocaleDateString();
+    const today = (new Date()).toLocaleDateString();
+    if( idExpireDateG && !isAfter(dateValue, today) )
+      return trans("users.signUpParent.validations.idExpireDate.after");
+  },
+  mobile: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.mobile.required");
+    else if (!isNumeric(value, { no_symbols: true }))
+      return trans("users.signUpParent.validations.mobile.numeric");
+    else if (!isLength(value, { min:4, max: 15}))
+      return trans("users.signUpParent.validations.mobile.length");
+  },
+  email: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.email.required");
+  },
+  password: (trans, value) => {
+    if(!value)
+      return trans("users.signUpParent.validations.password.required");
+    else if (!isLength(value, { min:6, max: 25}))
+      return trans("users.signUpParent.validations.password.length");
+  },
+  passwordConfirm: (trans, value, confirmed) => {
+    if(!value)
+      return trans("users.signUpParent.validations.passwordConfirm.required");
+    else if(value !== confirmed)
+      return trans("users.signUpParent.validations.passwordConfirm.matched");
+  }
 }
+// #endregion
+
+// #region The Form validate function
+const validate = (values) => {
+  const trans = getTranslate(store.getState().localize);
+  return Object.keys(validateFields).reduce( (errors, key) => {
+    if(key === 'passwordConfirm')
+      errors[key] = validateFields[key](trans, values[key], values.password)
+    else
+      errors[key] = validateFields[key](trans, values[key])
+    return errors;
+  }, {})
+  // return {
+  //   fName: fName(trans, fName),
+  //   mName: fName(trans, mName),
+  //   gName: fName(trans, gName),
+  //   lName: fName(trans, lName),
+  //   countryId: fName(trans, countryId),
+  //   idType: fName(trans, idType),
+  //   parentId: fName(trans, parentId),
+  //   idExpireDate: fName(trans, idExpireDate),
+  //   mobile: fName(trans, mobile),
+  //   email: fName(trans, email),
+  //   userId: fName(trans, userId),
+  //   password: fName(trans, password),
+  //   passwordConfirm: fName(trans, passwordConfirm)
+  // };
+};
 // #endregion
 
 // #region define the redux form

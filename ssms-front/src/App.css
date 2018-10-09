@@ -15,6 +15,15 @@
 }
 /* #endregion */
 
+/* #region form error messages  */
+div.error i {
+  margin-top: 0.4rem;
+}
+div.error span {
+  text-indent: 0.5rem;
+}
+/* #endregion */
+
 /* #region switch materialize component styles */
 .switch {
   display: inline-block !important;
@@ -49,6 +58,9 @@ div.hg-datepicker .g-input {
 }
 div.hg-datepicker.h-input {
   grid-area: h-input;
+}
+div.hg-datepicker ~ div.error {
+  margin-top: 2.7rem;
 }
 /* #endregion */
 

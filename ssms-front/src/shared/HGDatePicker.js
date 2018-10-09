@@ -124,7 +124,7 @@ export default class HGDatePicker extends Component {
 
   render() {
     // get the wanted values from the component props
-    const { label, HLabel, GLabel, HKey, GKey, HDate } = this.props;
+    const { label, HLabel, GLabel, HKey, GKey, HDate, onBlur } = this.props;
     // return the component UI using:
     // [materialize-datepicker]
     // [hijri-date-picker]
@@ -148,6 +148,7 @@ export default class HGDatePicker extends Component {
                 className="datepicker"
                 id={GKey}
                 name={GKey}
+                onBlur={onBlur}
           />
         </div>
         {/* text input to display the resulted Gregorian date from hijri date */}
@@ -165,7 +166,9 @@ export default class HGDatePicker extends Component {
                 name={label}
                 value={HKey}
                 checked={this.state.inputDate === HKey}
-                onChange={this.onRadioChecked} />
+                onChange={this.onRadioChecked}
+                onBlur={onBlur}
+          />
           <span>{HLabel}</span>
         </label>
         {/* HijriDatePicker component to pick a hijri date */}

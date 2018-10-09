@@ -7,9 +7,9 @@ import { store } from '../AppStore'
 // #region show validations messages
 const showError = ( { error, touched } ) => (
   (touched && error)
-  ? <div className="red-text text-darken-4 valign-wrapper validate">
+  ? <div className="red-text text-darken-4 valign-wrapper validate error">
       <i className="material-icons">error_outline</i>
-      {error}
+      <span>{error}</span>
     </div>
   : null
 )
@@ -30,15 +30,16 @@ export const Button = ({ name, hidden, disabled, classes, icon, label }) => {
 
 // #region Inputs and Textarea
 export const renderInput = ({
-  input,
-  icon,
-  type,
-  label,
   meta,
+  input,
+  label,
+  onChange = null,
+  type = 'text',
+  icon = 'edit',
   uiState: { hidden, disabled } = {}
 }) => (
     <div className="input-field" hidden={hidden}>
-      <i className="material-icons prefix">{icon || "edit"}</i>
+      <i className="material-icons prefix">{icon}</i>
       { type === "textarea"
         ? <textarea
             id={input.name}
@@ -52,6 +53,7 @@ export const renderInput = ({
             className={type === "autocomplete" ? "autocomplete" : ""}
             disabled={disabled}
             {...input}
+            onChange={onChange || input.onChange}
           />
       }
       <label className={input.value ? "active" : ""} htmlFor={input.name}>{label}</label>
@@ -193,9 +195,9 @@ export const renderCheck = ({
         ))}
       </div>
       {showError(meta)}
-      <pre style={ { direction: "ltr", textAlign: "left" } }>
-        <code>{`touched: ${meta.touched}`}</code>
-      </pre>
+      {/* <pre style={ { direction: "ltr", textAlign: "left" } }>
+        {`touched: ${meta.touched}`}
+      </pre> */}
     </div>
   );
 // #endregion
@@ -261,9 +263,9 @@ export const renderAutoComplete = ({
       {...settings}
     />
     {showError(meta)}
-    <pre style={ { direction: "ltr", textAlign: "left" } }>
-        <code>{`touched: ${meta.touched}`}</code>
-    </pre>
+    {/* <pre style={ { direction: "ltr", textAlign: "left" } }>
+        {`touched: ${meta.touched}`}
+    </pre> */}
   </div>
 );
 // #endregion

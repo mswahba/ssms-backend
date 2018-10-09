@@ -84,7 +84,7 @@ const userActions = {
     const parent = {
       userId: entity.parentId,
       userPassword: entity.password,
-      userTypeId: 3,
+      userTypeId: 3, // Parent User Type
       _parent: {
         parentId: entity.parentId,
         fName: entity.fName,
@@ -100,10 +100,10 @@ const userActions = {
       }
     };
     // dispatch
-    // store.dispatch({
-    //   type: actionTypes.ADD_PARENT_PENDING,
-    //   payload: { req: [payload.method,payload.url, parent] }
-    // })
+    store.dispatch({
+      type: actionTypes.ADD_PARENT_PENDING,
+      payload: { req: [payload.method,payload.url, parent] }
+    })
   },
   getUsers:(payload) => {
     // dispath only when users is empty

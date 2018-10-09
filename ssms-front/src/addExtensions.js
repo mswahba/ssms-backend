@@ -332,4 +332,17 @@ export default () => {
        .toUpperCase()
     )
   }
+  // test alphabetical letters for [EN - AR]
+  String.prototype.alpha = function(lang) {
+    const ar_alpha = /^([\u0600-\u06ff ]|[\u0750-\u077f ]|[\ufb50-\ufbc1 ]|[\ufbd3-\ufd3f ]|[\ufd50-\ufd8f ]|[\ufd92-\ufdc7 ]|[\ufe70-\ufefc ]|[\ufdf0-\ufdfd ])*$/g,
+          en_alpha = /^[a-zA-Z ]+$/;
+    switch(lang) {
+      case 'en':
+        return en_alpha.test(this);
+      case 'ar':
+        return ar_alpha.test(this);
+      default:
+        return ( en_alpha.test(this) || ar_alpha.test(this) );
+    }
+  }
 };
