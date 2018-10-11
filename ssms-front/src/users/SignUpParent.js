@@ -123,7 +123,6 @@ class SignUpParent extends Component {
           component={renderInput} />
         {/* idExpireDate */}
         <Field name="idExpireDate"
-          label={trans("users.signUpParent.fields.idExpireDate")}
           HLabel={trans("users.signUpParent.fields.idExpireDateH")}
           GLabel={trans("users.signUpParent.fields.idExpireDateG")}
           HKey="idExpireDateH"

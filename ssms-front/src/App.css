@@ -35,11 +35,11 @@ div.error span {
 /* #region HG datepicker styles */
 div.hg-datepicker {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr;
-  grid-template-rows: 25px 25px;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-flow: dense;
   grid-template-areas:
-    "main-label g-label h-label"
-    "main-label g-input h-input";
+    "g-label h-label"
+    "g-input h-input";
 }
 div.hg-datepicker .main-label {
   grid-area: main-label;
@@ -59,8 +59,14 @@ div.hg-datepicker .g-input {
 div.hg-datepicker.h-input {
   grid-area: h-input;
 }
-div.hg-datepicker ~ div.error {
-  margin-top: 2.7rem;
+div.hg-datepicker div.hijri-date-picker > input {
+  margin-left: 3rem !important;
+}
+.rtl div.hg-datepicker div.hijri-date-picker > input {
+  margin-right: 3rem !important;
+}
+div.hijri-calender {
+  z-index: 99;
 }
 /* #endregion */
 

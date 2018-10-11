@@ -96,7 +96,7 @@ export default class HGDatePicker extends Component {
         // wait till the selected date is written in the text input
         setTimeout(() => {
           // convert the Hdate to Gdate using 'moment-hijri'
-          const Gdate = toGDate(input.value);
+          const Gdate = new Date(toGDate(input.value));
           // set the converted G date to its state
           this.setState({
             GDateValue: Gdate
@@ -130,8 +130,6 @@ export default class HGDatePicker extends Component {
     // [hijri-date-picker]
     return (
       <div className="hg-datepicker validate">
-        {/* Main field label */}
-        <label className="main-label" htmlFor={GKey}>{label}</label>
         {/* Gregorian Label [Gregorian radio button]  */}
         <label className="g-label">
           <input type="radio"
@@ -175,7 +173,6 @@ export default class HGDatePicker extends Component {
         <div id={HKey} className="input-field h-input" hidden={this.state.inputDate !== HKey}>
           <i className="material-icons prefix">date_range</i>
           <HijriDatePicker
-              className="input-field"
               inputName={HKey}
               selectedDate={this.state.HDateValue}
           />

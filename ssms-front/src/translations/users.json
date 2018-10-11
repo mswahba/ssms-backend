@@ -104,17 +104,13 @@
           "ID Number",
           "رقم الهوية"
         ],
-        "idExpireDate": [
-          "ID Expire Date",
-          "تاريخ انتهاء الهوية"
-        ],
         "idExpireDateH": [
-          "Hijri",
-          "هجري"
+          "Hijri ID Expire Date",
+          "تاريخ انتهاء الهوية الهجري"
         ],
         "idExpireDateG": [
-          "Gregorian",
-          "ميلادي"
+          "Gregorian ID Expire Date",
+          "تاريخ انتهاء الهوية الميلادي"
         ],
         "mobile": [
           "Mobile",
@@ -148,8 +144,8 @@
             "يجب إدخال الاسم الأول ..."
           ],
           "alpha": [
-            "First Name must be letters only ...",
-            "يجب أن يكون الاسم الأول حروف فقط ..."
+            "First Name must be in Arabic letters only ...",
+            "يجب أن يكون الاسم الأول بالأحرف العربية فقط ..."
           ]
         },
         "mName": {
@@ -158,14 +154,14 @@
             "يجب إدخال اسم الأب ..."
           ],
           "alpha": [
-            "Middle Name must be letters only ...",
-            "يجب أن يكون اسم الأب حروف فقط ..."
+            "Middle Name must be in Arabic letters only ...",
+            "يجب أن يكون اسم الأب بالأحرف العربية فقط ..."
           ]
         },
         "gName": {
           "alpha": [
-            "Grandfather Name must be letters only ...",
-            "يجب أن يكون اسم الجد حروف فقط ..."
+            "Grandfather Name must be in Arabic letters only ...",
+            "يجب أن يكون اسم الجد بالأحرف العربية فقط ..."
           ]
         },
         "lName": {
@@ -174,8 +170,8 @@
             "يجب إدخال اسم العائلة ..."
           ],
           "alpha": [
-            "Family Name must be letters only ...",
-            "يجب أن يكون اسم العائلة حروف فقط ..."
+            "Family Name must be in Arabic letters only ...",
+            "يجب أن يكون اسم العائلة بالأحرف العربية فقط ..."
           ]
         },
         "countryId": {
@@ -196,8 +192,8 @@
             "يجب إدخال رقم الهوية ..."
           ],
           "length": [
-            "ID must be exactly 10 digits ...",
-            "يجب ان تكون عدد ارقام رقم الهوية مساويا لـ 10 ارقام ..."
+            "ID number must be between 4 and 10 characters ...",
+            "يجب أن يكون رقم الهوية بين 4 و 10 (حرف-رمز-رقم) ..."
           ]
         },
         "idExpireDate": {

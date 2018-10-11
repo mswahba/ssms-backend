@@ -206,7 +206,6 @@ export const renderCheck = ({
 export const renderHGDatepicker = ({
   meta,
   input,
-  label,
   HLabel,
   GLabel,
   HKey,
@@ -220,7 +219,6 @@ export const renderHGDatepicker = ({
   <div className="input-field" hidden={hidden}>
     <i className="material-icons prefix hg-icon">{icon}</i>
     <HGDatePicker
-      label={label}
       HLabel={HLabel}
       GLabel={GLabel}
       HKey={HKey}
