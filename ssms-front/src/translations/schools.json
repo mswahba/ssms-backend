@@ -113,8 +113,12 @@
     "validations": {
       "schoolNameAr": {
         "required": [
-          "SchoolNameAr is required ...",
+          "Arabic School Name is required ...",
           "يجب إدخال اسم المدرسة باللغة العربية"
+        ],
+        "length": [
+          "Arabic School Name length must be between 3 and 150 letters ...",
+          "يجب أن يكون طول اسم المدرسة باللغة العربية من 3 إلي 150 احرف ..."
         ],
         "alpha": [
           "Only Arabic alphabits ...",
@@ -125,6 +129,10 @@
         "required": [
           "SchoolNameEn is required ...",
           "يجب إدخال اسم المدرسة باللغة الانجليزية"
+        ],
+        "length": [
+          "English School Name length must be between 3 and 150 letters ...",
+          "يجب أن يكون طول اسم المدرسة باللغة الانجليزية من 3 إلي 150 احرف ..."
         ],
         "alpha": [
           "Only English alphabits ...",

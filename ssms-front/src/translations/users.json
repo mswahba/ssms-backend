@@ -146,6 +146,10 @@
           "alpha": [
             "First Name must be in Arabic letters only ...",
             "يجب أن يكون الاسم الأول بالأحرف العربية فقط ..."
+          ],
+          "length": [
+            "First Name length must be between 2 and 20 letters ...",
+            "يجب أن يكون طول الاسم الأول من 2 إلي 20 حرف ..."
           ]
         },
         "mName": {
@@ -156,12 +160,20 @@
           "alpha": [
             "Middle Name must be in Arabic letters only ...",
             "يجب أن يكون اسم الأب بالأحرف العربية فقط ..."
+          ],
+          "length": [
+            "Middle Name length must be between 2 and 20 letters ...",
+            "يجب أن يكون طول اسم الأب من 2 إلي 20 حرف ..."
           ]
         },
         "gName": {
           "alpha": [
             "Grandfather Name must be in Arabic letters only ...",
             "يجب أن يكون اسم الجد بالأحرف العربية فقط ..."
+          ],
+          "length": [
+            "Grandfather Name length must be between 2 and 20 letters ...",
+            "يجب أن يكون طول الاسم الأول من 2 إلي 20 حرف ..."
           ]
         },
         "lName": {
@@ -172,6 +184,10 @@
           "alpha": [
             "Family Name must be in Arabic letters only ...",
             "يجب أن يكون اسم العائلة بالأحرف العربية فقط ..."
+          ],
+          "length": [
+            "Family Name length must be between 2 and 20 letters ...",
+            "يجب أن يكون طول اسم العائلة من 2 إلي 20 حرف ..."
           ]
         },
         "countryId": {

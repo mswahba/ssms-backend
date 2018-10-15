@@ -316,18 +316,26 @@ class _SchoolsReduxForm extends Component {
 }
 
 const validate = ({ schoolName, schoolNameEn, startDate, address, comNum }) => {
-  const trans = getTranslate(store.getState().localize);
   const errors = {};
+  // disable validation on [details] FormCase
+  if(window.location.href.includes('details'))
+    return errors;
+  // get the translate function from localize
+  const trans = getTranslate(store.getState().localize);
   // schoolName
   if (!schoolName)
     errors.schoolName = trans("schools.validations.schoolNameAr.required");
-  else if (!isAlpha(schoolName, 'ar'))
+  else if (!schoolName.alpha('ar'))
     errors.schoolName = trans("schools.validations.schoolNameAr.alpha");
+  else if (!isLength(schoolName, { min:3, max: 150 }))
+    errors.schoolName = trans("schools.validations.schoolNameAr.length");
   // schoolNameEn
   if (!schoolNameEn)
     errors.schoolNameEn = trans("schools.validations.schoolNameEn.required");
-  else if (!isAlpha(schoolNameEn))
+  else if (!schoolNameEn.alpha('en'))
     errors.schoolNameEn = trans("schools.validations.schoolNameEn.alpha");
+  else if (!isLength(schoolNameEn, { min:3, max: 150 }))
+    errors.schoolNameEn = trans("schools.validations.schoolNameEn.length");
   // startDate with reformate the date string to be suitable to date Validation [month/day/year]
   if( startDate && !isBefore(moment(startDate).format('DD/MM/YYYY'), moment().add(1, 'day').format('MM/DD/YYYY') ) )
     errors.startDate = trans("schools.validations.startDate.before");

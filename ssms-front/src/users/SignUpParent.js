@@ -174,22 +174,32 @@ const validateFields = {
       return trans("users.signUpParent.validations.fName.required");
     else if (!value.alpha('ar') )
       return trans("users.signUpParent.validations.fName.alpha");
+    else if (!isLength(value, { min:2, max: 20}))
+      return trans("users.signUpParent.validations.fName.length");
   },
   mName: (trans, value) => {
     if(!value)
       return trans("users.signUpParent.validations.mName.required");
     else if (!value.alpha('ar'))
       return trans("users.signUpParent.validations.mName.alpha");
+    else if (!isLength(value, { min:2, max: 20}))
+      return trans("users.signUpParent.validations.mName.length");
   },
   gName: (trans, value) => {
-    if (!value.alpha('ar'))
-    return trans("users.signUpParent.validations.gName.alpha");
+    if(value) {
+      if (!value.alpha('ar'))
+        return trans("users.signUpParent.validations.gName.alpha");
+      else if (!isLength(value, { min:2, max: 20}))
+        return trans("users.signUpParent.validations.gName.length");
+    }
   },
   lName: (trans, value) => {
     if(!value)
       return trans("users.signUpParent.validations.lName.required");
     else if (!value.alpha('ar'))
       return trans("users.signUpParent.validations.lName.alpha");
+    else if (!isLength(value, { min:2, max: 20}))
+      return trans("users.signUpParent.validations.lName.length");
   },
   countryId: (trans, value) => {
     if(!value)
