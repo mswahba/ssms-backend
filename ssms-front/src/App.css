@@ -108,12 +108,3 @@ ul.autocomplete-content li img {
 }
 /* #endregion */
 
-/* #region materialize datepicker styles */
-ul.dropdown-content.select-dropdown {
-  left: auto !important;
-  right: 678px !important;
-  top: 49px !important;
-  height: 441px !important;
-  z-index: 1100 !important;
-}
-/* #endregion */

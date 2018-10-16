@@ -258,21 +258,6 @@ const validate = (values) => {
       errors[key] = validateFields[key](trans, values[key])
     return errors;
   }, {})
-  // return {
-  //   fName: fName(trans, fName),
-  //   mName: fName(trans, mName),
-  //   gName: fName(trans, gName),
-  //   lName: fName(trans, lName),
-  //   countryId: fName(trans, countryId),
-  //   idType: fName(trans, idType),
-  //   parentId: fName(trans, parentId),
-  //   idExpireDate: fName(trans, idExpireDate),
-  //   mobile: fName(trans, mobile),
-  //   email: fName(trans, email),
-  //   userId: fName(trans, userId),
-  //   password: fName(trans, password),
-  //   passwordConfirm: fName(trans, passwordConfirm)
-  // };
 };
 // #endregion
 

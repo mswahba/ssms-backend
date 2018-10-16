@@ -1,0 +1,12 @@
+/* #region materialize datepicker styles */
+ul.dropdown-content.select-dropdown {
+  right: 60% !important;
+  left: auto !important;
+  top: 60px !important;
+  height: 441px !important;
+  z-index: 1100 !important;
+}
+ul.dropdown-content.select-dropdown:last-child {
+  right: 50% !important;
+}
+/* #endregion */

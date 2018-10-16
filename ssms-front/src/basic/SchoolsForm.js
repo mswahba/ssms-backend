@@ -7,7 +7,6 @@ import isAlpha from 'validator/lib/isAlpha'
 import isLength from 'validator/lib/isLength'
 import isBefore from 'validator/lib/isBefore'
 import isNumeric from 'validator/lib/isNumeric'
-import moment from 'moment'
 import { store } from '../AppStore'
 import { renderInput, renderDatepicker, renderSwitch, Button } from '../shared/FormInputs'
 import { lookupActions } from '../store/lookup'
@@ -185,7 +184,7 @@ class _SchoolsReduxForm extends Component {
   doSubmit = (values) => {
     const { reset, history, trans } = this.props;
     // reformate the date string to be suitable to SQL Server [month/day/year]
-    values = {...values, startDate: moment(values.startDate).format('DD/MM/YYYY')};
+    values = { ...values, startDate: values.startDate.reverseDate() };
     if (this.formCase === 'new') {
       lookupActions.addLookupEntity( {
         req: ['post','/schools/add?autoId=ok', values ],
@@ -337,7 +336,9 @@ const validate = ({ schoolName, schoolNameEn, startDate, address, comNum }) => {
   else if (!isLength(schoolNameEn, { min:3, max: 150 }))
     errors.schoolNameEn = trans("schools.validations.schoolNameEn.length");
   // startDate with reformate the date string to be suitable to date Validation [month/day/year]
-  if( startDate && !isBefore(moment(startDate).format('DD/MM/YYYY'), moment().add(1, 'day').format('MM/DD/YYYY') ) )
+  const dateValue = startDate.reverseDate();
+  const tomorrow = (new Date()).add().toLocaleDateString();
+  if( startDate && !isBefore(dateValue, tomorrow) )
     errors.startDate = trans("schools.validations.startDate.before");
   // address
   if(address && !isLength(address, { min:0, max: 250}))

@@ -311,6 +311,11 @@ export default () => {
     }
     return new Date(str);
   };
+  // reverse date string [ convert a date string from [DMY to MDY] OR [MDY to DMY] ]
+  String.prototype.reverseDate = function() {
+   const [f,s,y] = this.split('/');
+   return [s,f,y].join('/');
+  };
   // get querystring object from URL
   String.prototype.query = function() {
     if(this.indexOf('?') === -1)
