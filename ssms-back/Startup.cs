@@ -53,7 +53,6 @@ namespace SSMS
             services.AddScoped<BaseService<DocType, Byte>>();
             services.AddScoped<BaseService<Country, Byte>>();
             services.AddScoped<BaseService<School, Byte>>();
-            
             // Configure Swagger
             services.AddSwaggerGen(c =>
             {
