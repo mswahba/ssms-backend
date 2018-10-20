@@ -1,7 +1,8 @@
 namespace SSMS
 {
-    public class AppSettings 
+    public class AppSettings
     {
-        public string ConStr; 
-    }  
+        public string ConStr { get; set; }
+        public string SecretKey { get; set; }
+    }
 }

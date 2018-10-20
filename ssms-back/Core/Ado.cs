@@ -14,7 +14,7 @@ namespace SSMS
         static SqlDataAdapter adapter;
         static DataTable table;
         //Dictionary > represents a row , string is the [ColumnName] , Object is [ColumnValue]
-        // Values are defined as objects to hold any data type 
+        // Values are defined as objects to hold any data type
         static Dictionary<string, object> obj;
         // List of Dictionary > represents table which is a list of (Dictionary of Rows)
         static List<Dictionary<string, object>> result;
@@ -25,7 +25,7 @@ namespace SSMS
         public Ado(IHostingEnvironment env)
         {
             filePath = Path.Combine(env.ContentRootPath, "appsettings.json");
-            con = new SqlConnection(filePath.GetJsonValue());
+            con = new SqlConnection("appsettings.json".GetJsonValue<AppSettings>("ConStr"));
             //con = new SqlConnection(@"Server=DESKTOP-8GK916E;Database=ssms;Trusted_Connection=True;");
             command = new SqlCommand();
             command.Connection = con;
@@ -35,9 +35,9 @@ namespace SSMS
         }
         public List<Dictionary<string, object>> ExecuteQuery(string sqlQuery)
         {
-            //Clear List of Dictionary if there is any previous Data 
+            //Clear List of Dictionary if there is any previous Data
             result.Clear();
-            //Clear table rows and Columns before filling it. 
+            //Clear table rows and Columns before filling it.
             table.Rows.Clear();
             table.Columns.Clear();
             command.CommandText = sqlQuery;
@@ -46,14 +46,14 @@ namespace SSMS
             adapter.Fill(table);
             foreach (DataRow row in table.Rows)
             {
-                //dynamically Create an object to hold row data (columnNames, ColValues) 
+                //dynamically Create an object to hold row data (columnNames, ColValues)
                 obj = new Dictionary<string, object>();
                 //Iterate each column in the table and add its name and Val into row [obj]
                 foreach (DataColumn col in table.Columns)
                 {
-                    //First Check if the column has null value, set it to null 
+                    //First Check if the column has null value, set it to null
                     //(otherwise an anonymoys type will be created for column value instead of direct Value)
-                    // If 
+                    // If
                     if (row[col] is DBNull)
                         obj.Add(col.ColumnName, null);
                     else
@@ -63,7 +63,7 @@ namespace SSMS
             }
             return result;
         }
-        public object ExecuteScalar(string sqlQuery) 
+        public object ExecuteScalar(string sqlQuery)
         {
             command.CommandText = sqlQuery;
             if(con.State != ConnectionState.Open)
