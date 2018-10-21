@@ -10,7 +10,7 @@ using SSMS.EntityModels;
 namespace SSMS.Users
 {
   // Inherit from BaseCOntroller to get all the actions inside it in the derived controller
-  [Authorize]
+  // [Authorize]
   public class UsersController : BaseController<User, String>
   {
     // Store the usersService object that comes
@@ -30,13 +30,20 @@ namespace SSMS.Users
       // (1)check if MS is valid
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
-      // (2) Mapping from SignUp [View Model] to User [Entity Model]
-      User user = Helpers.Map(signup);
       try
       {
-        // (3) insert the User into DB
+        // (2) Mapping from SignUp [View Model] to User [Entity Model]
+        User user = Helpers.Map(signup);
+        // (3) Hashing UserPassword before Saving to DB
+        string salt = "appsettings.json".GetJsonValue<AppSettings>("HashSalt");
+        string hash = Helpers.Hashing(user.UserPassword,salt);
+        Console.WriteLine(user.UserPassword);
+        Console.WriteLine(hash);
+        Console.WriteLine(Helpers.ValidateHash(user.UserPassword,salt,hash));
+        user.UserPassword = hash;
+        // (4) insert the User into DB
         _UserSrv.Add(user);
-        // (4) if everything is ok, return the full User and the JWT
+        // (5) if everything is ok, return the full User and the JWT
         return Ok(new { User = user, Token = Helpers.GetToken(user) });
       }
       catch (System.Exception ex)
