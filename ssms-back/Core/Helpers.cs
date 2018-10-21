@@ -42,8 +42,8 @@ namespace SSMS
                       .Select(property => new Claim(property.Name, (property.GetValue(user) != null)? property.GetValue(user).ToString() : "" ));
       // Create Token with Token Options
       var token = new JwtSecurityToken(
-          issuer: "http://localhost:5000",
-          audience: "http://localhost:5000",
+          issuer: "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
+          audience: "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
           claims: claims,
           expires: DateTime.Now.AddDays(7),
           signingCredentials: creds);

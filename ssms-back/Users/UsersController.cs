@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSMS.EntityModels;
 
 namespace SSMS.Users
 {
   // Inherit from BaseCOntroller to get all the actions inside it in the derived controller
+  [Authorize]
   public class UsersController : BaseController<User, String>
   {
     // Store the usersService object that comes
@@ -21,6 +23,7 @@ namespace SSMS.Users
     {
       _UserSrv = usersService;    //DI inject usersService object here from startup Class
     }
+    [AllowAnonymous]
     [HttpPost("Signup")]
     public IActionResult SignUp([FromBody]SignUp signup)
     {
@@ -41,6 +44,7 @@ namespace SSMS.Users
         return BadRequest(ex);
       }
     }
+    [AllowAnonymous]
     [HttpPost("SignIn")]
     public IActionResult SignIn([FromBody]SignIn signin)
     {
@@ -65,6 +69,7 @@ namespace SSMS.Users
         return BadRequest(ex);
       }
     }
+    [AllowAnonymous]
     [HttpPost("ChangePassword")]
     public IActionResult ChangePassword([FromBody]ChangedPassword changedpassword)
     {
