@@ -9,14 +9,12 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using Remotion.Linq.Parsing.Structure;
-using SSMS.EntityModels;
-using SSMS.Users;
 
 namespace SSMS
 {
   public static class Extensions
   {
-    //Get the generated SQL statement from the linq query
+    // Get the generated SQL statement from the linq query
     #region toSQL
     private static readonly TypeInfo QueryCompilerTypeInfo = typeof(QueryCompiler).GetTypeInfo();
     private static readonly FieldInfo QueryCompilerField = typeof(EntityQueryProvider).GetTypeInfo().DeclaredFields.First(x => x.Name == "_queryCompiler");
@@ -55,24 +53,12 @@ namespace SSMS
 
     #endregion
 
-    public static User Map(SignUp signup)
-    {
-      return new User()
-      {
-        UserId = signup.UserId,
-        UserPassword = signup.UserPassword,
-        UserTypeId = signup.UserType,
-        SubscribeDate = DateTime.UtcNow.AddHours(3),
-        IsActive = false
-      };
-    }
-
-    //an extension function that takes type that it will be attached to
+    // an extension function that takes type that it will be attached to
     // and the property name which we want to get its value
-    //Normaly, we use item.[propName] if we know it exactly
-    //but here we dont know it as it comes as a parameter,
-    //so we use reflection to get the property based on its name at runtime
-    //'this' keyword means this function becomes an extension function on the type given after it
+    // Normaly, we use item.[propName] if we know it exactly
+    // but here we dont know it as it comes as a parameter,
+    // so we use reflection to get the property based on its name at runtime
+    // 'this' keyword means this function becomes an extension function on the type given after it
     public static object GetValue(this object obj, string propName)
     {
       //Get property info
@@ -146,11 +132,17 @@ namespace SSMS
           break;
       }
     }
-    //function to get the property to use it later
+    // function to return the PropertyInfo of the given propName
     public static PropertyInfo GetProperty(this object obj, string propName)
     {
       return obj.GetType()
-              .GetProperty(propName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                .GetProperty(propName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+    }
+    // function to return Array of All PropertiesInfo of the given Object
+    public static PropertyInfo[] GetProperties(this object obj)
+    {
+      return obj.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance);
     }
     // Prepending the Root Directory Path To the given filePath
     public static string ToFullPath(this string filePath)
