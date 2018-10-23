@@ -13,9 +13,10 @@ namespace SSMS.EntityModels
         }
 
         public string UserId { get; set; }
-        public string UserPassword { get; set; }
+        public string PasswordHash { get; set; }
+        public string PasswordSalt { get; set; }
         public byte? UserTypeId { get; set; }
-        public bool? IsActive { get; set; }
+        public byte? AccountStatusId { get; set; }
         public DateTime? SubscribeDate { get; set; }
         public DateTime? LastLogin { get; set; }
         public bool? IsDeleted { get; set; }

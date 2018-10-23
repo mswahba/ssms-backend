@@ -33,14 +33,14 @@ namespace SSMS.Users
       try
       {
         // (2) Mapping from SignUp [View Model] to User [Entity Model]
+        // (3) and Hashing UserPassword before Saving to DB
         User user = Helpers.Map(signup);
-        // (3) Hashing UserPassword before Saving to DB
-        string salt = "appsettings.json".GetJsonValue<AppSettings>("HashSalt");
-        string hash = Helpers.Hashing(user.UserPassword,salt);
-        Console.WriteLine(user.UserPassword);
-        Console.WriteLine(hash);
-        Console.WriteLine(Helpers.ValidateHash(user.UserPassword,salt,hash));
-        user.UserPassword = hash;
+        // string salt = Helpers.GetRandSalt();
+        // string hash = Helpers.Hashing(user.PasswordHash,salt);
+        // Console.WriteLine(signup.UserPassword);
+        // Console.WriteLine(salt);
+        // Console.WriteLine(hash);
+        // Console.WriteLine(Helpers.ValidateHash(user.PasswordHash,salt,hash));
         // (4) insert the User into DB
         _UserSrv.Add(user);
         // (5) if everything is ok, return the full User and the JWT
@@ -61,12 +61,13 @@ namespace SSMS.Users
       try
       {
         // (2) Get User by his Credentials [userId - userPassword]
-        var user = _UserSrv.GetOne(u => u.UserId == signin.UserId && u.UserPassword == signin.UserPassword);
+        // and validate the userPassword against Passwordhash
+        var user = _UserSrv.GetOne(u => u.UserId == signin.UserId && Helpers.ValidateHash(signin.UserPassword,u.PasswordSalt,u.PasswordHash) );
         // (3) if User doesn't exist
         if (user == null)
           return BadRequest(new Error() { Message = "Invalid User." });
-        // (4) if User is not Active
-        if (user.IsActive == false)
+        // (4) if User is [not Enabled OR isDeleted] return badRequest
+        if (user.AccountStatusId != 2 && user.IsDeleted == true)
           return BadRequest( new Error() { Message = "This account hasn't been activated Yet." });
         // (5) if everything is ok, return the full User and the JWT
         return Ok(new { User = user, Token = Helpers.GetToken(user) });
@@ -80,19 +81,22 @@ namespace SSMS.Users
     [HttpPost("ChangePassword")]
     public IActionResult ChangePassword([FromBody]ChangedPassword changedpassword)
     {
-      //(1)check if MS is valid
+      // (1) check if MS is valid
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
-      //(2) Get user Data from DB
-      var user = _UserSrv.GetOne(u => u.UserId == changedpassword.UserId && u.UserPassword == changedpassword.OldPassword);
       try
       {
+        // (2) Get user Data from DB
+        var user = _UserSrv.GetOne(u => u.UserId == changedpassword.UserId && Helpers.ValidateHash(changedpassword.OldPassword,u.PasswordSalt,u.PasswordHash) );
         if (user == null)
-          return BadRequest("Invalid User.");
-        //(3) Update statement and saving new pwd
-        user.UserPassword = changedpassword.NewPassword;
+          return BadRequest(new Error() { Message = "Invalid User." });
+        // (3) hashing the new password and set the passwordSalt and passwordHash
+        user.PasswordSalt = Helpers.GetRandSalt();
+        user.PasswordHash = Helpers.Hashing(changedpassword.NewPassword,user.PasswordSalt);
+        // (4) Saving the new passwordSalt and passwordHash
         _UserSrv.Save();
-        return Ok(user);  //if everything is ok, return the full user obj with all inserted values
+        // (5) if everything is ok, return the full user
+        return Ok(user);
       }
       catch (System.Exception ex)
       {

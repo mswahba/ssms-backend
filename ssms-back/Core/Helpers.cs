@@ -18,13 +18,18 @@ namespace SSMS
     // and fill in all default data values [not entered by the user]
     public static User Map(SignUp signup)
     {
+      // generate salt and hash
+      string salt = Helpers.GetRandSalt();
+      string hash = Helpers.Hashing(signup.UserPassword,salt);
+      // mapping
       return new User()
       {
         UserId = signup.UserId,
-        UserPassword = signup.UserPassword,
+        PasswordSalt = salt,
+        PasswordHash = hash,
         UserTypeId = signup.UserType,
         SubscribeDate = DateTime.UtcNow.AddHours(3),
-        IsActive = false
+        AccountStatusId = 1
       };
     }
     // get SecretKey from appsettings.json file
@@ -57,22 +62,19 @@ namespace SSMS
     // A Function that generates a Random Salt
     public static string GetRandSalt()
     {
-      byte[] randomBytes = new byte[128 / 8];
-      using (var generator = RandomNumberGenerator.Create()) 
-      {  
-          generator.GetBytes(randomBytes);  
-          return Convert.ToBase64String(randomBytes);
-      }
+      byte[] salt = new byte[32];
+      RandomNumberGenerator.Create().GetBytes(salt);
+      return Convert.ToBase64String(salt);
     }
     // A Function to hash the given string Value using the given Salt
     public static string Hashing(string value, string salt)
     {
-      var valueBytes = KeyDerivation.Pbkdf2(  
+      var valueBytes = KeyDerivation.Pbkdf2(
                           password: value,
                           salt: Encoding.UTF8.GetBytes(salt),
-                          prf: KeyDerivationPrf.HMACSHA512,
+                          prf: KeyDerivationPrf.HMACSHA1,
                           iterationCount: 10000,
-                          numBytesRequested: 256 / 8);
+                          numBytesRequested: 32);
 
       return Convert.ToBase64String(valueBytes);
     }

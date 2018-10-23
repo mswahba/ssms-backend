@@ -1518,7 +1518,7 @@ namespace SSMS.EntityModels
                   .HasColumnType("char(10)")
                   .ValueGeneratedNever();
 
-        entity.Property(e => e.IsActive).HasColumnName("isActive");
+        entity.Property(e => e.AccountStatusId).HasColumnName("accountStatusId");
 
         entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
@@ -1530,9 +1530,13 @@ namespace SSMS.EntityModels
                   .HasColumnName("subscribeDate")
                   .HasColumnType("smalldatetime");
 
-        entity.Property(e => e.UserPassword)
-                  .HasColumnName("userPassword")
-                  .HasMaxLength(25);
+        entity.Property(e => e.PasswordHash)
+                  .HasColumnName("passwordHash")
+                  .HasMaxLength(50);
+
+        entity.Property(e => e.PasswordSalt)
+                  .HasColumnName("passwordSalt")
+                  .HasMaxLength(50);
 
         entity.Property(e => e.UserTypeId).HasColumnName("userTypeId");
 
