@@ -14,10 +14,14 @@ namespace SSMS.EntityModels
 
         public string StudentId { get; set; }
         public string ParentId { get; set; }
-        public string FName { get; set; }
-        public string MName { get; set; }
-        public string GName { get; set; }
-        public string LName { get; set; }
+        public string FNameAr { get; set; }
+        public string MNameAr { get; set; }
+        public string GNameAr { get; set; }
+        public string LNameAr { get; set; }
+        public string FNameEn { get; set; }
+        public string MNameEn { get; set; }
+        public string GNameEn { get; set; }
+        public string LNameEn { get; set; }
         public bool? Gender { get; set; }
         public byte? IdType { get; set; }
         public string IdIssuePlace { get; set; }

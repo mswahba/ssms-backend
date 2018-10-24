@@ -393,12 +393,30 @@ namespace SSMS.EntityModels
                   .HasColumnName("email")
                   .HasMaxLength(50);
 
-        entity.Property(e => e.FName)
-                  .HasColumnName("fName")
+        entity.Property(e => e.FNameAr)
+                  .HasColumnName("fNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.MNameAr)
+                  .HasColumnName("mNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.GNameAr)
+                  .HasColumnName("gNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.LNameAr)
+                  .HasColumnName("lNameAr")
                   .HasMaxLength(20);
 
-        entity.Property(e => e.GName)
-                  .HasColumnName("gName")
+        entity.Property(e => e.FNameEn)
+                  .HasColumnName("fNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.MNameEn)
+                  .HasColumnName("mNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.GNameEn)
+                  .HasColumnName("gNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.LNameEn)
+                  .HasColumnName("lNameEn")
                   .HasMaxLength(20);
 
         entity.Property(e => e.Gender).HasColumnName("gender");
@@ -416,14 +434,6 @@ namespace SSMS.EntityModels
         entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.Property(e => e.IsHandicapped).HasColumnName("isHandicapped");
-
-        entity.Property(e => e.LName)
-                  .HasColumnName("lName")
-                  .HasMaxLength(20);
-
-        entity.Property(e => e.MName)
-                  .HasColumnName("mName")
-                  .HasMaxLength(20);
 
         entity.Property(e => e.MaritalStatus)
                   .HasColumnName("maritalStatus")
@@ -890,12 +900,30 @@ namespace SSMS.EntityModels
                   .HasColumnName("email")
                   .HasMaxLength(50);
 
-        entity.Property(e => e.FName)
-                  .HasColumnName("fName")
+        entity.Property(e => e.FNameAr)
+                  .HasColumnName("fNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.MNameAr)
+                  .HasColumnName("mNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.GNameAr)
+                  .HasColumnName("gNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.LNameAr)
+                  .HasColumnName("lNameAr")
                   .HasMaxLength(20);
 
-        entity.Property(e => e.GName)
-                  .HasColumnName("gName")
+        entity.Property(e => e.FNameEn)
+                  .HasColumnName("fNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.MNameEn)
+                  .HasColumnName("mNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.GNameEn)
+                  .HasColumnName("gNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.LNameEn)
+                  .HasColumnName("lNameEn")
                   .HasMaxLength(20);
 
         entity.Property(e => e.HouseNum)
@@ -913,14 +941,6 @@ namespace SSMS.EntityModels
         entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.Property(e => e.Job).HasColumnName("job");
-
-        entity.Property(e => e.LName)
-                  .HasColumnName("lName")
-                  .HasMaxLength(20);
-
-        entity.Property(e => e.MName)
-                  .HasColumnName("mName")
-                  .HasMaxLength(20);
 
         entity.Property(e => e.Mobile1)
                   .HasColumnName("mobile1")
@@ -1246,12 +1266,30 @@ namespace SSMS.EntityModels
                   .HasColumnName("email")
                   .HasMaxLength(50);
 
-        entity.Property(e => e.FName)
-                  .HasColumnName("fName")
+        entity.Property(e => e.FNameAr)
+                  .HasColumnName("fNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.MNameAr)
+                  .HasColumnName("mNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.GNameAr)
+                  .HasColumnName("gNameAr")
+                  .HasMaxLength(20);
+        entity.Property(e => e.LNameAr)
+                  .HasColumnName("lNameAr")
                   .HasMaxLength(20);
 
-        entity.Property(e => e.GName)
-                  .HasColumnName("gName")
+        entity.Property(e => e.FNameEn)
+                  .HasColumnName("fNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.MNameEn)
+                  .HasColumnName("mNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.GNameEn)
+                  .HasColumnName("gNameEn")
+                  .HasMaxLength(20);
+        entity.Property(e => e.LNameEn)
+                  .HasColumnName("lNameEn")
                   .HasMaxLength(20);
 
         entity.Property(e => e.Gender).HasColumnName("gender");
@@ -1265,14 +1303,6 @@ namespace SSMS.EntityModels
         entity.Property(e => e.IdIssuePlace).HasMaxLength(50);
 
         entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-
-        entity.Property(e => e.LName)
-                  .HasColumnName("lName")
-                  .HasMaxLength(20);
-
-        entity.Property(e => e.MName)
-                  .HasColumnName("mName")
-                  .HasMaxLength(20);
 
         entity.Property(e => e.Mobile)
                   .HasColumnName("mobile")
