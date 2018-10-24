@@ -9,6 +9,7 @@ namespace SSMS.EntityModels
         {
             LessonsFiles = new HashSet<LessonFile>();
             WeeksPlans = new HashSet<WeekPlan>();
+            IsDeleted = false;
         }
 
         public int LessonId { get; set; }
@@ -16,6 +17,7 @@ namespace SSMS.EntityModels
         public byte? SemesterId { get; set; }
         public string LessonTitle { get; set; }
         public string LessonObjectives { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public ICollection<LessonFile> LessonsFiles { get; set; }
         public ICollection<WeekPlan> WeeksPlans { get; set; }

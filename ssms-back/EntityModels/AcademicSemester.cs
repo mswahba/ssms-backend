@@ -10,6 +10,7 @@ namespace SSMS.EntityModels
             AcademicWeeks = new HashSet<AcademicWeek>();
             Periods = new HashSet<Period>();
             TeachersQuorums = new HashSet<TeacherQuorum>();
+            IsDeleted = false;
         }
 
         public byte SemesterId { get; set; }
@@ -20,7 +21,7 @@ namespace SSMS.EntityModels
         public string SemesterStartDateH { get; set; }
         public DateTime? SemesterEndDateG { get; set; }
         public string SemesterEndDateH { get; set; }
-
+        public bool? IsDeleted { get; set; }
         public AcademicYear Year { get; set; }
         public ICollection<AcademicWeek> AcademicWeeks { get; set; }
         public ICollection<Period> Periods { get; set; }

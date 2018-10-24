@@ -8,12 +8,14 @@ namespace SSMS.EntityModels
         public Branch()
         {
             Stages = new HashSet<Stage>();
+            IsDeleted = false;
         }
 
         public byte BranchId { get; set; }
         public string BranchNameAr { get; set; }
         public string BranchNameEn { get; set; }
         public byte? SchoolId { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public School School { get; set; }
         public ICollection<Stage> Stages { get; set; }

@@ -8,11 +8,13 @@ namespace SSMS.EntityModels
         public Major()
         {
             Subjects = new HashSet<Subject>();
+            IsDeleted = false;
         }
 
         public byte MajorId { get; set; }
         public string MajorNameAr { get; set; }
         public string MajorNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public ICollection<Subject> Subjects { get; set; }
     }

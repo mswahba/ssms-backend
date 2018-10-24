@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public StudentViolation()
         {
             StudentsProcedures = new HashSet<StudentProcedure>();
+            IsDeleted = false;
         }
 
         public int StudentViolationId { get; set; }
@@ -15,6 +16,7 @@ namespace SSMS.EntityModels
         public short? ViolationId { get; set; }
         public int? EmpJobId { get; set; }
         public DateTime? ViolationDate { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public EmployeeJob EmpJob { get; set; }
         public Student Student { get; set; }

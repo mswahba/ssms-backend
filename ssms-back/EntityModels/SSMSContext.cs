@@ -97,6 +97,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.YearId).HasColumnName("yearId");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Year)
                   .WithMany(p => p.AcademicSemesters)
                   .HasForeignKey(d => d.YearId)
@@ -135,6 +137,8 @@ namespace SSMS.EntityModels
                   .HasColumnName("weekStartDateH")
                   .HasColumnType("nchar(10)");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Semester)
                   .WithMany(p => p.AcademicWeeks)
                   .HasForeignKey(d => d.SemesterId)
@@ -172,6 +176,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.YearStartDateH)
                   .HasColumnName("yearStartDateH")
                   .HasColumnType("nchar(10)");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<Action>(entity =>
@@ -195,6 +202,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.ActionUrl)
                   .HasColumnName("actionUrl")
                   .HasMaxLength(100);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<BehavioralViolation>(entity =>
@@ -216,6 +226,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.ViolationNameEn)
                   .HasColumnName("violationNameEn")
                   .HasMaxLength(150);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<Branch>(entity =>
@@ -240,6 +253,9 @@ namespace SSMS.EntityModels
                   .WithMany(p => p.Branches)
                   .HasForeignKey(d => d.SchoolId)
                   .HasConstraintName("FK_branches_schools");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<ClassStudent>(entity =>
@@ -268,6 +284,8 @@ namespace SSMS.EntityModels
                   .HasColumnType("char(10)");
 
         entity.Property(e => e.YearId).HasColumnName("yearId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.Classroom)
                   .WithMany(p => p.ClassesStudents)
@@ -306,6 +324,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.GradeId).HasColumnName("gradeId");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Grade)
                   .WithMany(p => p.Classrooms)
                   .HasForeignKey(d => d.GradeId)
@@ -327,6 +347,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.DepartmentNameEn)
                   .HasColumnName("departmentNameEn")
                   .HasMaxLength(100);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<DocType>(entity =>
@@ -344,6 +367,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.DocTypeEn)
                   .HasColumnName("docTypeEn")
                   .HasMaxLength(50);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<Employee>(entity =>
@@ -514,6 +540,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.ActionId).HasColumnName("actionId");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Action)
                   .WithMany(p => p.EmployeesActions)
                   .HasForeignKey(d => d.ActionId)
@@ -582,6 +610,8 @@ namespace SSMS.EntityModels
                   .HasColumnName("transportAllowance")
                   .HasColumnType("smallmoney");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Emp)
                   .WithOne(p => p.EmployeesFinance)
                   .HasForeignKey<EmployeeFinance>(d => d.EmpId)
@@ -634,6 +664,8 @@ namespace SSMS.EntityModels
                   .HasColumnName("wrokStartDateG")
                   .HasColumnType("date");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Emp)
                   .WithOne(p => p.EmployeesHr)
                   .HasForeignKey<EmployeeHr>(d => d.EmpId)
@@ -669,6 +701,8 @@ namespace SSMS.EntityModels
         entity.Property(e => e.StartDate)
                   .HasColumnName("startDate")
                   .HasColumnType("date");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.Department)
                   .WithMany(p => p.EmployeesJobs)
@@ -706,6 +740,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.StageId).HasColumnName("stageId");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Stage)
                   .WithMany(p => p.Grades)
                   .HasForeignKey(d => d.StageId)
@@ -731,6 +767,8 @@ namespace SSMS.EntityModels
         entity.Property(e => e.PeriodsCount).HasColumnName("periodsCount");
 
         entity.Property(e => e.SubjectId).HasColumnName("subjectId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.Grade)
                   .WithMany(p => p.GradesSubjects)
@@ -764,6 +802,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.JobNameEn)
                   .HasColumnName("jobNameEn")
                   .HasMaxLength(100);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<Country>(entity =>
@@ -783,6 +824,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.CountryEn)
                   .HasColumnName("countryEn")
                   .HasMaxLength(50);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<JobAction>(entity =>
@@ -794,6 +838,8 @@ namespace SSMS.EntityModels
         entity.Property(e => e.JobId).HasColumnName("jobId");
 
         entity.Property(e => e.ActionId).HasColumnName("actionId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.Action)
                   .WithMany(p => p.JobsActions)
@@ -827,6 +873,9 @@ namespace SSMS.EntityModels
                   .HasMaxLength(150);
 
         entity.Property(e => e.SemesterId).HasColumnName("semesterId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<LessonFile>(entity =>
@@ -852,6 +901,8 @@ namespace SSMS.EntityModels
         entity.Property(e => e.IsExternalLink).HasColumnName("isExternalLink");
 
         entity.Property(e => e.LessonId).HasColumnName("lessonId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.DocType)
                   .WithMany(p => p.LessonsFiles)
@@ -879,6 +930,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.MajorNameEn)
                   .HasColumnName("majorNameEn")
                   .HasMaxLength(50);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<Parent>(entity =>
@@ -1025,6 +1079,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.StartTime).HasColumnName("startTime");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Classeroom)
                   .WithMany(p => p.Periods)
                   .HasForeignKey(d => d.ClasseroomId)
@@ -1081,6 +1137,8 @@ namespace SSMS.EntityModels
                   .HasColumnName("studentId")
                   .HasColumnType("char(10)");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Period)
                   .WithMany(p => p.PeriodsDetails)
                   .HasForeignKey(d => d.PeriodId)
@@ -1116,6 +1174,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.WeekPlanId).HasColumnName("weekPlanId");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.DocType)
                   .WithMany(p => p.PeriodsFiles)
                   .HasForeignKey(d => d.DocTypeId)
@@ -1146,6 +1206,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.ProcedureNameEn)
                   .HasColumnName("procedureNameEn")
                   .HasMaxLength(150);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<SchoolDayEvent>(entity =>
@@ -1177,6 +1240,8 @@ namespace SSMS.EntityModels
         entity.Property(e => e.StartTime)
                   .HasColumnName("startTime")
                   .HasColumnType("time(0)");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.Stage)
                   .WithMany(p => p.SchoolDayEvents)
@@ -1213,6 +1278,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.StartDate)
                   .HasColumnName("startDate")
                   .HasColumnType("date");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<Stage>(entity =>
@@ -1232,6 +1300,8 @@ namespace SSMS.EntityModels
         entity.Property(e => e.StageNameEn)
                   .HasColumnName("stageNameEn")
                   .HasMaxLength(25);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.Branch)
                   .WithMany(p => p.Stages)
@@ -1324,6 +1394,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.CountryId).HasColumnName("countryId");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Parent)
                   .WithMany(p => p.Students)
                   .HasForeignKey(d => d.ParentId)
@@ -1362,6 +1434,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.StudentViolationId).HasColumnName("studentViolationId");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.EmpJob)
                   .WithMany(p => p.StudentsProcedures)
                   .HasForeignKey(d => d.EmpJobId)
@@ -1399,6 +1473,8 @@ namespace SSMS.EntityModels
                   .HasColumnType("smalldatetime");
 
         entity.Property(e => e.ViolationId).HasColumnName("violationId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.EmpJob)
                   .WithMany(p => p.StudentsViolations)
@@ -1442,6 +1518,8 @@ namespace SSMS.EntityModels
                   .HasColumnName("subjectNameEn")
                   .HasMaxLength(25);
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.Major)
                   .WithMany(p => p.Subjects)
                   .HasForeignKey(d => d.MajorId)
@@ -1462,6 +1540,8 @@ namespace SSMS.EntityModels
                   .HasColumnName("classroomIds")
                   .HasMaxLength(150)
                   .IsUnicode(false);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.EmpJob)
                   .WithMany(p => p.TeachersEdu)
@@ -1494,6 +1574,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.SubstituteQuorum).HasColumnName("substituteQuorum");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.EmpJob)
                   .WithMany(p => p.TeachersQuorums)
                   .HasForeignKey(d => d.EmpJobId)
@@ -1520,6 +1602,8 @@ namespace SSMS.EntityModels
         entity.Property(e => e.GradeSubjectId).HasColumnName("gradeSubjectId");
 
         entity.Property(e => e.SchoolDayEventId).HasColumnName("schoolDayEventId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.EmpJob)
                   .WithMany(p => p.TimeTable)
@@ -1551,8 +1635,6 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.AccountStatusId).HasColumnName("accountStatusId");
 
-        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-
         entity.Property(e => e.LastLogin)
                   .HasColumnName("lastLogin")
                   .HasColumnType("datetime");
@@ -1570,6 +1652,8 @@ namespace SSMS.EntityModels
                   .HasMaxLength(50);
 
         entity.Property(e => e.UserTypeId).HasColumnName("userTypeId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(u => u.UserType)
                   .WithMany(utype => utype.Users)
@@ -1603,6 +1687,8 @@ namespace SSMS.EntityModels
                   .HasColumnName("userId")
                   .HasColumnType("char(10)");
 
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
         entity.HasOne(d => d.DocType)
                   .WithMany(p => p.UsersDocs)
                   .HasForeignKey(d => d.DocTypeId)
@@ -1627,6 +1713,9 @@ namespace SSMS.EntityModels
         entity.Property(e => e.UserTypeName)
                   .HasColumnName("userTypeName")
                   .HasMaxLength(25);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<AccountStatus>(entity =>
@@ -1672,6 +1761,8 @@ namespace SSMS.EntityModels
         entity.Property(e => e.TimeTableId).HasColumnName("timeTableId");
 
         entity.Property(e => e.WeekId).HasColumnName("weekId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(d => d.Lesson)
                   .WithMany(p => p.WeeksPlans)

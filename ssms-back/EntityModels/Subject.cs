@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public Subject()
         {
             GradesSubjects = new HashSet<GradesSubjects>();
+            IsDeleted = false;
         }
 
         public byte SubjectId { get; set; }
@@ -16,6 +17,7 @@ namespace SSMS.EntityModels
         public string SubjectNameEn { get; set; }
         public string ShortNameAr { get; set; }
         public string ShortNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Major Major { get; set; }
         public ICollection<GradesSubjects> GradesSubjects { get; set; }

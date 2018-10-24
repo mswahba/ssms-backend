@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public School()
         {
             Branches = new HashSet<Branch>();
+            IsDeleted = false;
         }
 
         public byte SchoolId { get; set; }
@@ -17,6 +18,7 @@ namespace SSMS.EntityModels
         public string Address { get; set; }
         public string ComNum { get; set; }
         public bool? IsActive { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public ICollection<Branch> Branches { get; set; }
     }

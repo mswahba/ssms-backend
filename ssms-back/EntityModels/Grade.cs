@@ -9,12 +9,14 @@ namespace SSMS.EntityModels
         {
             Classrooms = new HashSet<Classrooms>();
             GradesSubjects = new HashSet<GradesSubjects>();
+            IsDeleted = false;
         }
 
         public byte GradeId { get; set; }
         public byte? StageId { get; set; }
         public string GradeNameAr { get; set; }
         public string GradeNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Stage Stage { get; set; }
         public ICollection<Classrooms> Classrooms { get; set; }

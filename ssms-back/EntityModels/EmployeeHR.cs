@@ -5,6 +5,10 @@ namespace SSMS.EntityModels
 {
     public partial class EmployeeHr
     {
+        public EmployeeHr()
+        {
+            IsDeleted = false;
+        }
         public string EmpId { get; set; }
         public string JobInId { get; set; }
         public string ContractType { get; set; }
@@ -19,6 +23,7 @@ namespace SSMS.EntityModels
         public bool? NoorRegistered { get; set; }
         public byte? WorkStatus { get; set; }
         public string HrNotes { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Employee Emp { get; set; }
     }

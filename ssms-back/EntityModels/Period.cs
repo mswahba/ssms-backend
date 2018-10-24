@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public Period()
         {
             PeriodsDetails = new HashSet<PeriodDetails>();
+            IsDeleted = false;
         }
 
         public int PeriodId { get; set; }
@@ -19,6 +20,7 @@ namespace SSMS.EntityModels
         public DateTime? PeriodDate { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Classrooms Classeroom { get; set; }
         public EmployeeJob EmpJob { get; set; }

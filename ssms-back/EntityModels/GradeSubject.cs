@@ -10,12 +10,14 @@ namespace SSMS.EntityModels
             Periods = new HashSet<Period>();
             TeachersEdu = new HashSet<TeacherEdu>();
             TimeTable = new HashSet<TimeTable>();
+            IsDeleted = false;
         }
 
         public short GradeSubjectId { get; set; }
         public byte GradeId { get; set; }
         public byte SubjectId { get; set; }
         public byte? PeriodsCount { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Grade Grade { get; set; }
         public Subject Subject { get; set; }

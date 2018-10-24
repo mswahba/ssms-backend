@@ -8,11 +8,13 @@ namespace SSMS.EntityModels
         public Department()
         {
             EmployeesJobs = new HashSet<EmployeeJob>();
+            IsDeleted = false;
         }
 
         public byte DepartmentId { get; set; }
         public string DepartmentNameAr { get; set; }
         public string DepartmentNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public ICollection<EmployeeJob> EmployeesJobs { get; set; }
     }

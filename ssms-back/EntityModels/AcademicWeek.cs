@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public AcademicWeek()
         {
             WeeksPlans = new HashSet<WeekPlan>();
+            IsDeleted = false;
         }
 
         public short WeekId { get; set; }
@@ -18,6 +19,7 @@ namespace SSMS.EntityModels
         public string WeekStartDateH { get; set; }
         public DateTime? WeekEndDateG { get; set; }
         public string WeekEndDateH { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public AcademicSemester Semester { get; set; }
         public ICollection<WeekPlan> WeeksPlans { get; set; }

@@ -9,6 +9,7 @@ namespace SSMS.EntityModels
         {
             Periods = new HashSet<Period>();
             TimeTable = new HashSet<TimeTable>();
+            IsDeleted = false;
         }
 
         public short SchoolDayEventId { get; set; }
@@ -18,6 +19,7 @@ namespace SSMS.EntityModels
         public string EventNameEn { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Stage Stage { get; set; }
         public ICollection<Period> Periods { get; set; }

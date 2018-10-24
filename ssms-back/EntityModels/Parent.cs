@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public Parent()
         {
             Students = new HashSet<Student>();
+            IsDeleted = false;
         }
 
         public string ParentId { get; set; }

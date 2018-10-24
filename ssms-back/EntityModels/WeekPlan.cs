@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public WeekPlan()
         {
             PeriodsFiles = new HashSet<PeriodFile>();
+            IsDeleted = false;
         }
 
         public short WeekPlanId { get; set; }
@@ -17,6 +18,7 @@ namespace SSMS.EntityModels
         public int? LessonId { get; set; }
         public string Homework { get; set; }
         public string Quiz { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Lesson Lesson { get; set; }
         public TimeTable TimeTable { get; set; }

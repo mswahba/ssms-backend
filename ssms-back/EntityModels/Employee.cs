@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public Employee()
         {
             EmployeesJobs = new HashSet<EmployeeJob>();
+            IsDeleted = false;
         }
 
         public string EmpId { get; set; }

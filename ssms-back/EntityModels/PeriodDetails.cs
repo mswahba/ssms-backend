@@ -5,6 +5,10 @@ namespace SSMS.EntityModels
 {
     public partial class PeriodDetails
     {
+        public PeriodDetails()
+        {
+            IsDeleted = false;
+        }
         public long PeriodDetailId { get; set; }
         public int? PeriodId { get; set; }
         public string StudentId { get; set; }
@@ -15,6 +19,7 @@ namespace SSMS.EntityModels
         public byte? ParticipationsCount { get; set; }
         public byte? ParticipationsQuality { get; set; }
         public string Notes { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Period Period { get; set; }
         public Student Student { get; set; }

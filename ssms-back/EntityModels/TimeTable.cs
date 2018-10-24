@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public TimeTable()
         {
             WeeksPlans = new HashSet<WeekPlan>();
+            IsDeleted = false;
         }
 
         public int TimeTableId { get; set; }
@@ -15,6 +16,7 @@ namespace SSMS.EntityModels
         public short SchoolDayEventId { get; set; }
         public short? GradeSubjectId { get; set; }
         public int? EmpJobId { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public EmployeeJob EmpJob { get; set; }
         public GradesSubjects GradeSubject { get; set; }

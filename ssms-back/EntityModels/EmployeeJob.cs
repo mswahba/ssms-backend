@@ -14,6 +14,7 @@ namespace SSMS.EntityModels
             TeachersEdu = new HashSet<TeacherEdu>();
             TeachersQuorums = new HashSet<TeacherQuorum>();
             TimeTable = new HashSet<TimeTable>();
+            IsDeleted = false;
         }
 
         public int EmpJobId { get; set; }
@@ -23,6 +24,7 @@ namespace SSMS.EntityModels
         public byte? DepartmentId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public Department Department { get; set; }
         public Employee Emp { get; set; }

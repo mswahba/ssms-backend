@@ -10,6 +10,7 @@ namespace SSMS.EntityModels
             ClassesStudents = new HashSet<ClassStudent>();
             PeriodsDetails = new HashSet<PeriodDetails>();
             StudentsViolations = new HashSet<StudentViolation>();
+            IsDeleted = false;
         }
 
         public string StudentId { get; set; }
