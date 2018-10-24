@@ -12,7 +12,7 @@ namespace SSMS.EntityModels
         }
 
         public byte SchoolId { get; set; }
-        public string SchoolName { get; set; }
+        public string SchoolNameAr { get; set; }
         public string SchoolNameEn { get; set; }
         public DateTime? StartDate { get; set; }
         public string Address { get; set; }

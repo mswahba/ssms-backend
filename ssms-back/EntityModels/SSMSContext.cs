@@ -1267,8 +1267,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.IsActive).HasColumnName("isActive");
 
-        entity.Property(e => e.SchoolName)
-                  .HasColumnName("schoolName")
+        entity.Property(e => e.SchoolNameAr)
+                  .HasColumnName("schoolNameAr")
                   .HasMaxLength(150);
 
         entity.Property(e => e.SchoolNameEn)
