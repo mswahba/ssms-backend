@@ -21,6 +21,7 @@ namespace SSMS.EntityModels
         public DateTime? LastLogin { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public AccountStatus AccountStatus { get; set; }
         public UserType UserType { get; set; }
         public Employee _Employee { get; set; }
         public Parent _Parent { get; set; }

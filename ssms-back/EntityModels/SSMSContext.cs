@@ -50,6 +50,7 @@ namespace SSMS.EntityModels
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<UsersDocs> UsersDocs { get; set; }
     public virtual DbSet<UserType> UserTypes { get; set; }
+    public virtual DbSet<AccountStatus> AccountStatuses { get; set; }
     public virtual DbSet<WeekPlan> WeeksPlans { get; set; }
 
     #endregion
@@ -1540,10 +1541,15 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.UserTypeId).HasColumnName("userTypeId");
 
-        entity.HasOne(d => d.UserType)
-                  .WithMany(p => p.Users)
-                  .HasForeignKey(d => d.UserTypeId)
+        entity.HasOne(u => u.UserType)
+                  .WithMany(utype => utype.Users)
+                  .HasForeignKey(u => u.UserTypeId)
                   .HasConstraintName("FK_users_userTypes");
+
+        entity.HasOne(u => u.AccountStatus)
+                  .WithMany(acc => acc.Users)
+                  .HasForeignKey(u => u.AccountStatusId)
+                  .HasConstraintName("FK_users_accountStatus");
       });
 
       modelBuilder.Entity<UsersDocs>(entity =>
@@ -1591,6 +1597,26 @@ namespace SSMS.EntityModels
         entity.Property(e => e.UserTypeName)
                   .HasColumnName("userTypeName")
                   .HasMaxLength(25);
+      });
+
+      modelBuilder.Entity<AccountStatus>(entity =>
+      {
+        entity.HasKey(e => e.StatusId);
+
+        entity.ToTable("accountStatus");
+
+        entity.Property(e => e.StatusId).HasColumnName("statusId");
+
+        entity.Property(e => e.StatusEn)
+                  .HasColumnName("statusEn")
+                  .HasMaxLength(20);
+
+        entity.Property(e => e.StatusAr)
+                  .HasColumnName("statusAr")
+                  .HasMaxLength(20);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
       });
 
       modelBuilder.Entity<WeekPlan>(entity =>

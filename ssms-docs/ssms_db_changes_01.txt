@@ -1,0 +1,24 @@
+﻿use ssms
+--Users Table 
+   -- rename (userPassword ) to (passwordHash) varchar50 
+   -- add col (passwordSalt) nvarchar50 
+   -- delete col (isActive) 
+   -- Add col (accountStatusId)
+--accountStatus Table 
+   -- Create table 
+   -- insert values 
+select * from accountStatus
+   --insert into accountStatus values (1, 'جديد', 'New')   --registered but not activated yet
+   --insert into accountStatus values (2, 'نشط', 'Active')   -- active and running 
+   --insert into accountStatus values (3, 'معطل', 'Inactive') -- was deactivated due to some reason
+   --insert into accountStatus values (4, 'إيقاف مؤقت', 'Paused', null)
+
+-- create RelationShip between users and accountStatus
+Alter table users add CONSTRAINT FK_accountStatus_users FOREIGN KEY (accountStatusId)     
+    REFERENCES accountStatus (statusId)
+    ON DELETE Set Null
+    ON UPDATE CASCADE
+
+--Employees , parent, student 
+   -- Rename fname,mname,gname, lname + Ar
+   -- Add   ,,  ,,,   +En 

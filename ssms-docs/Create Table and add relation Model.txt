@@ -1,0 +1,21 @@
+Create table in DB with One-to-Many Relation with an existing table 
+
+1- In Model:
+a- Create class to represent the table in [Entity Models] folder 
+b- Add one more propery to represent a collection of child 
+[public ICVollection<ChildObj> ChildName {get;set}
+c- in Constructor , initialize the collection
+[ChildName = new HashSet<ChildName>();] 
+d- if any field in the table has a default value, add it in the constructor
+[isDeleted = false;]
+----------------------
+2- In Context: 
+a- add a DbSet of the added class with a plural name of the  singular table name 
+[public virtual DbSet<UserType> userTypes {get; set;} 
+b- Add a model builder to map class name and properties to table name and column names, define keys, constraints and relationships  
+** relationship is added only in one model builder of the two related tables.  
+modelBuilder.Entity<User>
+------------------  
+3- In Child Model: 
+add property of the type Parent 
+public UserType UserTypes {get; set;}

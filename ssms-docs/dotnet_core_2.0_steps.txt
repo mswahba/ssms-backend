@@ -1,0 +1,53 @@
+
+dotnet add package <PackageName>
+
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+
+<ItemGroup>
+<DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+</ItemGroup>
+
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+dotnet ef dbcontext scaffold "Server=.;Database=AdventureWorks;Integrated Security=true;" Microsoft.EntityFrameworkCore.SqlServer -c AdventureWorksContext -o EFModels
+
+///////////////////////////////////////  
+//Install Entity Framework -- to use nuGetPackages we need to search and install (NuGet Package Manager)  Extension 
+// Now In terminal install the package for the database provider
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+// Tools to create a model from the database 
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+//Scaffolding tools to create controllers and views 
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+////////////////////////////////////////////// 
+//Modify the .csproj file to include the following section:
+<ItemGroup>
+    <DotNetCliToolReference
+        Include="Microsoft.EntityFrameworkCore.Tools.DotNet"
+         Version="2.1.0-preview1-final" />
+</ItemGroup>
+//Then you need to let terminal to Restore the packages
+dotnet restore
+//NOW --Test to see if ef commands are available to you:
+dotnet ef -h
+////////////////////////////////////////////////////////////////
+
+// adding configuration 
+adding appsettings.json file
+// in the startup
+
+public IConfiguration Config { get; private set; }
+public Startup(IConfiguration config)
+{
+ Config = config;
+}
+
+// getting the setting values
+services.Configure<AppSettings>(Config.GetSection("AppSettings"));
+
+// in any method and/or class
+IOptions<AppSettings> settings
+settings.Value.SqlServerConnection
+
+
+dotnet aspnet-codegenerator controller -name PostsController -m Post -dc BlogContext
