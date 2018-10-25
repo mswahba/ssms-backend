@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SSMS.EntityModels;
 using SSMS.Users;
-using SSMS.Users.Parents;
 using SSMS.Shared;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
