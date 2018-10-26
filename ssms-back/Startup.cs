@@ -15,6 +15,7 @@ using SSMS.Shared;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SSMS
 {
@@ -48,11 +49,12 @@ namespace SSMS
         c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
       });
       // Allow CORS
-      services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+      services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
               {
                 builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowCredentials();
               }));
       // JWT Authentication
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -69,12 +71,16 @@ namespace SSMS
               IssuerSigningKey = Helpers.GetSecretKey()
             };
           });
+      // Add SignalR
+      services.AddSignalR();
       // configure MVC options
-      services.AddMvc().AddJsonOptions(options =>
-      {
-        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-      });
+      services.AddMvc()
+              .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+              .AddJsonOptions(options =>
+              {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+              });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,8 +89,6 @@ namespace SSMS
       // Exception Page [Error Page]
       if (env.IsDevelopment())
         app.UseDeveloperExceptionPage();
-      else
-        app.UseExceptionHandler("/Home/Error");
       // Enable middleware to serve generated Swagger as a JSON endpoint.
       app.UseSwagger();
       // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
@@ -93,9 +97,14 @@ namespace SSMS
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
       });
       // Shows UseCors with CorsPolicyBuilder.
-      app.UseCors("MyPolicy");
+      app.UseCors("CorsPolicy");
       // using JWT Authentication
       app.UseAuthentication();
+      // use SignalR
+      app.UseSignalR(routes =>
+      {
+        routes.MapHub<SchoolsHub>("/schools-hub");
+      });
       // using MVC
       app.UseMvc(routes =>
       {
