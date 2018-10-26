@@ -11,7 +11,10 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/omega/theme.css";
 // app styles
 import "./app.css";
-
+// test signalR
+import schoolsHub from './schoolsHubTest'
+schoolsHub();
+// test signalR
 // AutoInit the Materialize component [which needs AutoInit]
 M.AutoInit();
 // add extension functions to the js base Types
