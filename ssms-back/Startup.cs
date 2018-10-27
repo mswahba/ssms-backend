@@ -50,29 +50,38 @@ namespace SSMS
       });
       // Allow CORS
       services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
-              {
-                builder.AllowAnyOrigin()
-                      .AllowAnyMethod()
-                      .AllowAnyHeader()
-                      .AllowCredentials();
-              }));
+        {
+          builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        }));
       // JWT Authentication
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-          .AddJwtBearer(options =>
-          {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-              ValidateIssuer = true,
-              ValidateAudience = true,
-              ValidateLifetime = true,
-              ValidateIssuerSigningKey = true,
-              ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
-              ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
-              IssuerSigningKey = Helpers.GetSecretKey()
-            };
-          });
+              .AddJwtBearer(options =>
+              {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                  ValidateIssuer = true,
+                  ValidateAudience = true,
+                  ValidateLifetime = true,
+                  ValidateIssuerSigningKey = true,
+                  ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
+                  ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
+                  IssuerSigningKey = Helpers.GetSecretKey()
+                };
+              });
       // Add SignalR
-      services.AddSignalR();
+      services.AddSignalR(hubOptions =>
+              {
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
+              })
+              .AddJsonProtocol(options =>
+              {
+                options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+              });
       // configure MVC options
       services.AddMvc()
               .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -100,10 +109,16 @@ namespace SSMS
       app.UseCors("CorsPolicy");
       // using JWT Authentication
       app.UseAuthentication();
-      // use SignalR
+      // use SignalR and define client-side connection routes [url]
       app.UseSignalR(routes =>
       {
+        routes.MapHub<UsersHub>("/users-hub");
+        routes.MapHub<ParentsHub>("/parents-hub");
+        routes.MapHub<StudentsHub>("/students-hub");
+        routes.MapHub<EmployeesHub>("/employees-hub");
         routes.MapHub<SchoolsHub>("/schools-hub");
+        routes.MapHub<CountriesHub>("/countries-hub");
+        routes.MapHub<DocTypesHub>("/doctypes-hub");
       });
       // using MVC
       app.UseMvc(routes =>

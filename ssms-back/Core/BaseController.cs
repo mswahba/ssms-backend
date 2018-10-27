@@ -186,7 +186,8 @@ namespace SSMS
                             "if @v_id is null set @v_id = 0;" +
                             "set @v_id = @v_id + 1;select @v_id;";
             try {
-                // if autoId has value then generate newId and set keyName of this entity
+                // if autoId has value [ok] then generate newId and set keyName of this entity
+                // otherwise the entity keyField [PK] has value [from User Input]
                 if(!String.IsNullOrEmpty(autoId))
                     entity.SetValue(_keyName,_ado.ExecuteScalar(_selectMaxId));
                 // model state errors
@@ -218,7 +219,7 @@ namespace SSMS
                 return BadRequest(ex);
             }
         }
-        //update Only ParentId --Used by Admins Only
+        // update Only ParentId --Used by Admins Only
         [HttpPut("update-Key")]
         public IActionResult UpdateKey([FromQuery] TKey newKey, TKey oldKey)
         {
