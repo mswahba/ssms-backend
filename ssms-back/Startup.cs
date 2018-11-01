@@ -16,6 +16,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
+using SSMS.Hubs;
 
 namespace SSMS
 {
@@ -24,6 +25,7 @@ namespace SSMS
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
+      // Console.WriteLine( string.Join("\n", Helpers.GetAllClasses("SSMS.Hubs")));
     }
 
     public IConfiguration Configuration { get; }
@@ -112,6 +114,15 @@ namespace SSMS
       // use SignalR and define client-side connection routes [url]
       app.UseSignalR(routes =>
       {
+        // // get all classes in SSMS.Hubs namespace and loop through them
+        // foreach (Type T in Helpers.GetAllClasses("SSMS.Hubs"))
+        // {
+        //   // dynamically invoke the Generic [MapHub] Method in [routes] object
+        //   routes.GetType()
+        //         .GetMethod("MapHub")
+        //         .MakeGenericMethod(T)
+        //         .Invoke(routes, new object[] { T.Name });
+        // }
         routes.MapHub<UsersHub>("/users-hub");
         routes.MapHub<ParentsHub>("/parents-hub");
         routes.MapHub<StudentsHub>("/students-hub");

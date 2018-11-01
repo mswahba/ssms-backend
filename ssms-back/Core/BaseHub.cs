@@ -42,9 +42,9 @@ namespace SSMS
           case "logical":
             res = _service.DeleteLogical(entity);
             if (res == -1)
-              await Clients.All.SendAsync(_clientMethod, new Error() { Message = "Can't delete this Item Logically" });
+              await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Can't delete this Item Logically" });
             else if (res == -2)
-              await Clients.All.SendAsync(_clientMethod, new Error() { Message = "Item has already been Logically deleted before" });
+              await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Item has already been Logically deleted before" });
             SetDeleteResult(entity, res, "logical");
             await Clients.All.SendAsync(_clientMethod, _deleteResult);
             break;
@@ -54,7 +54,7 @@ namespace SSMS
             await Clients.All.SendAsync(_clientMethod, _deleteResult);
             break;
           default:
-            await Clients.All.SendAsync(_clientMethod, new Error() { Message = "Unknow Delete Type" });
+            await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Unknow Delete Type" });
             break;
         }
       }
@@ -85,11 +85,11 @@ namespace SSMS
         // add entity and saveChanges
         _service.Add(entity);
         // if everything is ok, return the full user obj with all inserted values
-        await Clients.All.SendAsync(_clientMethod, entity);
+        await Clients.All.SendAsync(_clientMethod, new Response<TEntity>() { Data = entity } );
       }
       catch (Exception ex)
       {
-        await Clients.All.SendAsync(_clientMethod, ex);
+        await Clients.All.SendAsync(_clientMethod, new Response<Exception>() { Exception = ex } );
       }
     }
     // Update an entity to DB
@@ -100,11 +100,11 @@ namespace SSMS
       {
         _service.Update(entity);
         // if everything is ok, return the full obj with all inserted values
-        await Clients.All.SendAsync(_clientMethod, entity);
+        await Clients.All.SendAsync(_clientMethod, new Response<TEntity>() { Data = entity });
       }
       catch (Exception ex)
       {
-        await Clients.All.SendAsync(_clientMethod, ex);
+        await Clients.All.SendAsync(_clientMethod, new Response<Exception>() { Exception = ex });
       }
     }
     // update Only an entity PK -- [Used by Admins Only]
@@ -113,7 +113,7 @@ namespace SSMS
       _clientMethod = "UpdatedKey";
       // if method params are null return error
       if (newKey == null || oldKey == null)
-        await Clients.All.SendAsync(_clientMethod, new Error() { Message = "Must supply both newKey and oldKey ..." });
+        await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Must supply both newKey and oldKey ..." } );
       try
       {
         // update entity Key in DB
@@ -121,11 +121,11 @@ namespace SSMS
         // get the updatedKey entity
         TEntity entity = _service.GetOne(item => item.GetValue(_keyName).Equals(newKey));
         // if everything is ok, return the full user obj with all inserted values
-        await Clients.All.SendAsync(_clientMethod, entity);
+        await Clients.All.SendAsync(_clientMethod, new Response<TEntity>() { Data = entity });
       }
-      catch (System.Exception ex)
+      catch (Exception ex)
       {
-        await Clients.All.SendAsync(_clientMethod, ex);
+        await Clients.All.SendAsync(_clientMethod, new Response<Exception>() { Exception = ex });
       }
     }
     // Method which receive deleteType (logical or physical)
@@ -136,14 +136,14 @@ namespace SSMS
     {
       _clientMethod = "Deleted";
       if (deleteType == null)
-        await Clients.All.SendAsync(_clientMethod, new Error() { Message = "Can't identify The type of the Delete operation" });
+        await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Can't identify The type of the Delete operation ..." } );
       else if (key == null && entity == null)
-        await Clients.All.SendAsync(_clientMethod, new Error() { Message = "Must supply either key OR entity ..." });
+        await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Must supply either key OR entity ..." });
       else if (key != null)
         entity = _service.GetOne(key);
       // if entity that comes from DB is null
       if (entity == null)
-        await Clients.All.SendAsync(_clientMethod, new Error() { Message = "Item doesn't exist" });
+        await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Item doesn't exist ..." });
       await DoDelete(deleteType, entity);
     }
 

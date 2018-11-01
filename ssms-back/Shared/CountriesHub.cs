@@ -4,7 +4,7 @@ using SSMS.EntityModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SSMS
+namespace SSMS.Hubs
 {
   public class CountriesHub : BaseHub<Country, Byte>
   {

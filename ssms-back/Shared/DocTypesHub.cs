@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SSMS.EntityModels;
 
-namespace SSMS
+namespace SSMS.Hubs
 {
   public class DocTypesHub : BaseHub<DocType, Byte>
   {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SSMS.EntityModels;
 
-namespace SSMS
+namespace SSMS.Hubs
 {
   public class StudentsHub : BaseHub<Student, String>
   {

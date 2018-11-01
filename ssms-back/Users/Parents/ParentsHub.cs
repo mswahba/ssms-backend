@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace SSMS
+namespace SSMS.Hubs
 {
   public class ParentsHub : BaseHub<Parent, String>
   {

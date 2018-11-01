@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -20,7 +22,7 @@ namespace SSMS
     {
       // generate salt and hash
       string salt = Helpers.GetRandSalt();
-      string hash = Helpers.Hashing(signup.UserPassword,salt);
+      string hash = Helpers.Hashing(signup.UserPassword, salt);
       // mapping
       return new User()
       {
@@ -80,6 +82,15 @@ namespace SSMS
     }
     // A Function to Validate The Hashed Strings
     public static bool ValidateHash(string value, string salt, string hash) => Hashing(value, salt) == hash;
+    // A Function that return either All Classes Within A Namespace
+    // OR All Classes in the entire project [Assembly]
+    public static IEnumerable<Type> GetAllClasses(string nameSpace)
+    {
+      IEnumerable<Type> types = Assembly.GetExecutingAssembly().ExportedTypes;
+      return (!String.IsNullOrWhiteSpace(nameSpace))
+              ? types.Where(t => t.Namespace == nameSpace)
+              : types;
+    }
 
   }
 }

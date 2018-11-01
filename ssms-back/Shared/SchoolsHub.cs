@@ -4,7 +4,7 @@ using SSMS.EntityModels;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace SSMS
+namespace SSMS.Hubs
 {
   public class SchoolsHub : BaseHub<School, Byte>
   {

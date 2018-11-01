@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace SSMS
+namespace SSMS.Hubs
 {
   // Inherit from BaseHub to get all the Methods inside it into the UsersHub
   public class UsersHub : BaseHub<User, String>
