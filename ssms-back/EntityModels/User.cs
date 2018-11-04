@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public User()
         {
             UsersDocs = new HashSet<UsersDocs>();
+            VerificationCodes = new HashSet<VerificationCode>();
             SubscribeDate = DateTime.UtcNow.AddHours(3);
             IsDeleted = false;
         }
@@ -21,11 +22,12 @@ namespace SSMS.EntityModels
         public DateTime? LastLogin { get; set; }
         public bool? IsDeleted { get; set; }
 
-        public AccountStatus AccountStatus { get; set; }
-        public UserType UserType { get; set; }
         public Employee _Employee { get; set; }
         public Parent _Parent { get; set; }
         public Student _Student { get; set; }
+        public UserType UserType { get; set; }
+        public AccountStatus AccountStatus { get; set; }
+        public ICollection<VerificationCode> VerificationCodes { get; set; }
         public ICollection<UsersDocs> UsersDocs { get; set; }
     }
 }

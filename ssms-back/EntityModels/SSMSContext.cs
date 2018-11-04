@@ -51,6 +51,7 @@ namespace SSMS.EntityModels
     public virtual DbSet<UsersDocs> UsersDocs { get; set; }
     public virtual DbSet<UserType> UserTypes { get; set; }
     public virtual DbSet<AccountStatus> AccountStatuses { get; set; }
+    public virtual DbSet<VerificationCode> VerificationCodes {get; set;}
     public virtual DbSet<WeekPlan> WeeksPlans { get; set; }
 
     #endregion
@@ -1736,6 +1737,35 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
+      });
+
+      modelBuilder.Entity<VerificationCode>(entity =>
+      {
+        entity.HasKey(e => e.CodeId);
+
+        entity.ToTable("verificationCode");
+
+        entity.Property(e => e.CodeId).HasColumnName("codeId");
+
+        entity.Property(e => e.Code)
+                  .HasColumnName("code")
+                  .HasMaxLength(10);
+
+        entity.Property(e => e.UserId)
+                  .HasColumnName("userId")
+                  .HasMaxLength(10);
+
+        entity.Property(e => e.SentTime).HasColumnName("sentTime");
+
+        entity.Property(e => e.CodeTypeId).HasColumnName("codeTypeId");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+        entity.HasOne(vc => vc.User)
+                  .WithMany(u => u.VerificationCodes)
+                  .HasForeignKey(vc => vc.UserId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_users_verificationCodes");
       });
 
       modelBuilder.Entity<WeekPlan>(entity =>
