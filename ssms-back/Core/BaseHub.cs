@@ -14,7 +14,9 @@ namespace SSMS
     private Ado _ado;
     private string _tableName;
     private string _keyName;
-    private string _selectMaxId;
+    private string _sqlAddCommand;
+    private string _columnNames;
+    private string _columnValues;
     private string _clientMethod;
     public BaseHub(BaseService<TEntity, TKey> service, string tableName, string keyName, Ado ado)
     {
@@ -65,31 +67,50 @@ namespace SSMS
     }
 
     // Add an entity to DB
-    public async Task Add(string autoId, TEntity entity)
+    public async Task Add(TEntity entity)
     {
       _clientMethod = "Added";
-      // get newId sql select statement
-      _selectMaxId = $"Declare @v_id int;" +
-                      "set @v_id = (select max(" + _keyName + ") from " + _tableName + ");" +
-                      "if @v_id is null set @v_id = 0;" +
-                      "set @v_id = @v_id + 1;select @v_id;";
       try
       {
         // if autoId has value [ok] then generate newId and set keyName of this entity
         // otherwise the entity keyField [PK] has value [from User Input]
-        if (!String.IsNullOrEmpty(autoId))
-          entity.SetValue(_keyName, _ado.ExecuteScalar(_selectMaxId));
-        // model state errors
-        // if (!ModelState.IsValid)
-        //   return BadRequest(ModelState);
-        // add entity and saveChanges
-        _service.Add(entity);
+        if (entity.GetValue(_keyName).ToString() == "0")
+        {
+          // get the comma separated column names
+          _columnNames = entity.GetPrimitivePropsNames();
+          // get the comma separated column values
+          // note: key column value replaced with the sql variable [@newId]
+          // which will be fulfilled before executing the insert statement
+          _columnValues = entity.GetPrimitivePropsValues();
+          // build SQL Command that:
+          // (1) get the max key value from entity table
+          // (2) If it is = null then set it = 0
+          // (3) increment it by one
+          // (4) insert the entity with its values
+          // (5) select the previously inserted entity
+          _sqlAddCommand = $@"
+            Declare @newId int;
+            set @newId = (select max({_keyName}) from {_tableName});
+            if @newId is null set @newId = 0;
+            set @newId = @newId + 1;
+            insert into {_tableName} ({_columnNames}) values ({_columnValues});
+            select * from {_tableName} where {_keyName} = @newId;
+          ";
+          Console.WriteLine(_sqlAddCommand);
+          // execute SQL Command and return its value
+          entity = _service.Add(_sqlAddCommand);
+        }
+        else
+        {
+          // add entity and saveChanges
+          _service.Add(entity);
+        }
         // if everything is ok, return the full user obj with all inserted values
-        await Clients.All.SendAsync(_clientMethod, new Response<TEntity>() { Data = entity } );
+        await Clients.All.SendAsync(_clientMethod, new Response<TEntity>() { Data = entity });
       }
       catch (Exception ex)
       {
-        await Clients.All.SendAsync(_clientMethod, new Response<Exception>() { Exception = ex } );
+        await Clients.All.SendAsync(_clientMethod, new Response<Exception>() { Exception = ex });
       }
     }
     // Update an entity to DB
@@ -113,7 +134,7 @@ namespace SSMS
       _clientMethod = "UpdatedKey";
       // if method params are null return error
       if (newKey == null || oldKey == null)
-        await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Must supply both newKey and oldKey ..." } );
+        await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Must supply both newKey and oldKey ..." });
       try
       {
         // update entity Key in DB
@@ -136,7 +157,7 @@ namespace SSMS
     {
       _clientMethod = "Deleted";
       if (deleteType == null)
-        await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Can't identify The type of the Delete operation ..." } );
+        await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Can't identify The type of the Delete operation ..." });
       else if (key == null && entity == null)
         await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Must supply either key OR entity ..." });
       else if (key != null)

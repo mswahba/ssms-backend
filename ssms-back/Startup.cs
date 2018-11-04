@@ -26,6 +26,15 @@ namespace SSMS
     {
       Configuration = configuration;
       // Console.WriteLine( string.Join("\n", Helpers.GetAllClasses("SSMS.Hubs")));
+      // Console.WriteLine( string.Join("\n",
+      //     new Student()
+      //         .GetProperties()
+      //         .Where(prop => {
+      //           var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+      //           return Type.GetTypeCode(propertyType) != TypeCode.Object;
+      //         })
+      //         .Select( prop => prop.Name)
+      // ));
     }
 
     public IConfiguration Configuration { get; }
@@ -33,11 +42,11 @@ namespace SSMS
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      //Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
+      // Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
       services.AddDbContext<SSMSContext>();
-      //AddSingleton configues settings to create only one instance of this type
+      // AddSingleton configues settings to create only one instance of this type
       services.AddSingleton<Ado>();
-      //AddScoped configues settings to create new instance of this type per http request
+      // AddScoped configues settings to create new instance of this type per http request
       services.AddScoped<BaseService<User, String>>();
       services.AddScoped<BaseService<Parent, String>>();
       services.AddScoped<BaseService<Student, String>>();
@@ -46,10 +55,7 @@ namespace SSMS
       services.AddScoped<BaseService<Country, Byte>>();
       services.AddScoped<BaseService<School, Byte>>();
       // Configure Swagger
-      services.AddSwaggerGen(c =>
-      {
-        c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
-      });
+      services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }) );
       // Allow CORS
       services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
         {

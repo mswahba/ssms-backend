@@ -35,12 +35,6 @@ namespace SSMS.Users
         // (2) Mapping from SignUp [View Model] to User [Entity Model]
         // (3) and Hashing UserPassword before Saving to DB
         User user = Helpers.Map(signup);
-        // string salt = Helpers.GetRandSalt();
-        // string hash = Helpers.Hashing(user.PasswordHash,salt);
-        // Console.WriteLine(signup.UserPassword);
-        // Console.WriteLine(salt);
-        // Console.WriteLine(hash);
-        // Console.WriteLine(Helpers.ValidateHash(user.PasswordHash,salt,hash));
         // (4) insert the User into DB
         _UserSrv.Add(user);
         // (5) if everything is ok, return the full User and the JWT

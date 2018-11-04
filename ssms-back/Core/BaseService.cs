@@ -485,6 +485,10 @@ namespace SSMS
             db.Set<TEntity>().Add(entity);
             return db.SaveChanges();
         }
+        public TEntity Add(string sqlCommand)
+        {
+            return db.Set<TEntity>().FromSql(sqlCommand).FirstOrDefault();
+        }
         public int Update(TEntity entity)
         {
             //Attach the coming object to the db COntext

@@ -74,7 +74,7 @@ namespace SSMS
         return;
       //check if type is nullable, if so return its underlying type , if not, return type
       var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-      TypeCode typeCode = System.Type.GetTypeCode(propertyType);
+      TypeCode typeCode = Type.GetTypeCode(propertyType);
       switch (typeCode)
       {
         case TypeCode.Boolean:
@@ -193,5 +193,36 @@ namespace SSMS
                       .Select(item => item.Trim())
                       .ToArray();
     }
+    // get comma separated string of all props [that represent table fields i.e without navigation props]
+    public static string GetPrimitivePropsNames(this object obj)
+    {
+      return string.Join(",",
+        obj.GetProperties()
+          .Where(prop => Type.GetTypeCode(Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType) != TypeCode.Object)
+          .Select(prop => $"[{prop.Name}]")
+      );
+    }
+    // get comma separated string of all props [that represent table fields i.e without navigation props] values
+    // in case of [first prop i.e PK] => "@newId"
+    // in case of propType is [string - date] => surround with one quote [needed for sql]
+    // in case of propType is [boolean] => convert it to "1" Or "0"
+    // otherwise => value
+    public static string GetPrimitivePropsValues(this object obj)
+    {
+      return string.Join(",",
+        obj.GetProperties()
+          .Where(prop => Type.GetTypeCode(Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType) != TypeCode.Object)
+          .Select( (prop,i) => {
+            if(i == 0)
+              return "@newId";
+            if(Type.GetTypeCode(Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType) == TypeCode.String || Type.GetTypeCode(Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType) == TypeCode.DateTime)
+              return $"'{prop.GetValue(obj).ToString()}'";
+            if(Type.GetTypeCode(Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType) == TypeCode.Boolean )
+              return Convert.ToBoolean(prop.GetValue(obj)) == true ? "1" : "0";
+            return prop.GetValue(obj).ToString();
+          })
+      );
+    }
+
   }
 }
