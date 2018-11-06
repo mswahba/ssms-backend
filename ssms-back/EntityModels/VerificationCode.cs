@@ -18,5 +18,6 @@ namespace SSMS.EntityModels
         public bool? IsDeleted { get; set; }
 
         public User User { get; set; }
+        public VerificationCodeType VerificationCodeType { get; set; }
     }
 }

@@ -51,7 +51,9 @@ namespace SSMS.EntityModels
     public virtual DbSet<UsersDocs> UsersDocs { get; set; }
     public virtual DbSet<UserType> UserTypes { get; set; }
     public virtual DbSet<AccountStatus> AccountStatuses { get; set; }
+    public virtual DbSet<VerificationCodeType> VerificationCodeTypes {get; set;}
     public virtual DbSet<VerificationCode> VerificationCodes {get; set;}
+    public virtual DbSet<RefreshToken> RefreshTokens {get; set;}
     public virtual DbSet<WeekPlan> WeeksPlans { get; set; }
 
     #endregion
@@ -1636,8 +1638,8 @@ namespace SSMS.EntityModels
 
         entity.Property(e => e.AccountStatusId).HasColumnName("accountStatusId");
 
-        entity.Property(e => e.LastLogin)
-                  .HasColumnName("lastLogin")
+        entity.Property(e => e.LastActive)
+                  .HasColumnName("lastActive")
                   .HasColumnType("datetime");
 
         entity.Property(e => e.SubscribeDate)
@@ -1739,6 +1741,26 @@ namespace SSMS.EntityModels
 
       });
 
+      modelBuilder.Entity<VerificationCodeType>(entity =>
+      {
+        entity.HasKey(e => e.CodeTypeId);
+
+        entity.ToTable("verificationCodeTypes");
+
+        entity.Property(e => e.CodeTypeId).HasColumnName("codeTypeId");
+
+        entity.Property(e => e.CodeType)
+                  .HasColumnName("codeType")
+                  .HasMaxLength(25);
+
+        entity.Property(e => e.Description)
+                  .HasColumnName("description")
+                  .HasColumnType("varchar(MAX)");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+      });
+
       modelBuilder.Entity<VerificationCode>(entity =>
       {
         entity.HasKey(e => e.CodeId);
@@ -1766,6 +1788,41 @@ namespace SSMS.EntityModels
                   .HasForeignKey(vc => vc.UserId)
                   .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FK_users_verificationCodes");
+        
+        entity.HasOne(vc => vc.VerificationCodeType)
+                  .WithMany(vct => vct.VerificationCodes)
+                  .HasForeignKey(vc => vc.CodeTypeId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_verificationCodeTypes_verificationCodes");
+
+      });
+
+      modelBuilder.Entity<RefreshToken>(entity =>
+      {
+        entity.HasKey(e => e.TokenId);
+
+        entity.ToTable("refreshTokens");
+
+        entity.Property(e => e.TokenId).HasColumnName("tokenId");
+
+        entity.Property(e => e.Token)
+              .HasColumnName("token")
+              .HasMaxLength(32);
+
+        entity.Property(e => e.DeviceInfo)
+                  .HasColumnName("deviceInfo")
+                  .HasColumnType("varchar(MAX)");
+
+        entity.Property(e => e.UserId)
+                  .HasColumnName("userId")
+                  .HasMaxLength(10);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+        entity.HasOne(rt => rt.User)
+                  .WithMany(u => u.RefreshTokens)
+                  .HasForeignKey(rt => rt.UserId)
+                  .HasConstraintName("FK_users_refreshTokens");
       });
 
       modelBuilder.Entity<WeekPlan>(entity =>

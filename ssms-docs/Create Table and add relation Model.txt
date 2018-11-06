@@ -13,7 +13,7 @@ d- if any field in the table has a default value, add it in the constructor
 -----------------------------
 2- In Context: 
 a- add a DbSet of the added class with a plural name of the  singular table name 
-[public virtual DbSet<UserType> userTypes {get; set;} 
+[ public virtual DbSet<UserType> userTypes {get; set;} 
 b- Add a model builder to map class name and properties to table name and column names, define keys, constraints and relationships ----------------------------- 
 3- relationship is added only in one model builder of the two related tables.  
 modelBuilder.Entity<User>
