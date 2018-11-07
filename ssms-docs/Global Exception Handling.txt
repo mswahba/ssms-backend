@@ -1,0 +1,41 @@
+ApiExceptionFilter: 
+is an Attribute Class that used to catch any explicit application generated exception
+by overriding [OnException] Method in which 
+it fill in the context.Result with 
+BadRequestObjectResult holding the catched exception
+Example cs file:
+=====================================================================
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+namespace SSMS.MvcFilters
+{
+  public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
+  {
+    public override void OnException(ExceptionContext actionContext)
+    {
+      actionContext.Result = new BadRequestObjectResult(actionContext.Exception);
+    }
+  }
+}
+=====================================================================
+Handling Errors Globally with the Built-In Middleware
+The UseExceptionHandler middleware is a built-in middleware that we can use to handle exceptions Globally.
+
+code Example: 
+  app.UseExceptionHandler(appError =>
+  {
+    appError.Run(async context =>
+    {
+      context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+      context.Response.ContentType = "application/json";
+      var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+      if(contextFeature != null)
+        await context.Response.WriteAsync("Something went wrong!!!");
+    });
+  });
+
+if we apply both exception handlers
+the UseExceptionHandler middleware catch the exception not thrown from MvcActions

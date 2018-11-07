@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
 using SSMS.Hubs;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 
 namespace SSMS
 {
@@ -55,7 +58,7 @@ namespace SSMS
       services.AddScoped<BaseService<Country, Byte>>();
       services.AddScoped<BaseService<School, Byte>>();
       // Configure Swagger
-      services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }) );
+      services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }));
       // Allow CORS
       services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
         {
@@ -66,38 +69,39 @@ namespace SSMS
         }));
       // JWT Authentication
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-              .AddJwtBearer(options =>
-              {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                  ValidateIssuer = true,
-                  ValidateAudience = true,
-                  ValidateLifetime = true,
-                  ValidateIssuerSigningKey = true,
-                  ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
-                  ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
-                  IssuerSigningKey = Helpers.GetSecretKey()
-                };
-              });
+        .AddJwtBearer(options =>
+        {
+          options.TokenValidationParameters = new TokenValidationParameters
+          {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
+            ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
+            IssuerSigningKey = Helpers.GetSecretKey()
+          };
+        });
       // Add SignalR
       services.AddSignalR(hubOptions =>
-              {
-                hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
-              })
-              .AddJsonProtocol(options =>
-              {
-                options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-              });
+        {
+          hubOptions.EnableDetailedErrors = true;
+          hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
+        })
+        .AddJsonProtocol(options =>
+        {
+          options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+          options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        });
       // configure MVC options
+      // config => config.Filters.Add(typeof(ApiExceptionFilterAttribute))
       services.AddMvc()
-              .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-              .AddJsonOptions(options =>
-              {
-                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-              });
+        .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+        .AddJsonOptions(options =>
+        {
+          options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+          options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -117,6 +121,18 @@ namespace SSMS
       app.UseCors("CorsPolicy");
       // using JWT Authentication
       app.UseAuthentication();
+      // global exception handler
+      app.UseExceptionHandler(appError =>
+      {
+        appError.Run(async context =>
+        {
+          context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+          context.Response.ContentType = "application/json";
+          var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+          if(contextFeature != null)
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(contextFeature.Error));
+        });
+      });   
       // use SignalR and define client-side connection routes [url]
       app.UseSignalR(routes =>
       {
