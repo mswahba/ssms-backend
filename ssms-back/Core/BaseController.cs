@@ -11,7 +11,7 @@ using SSMS.MvcFilters;
 namespace SSMS
 {
   // [Authorize]
-  // [ApiExceptionFilter]
+  [ApiExceptionFilter]
   [ApiController]
   [Route("[controller]")]
   public class BaseController<TEntity, TKey> : ControllerBase where TEntity : class
@@ -195,39 +195,39 @@ namespace SSMS
       throw new Exception("something went wrong!!");
       // if autoId has value [ok] then generate newId and set keyName of this entity
       // otherwise the entity keyField [PK] has value [from User Input]
-      if (entity.GetValue(_keyName).ToString() == "0")
-      {
-        // get the comma separated column names
-        _columnNames = entity.GetPrimitivePropsNames();
-        // get the comma separated column values
-        // note: key column value replaced with the sql variable [@newId]
-        // which will be fulfilled before executing the insert statement
-        _columnValues = entity.GetPrimitivePropsValues();
-        // build SQL Command that:
-        // (1) get the max key value from entity table
-        // (2) If it is = null then set it = 0
-        // (3) increment it by one
-        // (4) insert the entity with its values
-        // (5) select the previously inserted entity
-        _sqlAddCommand = $@"
-          Declare @newId int;
-          set @newId = (select max({_keyName}) from {_tableName});
-          if @newId is null set @newId = 0;
-          set @newId = @newId + 1;
-          insert into {_tableName} ({_columnNames}) values ({_columnValues});
-          select * from {_tableName} where {_keyName} = @newId;
-        ";
-        Console.WriteLine(_sqlAddCommand);
-        // execute SQL Command and return its value
-        entity = _service.Add(_sqlAddCommand);
-      }
-      else
-      {
-        // add entity and saveChanges
-        _service.Add(entity);
-      }
-      // if everything is ok, return the full user obj with all inserted values
-      return Ok(entity);
+      // if (entity.GetValue(_keyName).ToString() == "0")
+      // {
+      //   // get the comma separated column names
+      //   _columnNames = entity.GetPrimitivePropsNames();
+      //   // get the comma separated column values
+      //   // note: key column value replaced with the sql variable [@newId]
+      //   // which will be fulfilled before executing the insert statement
+      //   _columnValues = entity.GetPrimitivePropsValues();
+      //   // build SQL Command that:
+      //   // (1) get the max key value from entity table
+      //   // (2) If it is = null then set it = 0
+      //   // (3) increment it by one
+      //   // (4) insert the entity with its values
+      //   // (5) select the previously inserted entity
+      //   _sqlAddCommand = $@"
+      //     Declare @newId int;
+      //     set @newId = (select max({_keyName}) from {_tableName});
+      //     if @newId is null set @newId = 0;
+      //     set @newId = @newId + 1;
+      //     insert into {_tableName} ({_columnNames}) values ({_columnValues});
+      //     select * from {_tableName} where {_keyName} = @newId;
+      //   ";
+      //   Console.WriteLine(_sqlAddCommand);
+      //   // execute SQL Command and return its value
+      //   entity = _service.Add(_sqlAddCommand);
+      // }
+      // else
+      // {
+      //   // add entity and saveChanges
+      //   _service.Add(entity);
+      // }
+      // // if everything is ok, return the full user obj with all inserted values
+      // return Ok(entity);
     }
     //Update all parent Data -- used either by Parent or Admin
     [HttpPut("update")]
@@ -327,9 +327,8 @@ namespace SSMS
         return BadRequest(ex);
       }
     }
-
-    //'fields' is a comma separated string of entity fields we want to select
-    //return entity that contains only these fields
+    // 'fields' is a comma separated string of entity fields we want to select
+    // return entity that contains only these fields
     // [controller]/Select?fileds=empId, empName
     [HttpGet("select")]
     public IActionResult Select([FromQuery] string fields)
@@ -362,9 +361,9 @@ namespace SSMS
       });
       return Ok(result);
     }
-    //Dynamic Select using System.Linq.Dynamic.core
+    // Dynamic Select using System.Linq.Dynamic.core
     // Select() takes a comma separated list of fields,
-    //and generates the select statement which will be exectued in SQL and return the result
+    // and generates the select statement which will be exectued in SQL and return the result
     [HttpGet("select-Dynamic")]
     public IActionResult SelectDynamic([FromQuery] string fields)
     {
@@ -393,7 +392,7 @@ namespace SSMS
         return BadRequest(ex);
       }
     }
-    //Users/sort?orderby= userId desc, userPassword
+    // Users/sort?orderby= userId desc, userPassword
     [HttpGet("sort")]
     public IActionResult Sort([FromQuery] string orderBy)
     {

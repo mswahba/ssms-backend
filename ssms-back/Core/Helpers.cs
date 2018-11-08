@@ -10,37 +10,20 @@ using System.Text;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using SSMS.EntityModels;
+using SSMS.ViewModels;
 using SSMS.Users;
 
 namespace SSMS
 {
   public static class Helpers
   {
-    // Mapping between SignUp [View Model] to User [Entity Model]
-    // and fill in all default data values [not entered by the user]
-    public static User Map(SignUp signup)
-    {
-      // generate salt and hash
-      string salt = Helpers.GetRandSalt();
-      string hash = Helpers.Hashing(signup.UserPassword, salt);
-      // mapping
-      return new User()
-      {
-        UserId = signup.UserId,
-        PasswordSalt = salt,
-        PasswordHash = hash,
-        UserTypeId = signup.UserType,
-        SubscribeDate = DateTime.UtcNow.AddHours(3),
-        AccountStatusId = 1
-      };
-    }
     // get SecretKey from appsettings.json file
     public static SymmetricSecurityKey GetSecretKey()
     {
       return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("appsettings.json".GetJsonValue<AppSettings>("SecretKey")));
     }
     // Generate JWT [JSON Web Token]
-    public static string GetToken(User user)
+    public static string GetToken(VUser user)
     {
       // get the secret string
       var secret = GetSecretKey();

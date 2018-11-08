@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SSMS.Users
+namespace SSMS.ViewModels
 {
     public class SignIn
     {

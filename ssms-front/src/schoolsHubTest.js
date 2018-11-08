@@ -8,9 +8,9 @@ export default () => {
                         .build();
   connection.start()
             .then(() => {
-              connection.invoke("SendMessage", "Hub Connection Started ...");
-              connection.invoke("SendList", "all",null,null);
-              connection.invoke("Add", "ok", {
+              // connection.invoke("SendMessage", "Hub Connection Started ...");
+              // connection.invoke("SendList", "all",null,null);
+              connection.invoke("Add", {
                 "schoolId": "string",
                 "schoolNameAr": "string",
                 "schoolNameEn": "string",

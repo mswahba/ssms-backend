@@ -126,13 +126,13 @@ namespace SSMS
       {
         appError.Run(async context =>
         {
-          context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+          context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
           context.Response.ContentType = "application/json";
           var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
           if(contextFeature != null)
             await context.Response.WriteAsync(JsonConvert.SerializeObject(contextFeature.Error));
         });
-      });   
+      });
       // use SignalR and define client-side connection routes [url]
       app.UseSignalR(routes =>
       {

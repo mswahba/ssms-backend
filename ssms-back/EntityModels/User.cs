@@ -12,6 +12,7 @@ namespace SSMS.EntityModels
             RefreshTokens = new HashSet<RefreshToken>();
             SubscribeDate = DateTime.UtcNow.AddHours(3);
             LastActive = DateTime.UtcNow.AddHours(3);
+            AccountStatusId = 1;
             IsDeleted = false;
         }
 
