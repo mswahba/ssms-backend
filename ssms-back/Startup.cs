@@ -57,6 +57,11 @@ namespace SSMS
       services.AddScoped<BaseService<DocType, Byte>>();
       services.AddScoped<BaseService<Country, Byte>>();
       services.AddScoped<BaseService<School, Byte>>();
+      // Add detection services container and device resolver service
+      // Wangkanai.Detection for identifying details about client [device, platform, browser, engine, crawler]
+      // services.AddDetection();
+      // services.AddDetectionCore()
+      //           .AddBrowser();
       // Configure Swagger
       services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }));
       // Allow CORS

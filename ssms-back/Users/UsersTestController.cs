@@ -12,7 +12,7 @@ namespace SSMS.Users
     //Inherit from BaseCOntroller to get all the actions inside it in the derived controller
     public class UsersTestController : BaseController<User, String>
     {
-        //Store the usersService object that comes 
+        //Store the usersService object that comes
         //from DependencyInjection DI which injects it in the constructor
         private BaseService<User, String> _UserSrv { get; }
         //Give the BaseConstructor the dependency it needs which is DB contect
@@ -20,7 +20,7 @@ namespace SSMS.Users
         public UsersTestController(BaseService<User, String> usersService)
                             : base(usersService, "users", "userId", null)
         {
-            _UserSrv = usersService;    //DI inject usersService object here from startup Class
+            _UserSrv = usersService;
         }
         [NonAction]
         public IQueryable<User> GetQuery(Expression<Func<User, bool>> expression)
@@ -45,22 +45,22 @@ namespace SSMS.Users
                 return BadRequest(ex);
             }
 
-            // var context = new EntityModels.SSMSContext(); 
-            //Sends Where filters to SQL- as it doesn't execute query 
-            //but saves it in an expression variable to be extendable and reused 
-            // IQueryable<User> users1 = context.Users;  
-            //doesn't send Where - Gets ALl data- as it saves query in a delegate 
-            // which is get called and executed immediately 
-            //IEnumerable<User> users = context.Users;                
-            // var filtered = users1.Where(u => u.UserType == 1); 
+            // var context = new EntityModels.SSMSContext();
+            //Sends Where filters to SQL- as it doesn't execute query
+            //but saves it in an expression variable to be extendable and reused
+            // IQueryable<User> users1 = context.Users;
+            //doesn't send Where - Gets ALl data- as it saves query in a delegate
+            // which is get called and executed immediately
+            //IEnumerable<User> users = context.Users;
+            // var filtered = users1.Where(u => u.UserType == 1);
         }
        [HttpGet("Test-List")]
         public IActionResult testList()
         {
            var res =  _UserSrv.GetList(item => (bool) item.GetValue("IsActive") == true);
-           // var res= _UserSrv.GetQuery(item => item.IsActive == true); 
-            return Ok(res); 
+           // var res= _UserSrv.GetQuery(item => item.IsActive == true);
+            return Ok(res);
         }
-        
+
     }
 }

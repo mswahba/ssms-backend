@@ -3,12 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using Remotion.Linq.Parsing.Structure;
+using UAParser;
 
 namespace SSMS
 {
@@ -222,6 +224,12 @@ namespace SSMS
             return prop.GetValue(obj).ToString();
           })
       );
+    }
+    // get the client device info from User-Agent Request Header using UAParser
+    public static string GetDeviceInfo(this HttpRequest req)
+    {
+      var dInfo = Parser.GetDefault().Parse(req.Headers["User-Agent"].ToString());
+      return $"{dInfo.Device.Family}|{dInfo.OS.Family}|{dInfo.UA.Family}";
     }
 
   }

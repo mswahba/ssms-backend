@@ -16,10 +16,18 @@ namespace SSMS
   [Route("[controller]")]
   public class BaseController<TEntity, TKey> : ControllerBase where TEntity : class
   {
+    public BaseController(string _tableName, string _keyName, Ado _ado)
+    {
+      this._tableName = _tableName;
+      this._keyName = _keyName;
+      this._ado = _ado;
+
+    }
+    private BaseService<TEntity, TKey> _service { get; }
     private string _tableName { get; }
     private string _keyName { get; }
-    private BaseService<TEntity, TKey> _service { get; }
     private Ado _ado { get; set; }
+
     private string _sqlAddCommand;
     private string _columnNames;
     private string _columnValues;
@@ -94,44 +102,36 @@ namespace SSMS
       //If page size & number aren't provided from the query string
       //then return regular result based on list type.
       IQueryable<TEntity> result;
-      try
+      switch (listType.ToLower())
       {
-        switch (listType.ToLower())
-        {
-          case "existing":
-            result = _service.GetQuery(item =>
-               item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
-                          ? true
-                          : false
-           );
-            break;
-          case "deleted":
-            result = _service.GetQuery(item =>
+        case "existing":
+          result = _service.GetQuery(item =>
               item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
-                         ? false
-                         : true
-           );
-            break;
-          case "all":
-            result = _service.GetQuery();
-            break;
-          default:
-            result = _service.GetQuery();
-            break;
-        }
-        // if page size and number are provided, return page result  (from GetPage())
-        if (pageSize != null && pageNumber != null)
-        {
-          var pageResult = _service.GetPageResult(result, (int)pageSize, (int)pageNumber);
-          return Ok(pageResult);
-        }
-        return Ok(result);
-
+                        ? true
+                        : false
+          );
+          break;
+        case "deleted":
+          result = _service.GetQuery(item =>
+            item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
+                        ? false
+                        : true
+          );
+          break;
+        case "all":
+          result = _service.GetQuery();
+          break;
+        default:
+          result = _service.GetQuery();
+          break;
       }
-      catch (System.Exception ex)
+      // if page size and number are provided, return page result  (from GetPage())
+      if (pageSize != null && pageNumber != null)
       {
-        return BadRequest(ex);
+        var pageResult = _service.GetPageResult(result, (int)pageSize, (int)pageNumber);
+        return Ok(pageResult);
       }
+      return Ok(result);
     }
     /// <summary>
     ///Make it as default action for the controller
@@ -192,42 +192,42 @@ namespace SSMS
     [HttpPost("add")]
     public IActionResult Add([FromBody] TEntity entity)
     {
-      throw new Exception("something went wrong!!");
+      // throw new Exception("something went wrong!!");
       // if autoId has value [ok] then generate newId and set keyName of this entity
       // otherwise the entity keyField [PK] has value [from User Input]
-      // if (entity.GetValue(_keyName).ToString() == "0")
-      // {
-      //   // get the comma separated column names
-      //   _columnNames = entity.GetPrimitivePropsNames();
-      //   // get the comma separated column values
-      //   // note: key column value replaced with the sql variable [@newId]
-      //   // which will be fulfilled before executing the insert statement
-      //   _columnValues = entity.GetPrimitivePropsValues();
-      //   // build SQL Command that:
-      //   // (1) get the max key value from entity table
-      //   // (2) If it is = null then set it = 0
-      //   // (3) increment it by one
-      //   // (4) insert the entity with its values
-      //   // (5) select the previously inserted entity
-      //   _sqlAddCommand = $@"
-      //     Declare @newId int;
-      //     set @newId = (select max({_keyName}) from {_tableName});
-      //     if @newId is null set @newId = 0;
-      //     set @newId = @newId + 1;
-      //     insert into {_tableName} ({_columnNames}) values ({_columnValues});
-      //     select * from {_tableName} where {_keyName} = @newId;
-      //   ";
-      //   Console.WriteLine(_sqlAddCommand);
-      //   // execute SQL Command and return its value
-      //   entity = _service.Add(_sqlAddCommand);
-      // }
-      // else
-      // {
-      //   // add entity and saveChanges
-      //   _service.Add(entity);
-      // }
-      // // if everything is ok, return the full user obj with all inserted values
-      // return Ok(entity);
+      if (entity.GetValue(_keyName).ToString() == "0")
+      {
+        // get the comma separated column names
+        _columnNames = entity.GetPrimitivePropsNames();
+        // get the comma separated column values
+        // note: key column value replaced with the sql variable [@newId]
+        // which will be fulfilled before executing the insert statement
+        _columnValues = entity.GetPrimitivePropsValues();
+        // build SQL Command that:
+        // (1) get the max key value from entity table
+        // (2) If it is = null then set it = 0
+        // (3) increment it by one
+        // (4) insert the entity with its values
+        // (5) select the previously inserted entity
+        _sqlAddCommand = $@"
+          Declare @newId int;
+          set @newId = (select max({_keyName}) from {_tableName});
+          if @newId is null set @newId = 0;
+          set @newId = @newId + 1;
+          insert into {_tableName} ({_columnNames}) values ({_columnValues});
+          select * from {_tableName} where {_keyName} = @newId;
+        ";
+        Console.WriteLine(_sqlAddCommand);
+        // execute SQL Command and return its value
+        entity = _service.Add(_sqlAddCommand);
+      }
+      else
+      {
+        // add entity and saveChanges
+        _service.Add(entity);
+      }
+      // if everything is ok, return the full user obj with all inserted values
+      return Ok(entity);
     }
     //Update all parent Data -- used either by Parent or Admin
     [HttpPut("update")]
@@ -348,16 +348,16 @@ namespace SSMS
       // after Select() iterates all items , it returns the array of items to result variable
       var result = items.Select(item =>
       {
-              // Create empty dictionary that takes (string field name , object value )
-              // each dictionary represents a record (row) as object
-              obj = new Dictionary<string, object>();
-              // fill the dictionary dynamically by setting the field name and its value)
-              // we use for each because we have many fields
-              foreach (var field in fieldsArr)
+        // Create empty dictionary that takes (string field name , object value )
+        // each dictionary represents a record (row) as object
+        obj = new Dictionary<string, object>();
+        // fill the dictionary dynamically by setting the field name and its value)
+        // we use for each because we have many fields
+        foreach (var field in fieldsArr)
           obj.Add(field, item.GetValue(field));
-              // return the new dynamically created row to the Select() function ,
-              // so that the select() will loop to the next item
-              return obj;
+        // return the new dynamically created row to the Select() function ,
+        // so that the select() will loop to the next item
+        return obj;
       });
       return Ok(result);
     }

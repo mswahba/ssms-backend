@@ -16,14 +16,15 @@ namespace SSMS.Users
   {
     // Store the usersService object that comes
     // from DependencyInjection DI which injects it in the constructor
-    private BaseService<User, String> _UserSrv { get; }
     private VUser vUser;
+    private BaseService<User, String> _UserSrv { get; }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
     public UsersController(BaseService<User, String> usersService, Ado ado)
                         : base(usersService, "users", "userId", ado)
     {
-      _UserSrv = usersService;    //DI inject usersService object here from startup Class
+       //DI inject usersService object here from startup Class
+      _UserSrv = usersService;
     }
     [AllowAnonymous]
     [HttpPost("Signup")]
