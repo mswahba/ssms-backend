@@ -45,11 +45,14 @@ namespace SSMS
       return new JwtSecurityTokenHandler().WriteToken(token);
     }
     // A Function that generates a Random Salt
-    public static string GetRandSalt()
+    public static string GetSecuredRandStr()
     {
-      byte[] salt = new byte[32];
-      RandomNumberGenerator.Create().GetBytes(salt);
-      return Convert.ToBase64String(salt);
+      byte[] randNum = new byte[32];
+      using (var rng = RandomNumberGenerator.Create())
+      {
+        rng.GetBytes(randNum);
+        return Convert.ToBase64String(randNum);
+      }
     }
     // A Function to hash the given string Value using the given Salt
     public static string Hashing(string value, string salt)

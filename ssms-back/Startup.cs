@@ -38,6 +38,7 @@ namespace SSMS
       //         })
       //         .Select( prop => prop.Name)
       // ));
+      // Console.WriteLine(Helpers.GetSecuredRandStr());
     }
 
     public IConfiguration Configuration { get; }
@@ -57,6 +58,7 @@ namespace SSMS
       services.AddScoped<BaseService<DocType, Byte>>();
       services.AddScoped<BaseService<Country, Byte>>();
       services.AddScoped<BaseService<School, Byte>>();
+      services.AddScoped<BaseService<RefreshToken, int>>();
       // Add detection services container and device resolver service
       // Wangkanai.Detection for identifying details about client [device, platform, browser, engine, crawler]
       // services.AddDetection();

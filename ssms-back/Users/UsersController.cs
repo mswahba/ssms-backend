@@ -17,28 +17,57 @@ namespace SSMS.Users
     // Store the usersService object that comes
     // from DependencyInjection DI which injects it in the constructor
     private VUser vUser;
-    private BaseService<User, String> _UserSrv { get; }
+    private User user;
+    private BaseService<User, String> _UserSrv;
+    private BaseService<RefreshToken, int> _RefreshTokenSrv;
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
-    public UsersController(BaseService<User, String> usersService, Ado ado)
+    public UsersController(BaseService<User, String> usersService, BaseService<RefreshToken, int> refreshTokenSrv, Ado ado)
                         : base(usersService, "users", "userId", ado)
     {
        //DI inject usersService object here from startup Class
       _UserSrv = usersService;
+      _RefreshTokenSrv = refreshTokenSrv;
+    }
+    private void InsertOrUpdateRefreshToken(User user, string refreshToken, string deviceInfo)
+    {
+      var existingRefreshToken = user.RefreshTokens.FirstOrDefault(rt => rt.DeviceInfo == deviceInfo);
+      // update
+      if(existingRefreshToken != null)
+      {
+        existingRefreshToken.Token = refreshToken;
+        _RefreshTokenSrv.SetState(existingRefreshToken,"Modified");
+        _RefreshTokenSrv.Save();
+      }
+      // insert
+      else
+        _RefreshTokenSrv.Add(new RefreshToken() { Token =  refreshToken, DeviceInfo = deviceInfo, UserId = user.UserId });
     }
     [AllowAnonymous]
     [HttpPost("Signup")]
     public IActionResult SignUp([FromBody]SignUp signup)
     {
-      // (1) Mapping from SignUp [View Model] to User [Entity Model]
-      // (2) and Hashing UserPassword before Saving to DB
-      User user = Mapper.Map(signup);
-      // (3) insert the User into DB
+      // (1) Generate RefreshToken
+      string refreshToken = Helpers.GetSecuredRandStr();
+      // (2) Generate password Hash and salt
+      // (_) Add a new Item with refreshToken and deviceInfo in RefreshTokens List in the User entity
+      // (_) Mapping from SignUp [View Model] to User [Entity Model]
+      // (_) based on UserTypeId fill the appropriate child entity (Parent - Employee - Student)
+      user = Mapper.Map(signup, Request.GetDeviceInfo(), refreshToken);
+      // (3) insert the User with its Refresh Token
+      // (_) and its Child Entity [Parent - Employee - Student] into DB
+      // (_) [insert into 3 tables: users, refreshTokens, one of (Parent - Employee - Student) ]
       _UserSrv.Add(user);
       // (4) Map the Entity User to View User [VUser]
       vUser = Mapper.Map(user);
-      // (5) if everything is ok, return the full User and the JWT
-      return Ok(new { User = vUser, Token = Helpers.GetToken(vUser) });
+      // (5) if everything is ok, return the [vUser - accessToken - refreshToken]
+      return Ok(new
+        {
+          User = vUser,
+          AccessToken = Helpers.GetToken(vUser),
+          RefreshToken = refreshToken
+        }
+      );
     }
     [AllowAnonymous]
     [HttpPost("SignIn")]
@@ -46,17 +75,28 @@ namespace SSMS.Users
     {
       // (1) Get User by his Credentials [userId - userPassword]
       // and validate the userPassword against Passwordhash
-      var user = _UserSrv.GetOne(u => u.UserId == signin.UserId && Helpers.ValidateHash(signin.UserPassword,u.PasswordSalt,u.PasswordHash) );
-      // (2) if User doesn't exist
+      // and if exists, include all user RefreshTokens
+      user = _UserSrv.GetOne(new List<string>() { "RefreshTokens" }, u => u.UserId == signin.UserId && Helpers.ValidateHash(signin.UserPassword,u.PasswordSalt,u.PasswordHash) );
+      // (2) if User doesn't exist return badRequest
       if (user == null)
         return BadRequest(new Error() { Message = "Invalid User." });
       // (3) if User is [not Enabled OR isDeleted] return badRequest
       if (user.AccountStatusId != 2 && user.IsDeleted == true)
         return BadRequest( new Error() { Message = "This account hasn't been activated Yet." });
-      // (4) Map the Entity User to View User [VUser]
+      // (4) Generate RefreshToken
+      string refreshToken = Helpers.GetSecuredRandStr();
+      // (5) Insert OR Update in refreshTokens Table
+      InsertOrUpdateRefreshToken(user, refreshToken, Request.GetDeviceInfo());
+      // (6) Map the Entity User to View User [VUser]
       vUser = Mapper.Map(user);
-      // (5) if everything is ok, return the full User and the JWT
-      return Ok(new { User = vUser, Token = Helpers.GetToken(vUser) });
+      // (7) if everything is ok, return the [vUser - accessToken - refreshToken]
+      return Ok(new
+        {
+          User = vUser,
+          AccessToken = Helpers.GetToken(vUser),
+          RefreshToken = refreshToken
+        }
+      );
     }
     [AllowAnonymous]
     [HttpPost("ChangePassword")]
@@ -72,7 +112,7 @@ namespace SSMS.Users
         if (user == null)
           return BadRequest(new Error() { Message = "Invalid User." });
         // (3) hashing the new password and set the passwordSalt and passwordHash
-        user.PasswordSalt = Helpers.GetRandSalt();
+        user.PasswordSalt = Helpers.GetSecuredRandStr();
         user.PasswordHash = Helpers.Hashing(changedpassword.NewPassword,user.PasswordSalt);
         // (4) Saving the new passwordSalt and passwordHash
         _UserSrv.Save();
