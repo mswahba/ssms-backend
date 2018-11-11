@@ -312,8 +312,18 @@ namespace SSMS
         return BadRequest(ex);
       }
     }
+    // [controller]/sql-update?setters=[value]&filters=[value]
+    // Apply sql update Caluse
+    [HttpGet("sql-update")]
+    public IActionResult SqlUpdate([FromQuery] string setters, [FromQuery] string filters)
+    {
+      if(setters == null && filters == null)
+        return BadRequest(new Error() { Message = "must supply both setters and filters query string" });
+      int rows = _service.SqlUpdate(_tableName,setters,filters);
+      return Ok($"{rows} row(s) affected ...");
+    }
     // [controller]/sql-where?filters=
-    // Apply Filter (sql Where Caluse)
+    // Apply sql Where Caluse
     [HttpGet("sql-where")]
     public IActionResult SqlWhere([FromQuery] string filters)
     {
