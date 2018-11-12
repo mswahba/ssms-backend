@@ -16,13 +16,6 @@ namespace SSMS
   [Route("[controller]")]
   public class BaseController<TEntity, TKey> : ControllerBase where TEntity : class
   {
-    public BaseController(string _tableName, string _keyName, Ado _ado)
-    {
-      this._tableName = _tableName;
-      this._keyName = _keyName;
-      this._ado = _ado;
-
-    }
     private BaseService<TEntity, TKey> _service { get; }
     private string _tableName { get; }
     private string _keyName { get; }

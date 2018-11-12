@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SSMS.EntityModels;
 using SSMS.ViewModels;
 
@@ -20,6 +21,30 @@ namespace SSMS.Users
     private User user;
     private BaseService<User, String> _UserSrv;
     private BaseService<RefreshToken, int> _RefreshTokenSrv;
+    // do Update The user Refresh Token [used in RefreshToken Action]
+    private int UpdateRefreshToken(User user, string refreshToken, string deviceInfo)
+    {
+      var existingRefreshToken = user.RefreshTokens.FirstOrDefault(rt => rt.DeviceInfo == deviceInfo);
+      if(existingRefreshToken != null)
+      {
+        existingRefreshToken.Token = refreshToken;
+        _RefreshTokenSrv.SetState(existingRefreshToken,"Modified");
+        return _RefreshTokenSrv.Save();
+      }
+      return -1;
+    }
+    // do Insert Or Update The user Refresh Token [used in SignIn Action]
+    private void InsertOrUpdateRefreshToken(User user, string refreshToken, string deviceInfo)
+    {
+      int updatedRows = UpdateRefreshToken(user,refreshToken,deviceInfo);
+      if(updatedRows == -1)
+        _RefreshTokenSrv.Add(new RefreshToken() { Token =  refreshToken, DeviceInfo = deviceInfo, UserId = user.UserId });
+    }
+    // get list of all refreshTokens for that userId
+    private List<RefreshToken> GetRefreshTokens(string userId)
+    {
+      return _RefreshTokenSrv.GetList(rt => rt.UserId == userId);
+    }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
     public UsersController(BaseService<User, String> usersService, BaseService<RefreshToken, int> refreshTokenSrv, Ado ado)
@@ -29,20 +54,9 @@ namespace SSMS.Users
       _UserSrv = usersService;
       _RefreshTokenSrv = refreshTokenSrv;
     }
-    private void InsertOrUpdateRefreshToken(User user, string refreshToken, string deviceInfo)
-    {
-      var existingRefreshToken = user.RefreshTokens.FirstOrDefault(rt => rt.DeviceInfo == deviceInfo);
-      // update
-      if(existingRefreshToken != null)
-      {
-        existingRefreshToken.Token = refreshToken;
-        _RefreshTokenSrv.SetState(existingRefreshToken,"Modified");
-        _RefreshTokenSrv.Save();
-      }
-      // insert
-      else
-        _RefreshTokenSrv.Add(new RefreshToken() { Token =  refreshToken, DeviceInfo = deviceInfo, UserId = user.UserId });
-    }
+
+    #region UserController Actions
+
     [AllowAnonymous]
     [HttpPost("Signup")]
     public IActionResult SignUp([FromBody]SignUp signup)
@@ -64,8 +78,10 @@ namespace SSMS.Users
       return Ok(new
         {
           User = vUser,
-          AccessToken = Helpers.GetToken(vUser),
-          RefreshToken = refreshToken
+          Tokens = new JWTTokens() {
+            AccessToken = Helpers.GetToken(vUser),
+            RefreshToken = refreshToken
+          }
         }
       );
     }
@@ -93,8 +109,10 @@ namespace SSMS.Users
       return Ok(new
         {
           User = vUser,
-          AccessToken = Helpers.GetToken(vUser),
-          RefreshToken = refreshToken
+          Tokens = new JWTTokens() {
+            AccessToken = Helpers.GetToken(vUser),
+            RefreshToken = refreshToken
+          }
         }
       );
     }
@@ -124,5 +142,39 @@ namespace SSMS.Users
         return BadRequest(ex);
       }
     }
+    [AllowAnonymous]
+    [HttpPost("refresh-token")]
+    public IActionResult RefreshToken(JWTTokens tokens)
+    {
+      // validate and get Claims From the given expired access Token
+      var principal = Helpers.ValidateExpiredToken(tokens.AccessToken);
+      // get the userId from the Expired Access Token Claims
+      string userId = principal.Claims.SingleOrDefault(c => c.Type == "UserId").Value;
+      // retrieve the user and all of his refresh tokens from DB
+      user = _UserSrv.GetOne(new List<string>() { "RefreshTokens" }, u => u.UserId == userId );
+      // if the given refreshToken not found in RefreshTokens collection of that user
+      // throw Exception [return BadRequest]
+      if (user.RefreshTokens.All(rt => rt.Token != tokens.RefreshToken) )
+        throw new SecurityTokenException("Invalid refresh token ...");
+      // map user to vUser to get a new accessToken
+      vUser = Mapper.Map(user);
+      string accessToken = Helpers.GetToken(vUser);
+      string refreshToken = Helpers.GetSecuredRandStr();
+      // update the user RefreshTokens with the new one
+      UpdateRefreshToken(user, refreshToken, Request.GetDeviceInfo());
+      // (_) if everything is ok, return the [vUser - accessToken - refreshToken]
+      return Ok(new
+        {
+          User = vUser,
+          Tokens = new JWTTokens() {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+          }
+        }
+      );
+    }
+
+    #endregion
+
   }
 }

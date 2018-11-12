@@ -54,6 +54,37 @@ namespace SSMS
         return Convert.ToBase64String(randNum);
       }
     }
+    // A Function to return new TokenValidationParameters object
+    public static TokenValidationParameters GetTokenValidationOptions(bool validateLifetime)
+    {
+      return new TokenValidationParameters
+      {
+        ValidateLifetime = validateLifetime,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
+        ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
+        IssuerSigningKey = Helpers.GetSecretKey()
+      };
+    }
+    // Validate and Get Claims From the given Expired access Token
+    public static ClaimsPrincipal ValidateExpiredToken(string accessToken)
+    {
+      // get the Token Validation Options
+      var tokenValidationOptions = GetTokenValidationOptions(validateLifetime: true);
+      var tokenHandler = new JwtSecurityTokenHandler();
+      SecurityToken securityToken;
+      // validate the token with the choosen Token Validation Options
+      ClaimsPrincipal principal = tokenHandler.ValidateToken(accessToken, tokenValidationOptions, out securityToken);
+      JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
+      // checking that the algorithm used to sign the token is HmacSha256
+      // to prevent exchanging a fake token for a real JWT token
+      if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        throw new SecurityTokenException("Invalid accessToken!!");
+      // finally return the token principal
+      return principal;
+    }
     // A Function to hash the given string Value using the given Salt
     public static string Hashing(string value, string salt)
     {

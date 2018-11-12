@@ -20,7 +20,6 @@ using SSMS.Hubs;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-
 namespace SSMS
 {
   public class Startup
@@ -39,6 +38,9 @@ namespace SSMS
       //         .Select( prop => prop.Name)
       // ));
       // Console.WriteLine(Helpers.GetSecuredRandStr());
+      // var principal = Helpers.ValidateExpiredToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1NTY2NTU2NjU1IiwiVXNlclR5cGVJZCI6IjMiLCJBY2NvdW50U3RhdHVzSWQiOiIxIiwiU3Vic2NyaWJlRGF0ZSI6IjA5LzExLzIwMTggMTA6NTM6MDAgUE0iLCJMYXN0QWN0aXZlIjoiMDkvMTEvMjAxOCAxMDo1Mjo1NSBQTSIsIklzRGVsZXRlZCI6IkZhbHNlIiwiZXhwIjoxNTQyNjA4ODg4LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.jk-Zl-MDlU8riZbAZNFCwxKftNvDys9P7uClbXVLxpU");
+      // foreach (var item in principal.Claims.Where(c => c.Type == "UserId"))
+      //   Console.WriteLine(item.Type + " " + item.Value);
     }
 
     public IConfiguration Configuration { get; }
@@ -58,12 +60,7 @@ namespace SSMS
       services.AddScoped<BaseService<DocType, Byte>>();
       services.AddScoped<BaseService<Country, Byte>>();
       services.AddScoped<BaseService<School, Byte>>();
-      services.AddScoped<BaseService<RefreshToken, int>>();
-      // Add detection services container and device resolver service
-      // Wangkanai.Detection for identifying details about client [device, platform, browser, engine, crawler]
-      // services.AddDetection();
-      // services.AddDetectionCore()
-      //           .AddBrowser();
+      services.AddScoped<BaseService<RefreshToken, Int32>>();
       // Configure Swagger
       services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }));
       // Allow CORS
@@ -76,19 +73,7 @@ namespace SSMS
         }));
       // JWT Authentication
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-          options.TokenValidationParameters = new TokenValidationParameters
-          {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
-            ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
-            IssuerSigningKey = Helpers.GetSecretKey()
-          };
-        });
+        .AddJwtBearer(options => options.TokenValidationParameters = Helpers.GetTokenValidationOptions(validateLifetime: true));
       // Add SignalR
       services.AddSignalR(hubOptions =>
         {
