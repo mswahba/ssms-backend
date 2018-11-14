@@ -10,11 +10,11 @@ namespace SSMS.Users.Employees
 {
     public class EmployeesController : BaseController<Employee,String>
     {
-        private BaseService<Employee,String> _EmployeeSrv { get; }
-        public EmployeesController(BaseService<Employee,String> EmployeesService, Ado ado)
-                                :base(EmployeesService, "employees", "empId", ado)
+        private BaseService _service;
+        public EmployeesController(BaseService service, Ado ado)
+                                :base(service, "employees", "empId", ado)
         {
-            _EmployeeSrv = EmployeesService;
+            _service = service;
         }
     }
 }

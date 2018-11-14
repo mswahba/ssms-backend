@@ -19,8 +19,7 @@ namespace SSMS.Users
     // from DependencyInjection DI which injects it in the constructor
     private VUser vUser;
     private User user;
-    private BaseService<User, String> _UserSrv;
-    private BaseService<RefreshToken, int> _RefreshTokenSrv;
+    private BaseService _service;
     // do Update The user Refresh Token [used in RefreshToken Action]
     private int UpdateRefreshToken(User user, string refreshToken, string deviceInfo)
     {
@@ -28,8 +27,8 @@ namespace SSMS.Users
       if(existingRefreshToken != null)
       {
         existingRefreshToken.Token = refreshToken;
-        _RefreshTokenSrv.SetState(existingRefreshToken,"Modified");
-        return _RefreshTokenSrv.Save();
+        _service.SetState<RefreshToken>(existingRefreshToken,"Modified");
+        return _service.Save();
       }
       return -1;
     }
@@ -38,21 +37,20 @@ namespace SSMS.Users
     {
       int updatedRows = UpdateRefreshToken(user,refreshToken,deviceInfo);
       if(updatedRows == -1)
-        _RefreshTokenSrv.Add(new RefreshToken() { Token =  refreshToken, DeviceInfo = deviceInfo, UserId = user.UserId });
+        _service.Add<RefreshToken>(new RefreshToken() { Token =  refreshToken, DeviceInfo = deviceInfo, UserId = user.UserId });
     }
     // get list of all refreshTokens for that userId
     private List<RefreshToken> GetRefreshTokens(string userId)
     {
-      return _RefreshTokenSrv.GetList(rt => rt.UserId == userId);
+      return _service.GetList<RefreshToken>(rt => rt.UserId == userId);
     }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
-    public UsersController(BaseService<User, String> usersService, BaseService<RefreshToken, int> refreshTokenSrv, Ado ado)
-                        : base(usersService, "users", "userId", ado)
+    public UsersController(BaseService service, Ado ado)
+                        : base(service, "users", "userId", ado)
     {
        //DI inject usersService object here from startup Class
-      _UserSrv = usersService;
-      _RefreshTokenSrv = refreshTokenSrv;
+      _service = service;
     }
 
     #region UserController Actions
@@ -71,7 +69,7 @@ namespace SSMS.Users
       // (3) insert the User with its Refresh Token
       // (_) and its Child Entity [Parent - Employee - Student] into DB
       // (_) [insert into 3 tables: users, refreshTokens, one of (Parent - Employee - Student) ]
-      _UserSrv.Add(user);
+      _service.Add(user);
       // (4) Map the Entity User to View User [VUser]
       vUser = Map.ToVUser(user);
       // (5) if everything is ok, return the [vUser - accessToken - refreshToken]
@@ -92,7 +90,7 @@ namespace SSMS.Users
       // (1) Get User by his Credentials [userId - userPassword]
       // and validate the userPassword against Passwordhash
       // and if exists, include all user RefreshTokens
-      user = _UserSrv.GetOne(new List<string>() { "RefreshTokens" }, u => u.UserId == signin.UserId && Helpers.ValidateHash(signin.UserPassword,u.PasswordSalt,u.PasswordHash) );
+      user = _service.GetOne<User>(new List<string>() { "RefreshTokens" }, u => u.UserId == signin.UserId && Helpers.ValidateHash(signin.UserPassword,u.PasswordSalt,u.PasswordHash) );
       // (2) if User doesn't exist return badRequest
       if (user == null)
         return BadRequest(new Error() { Message = "Invalid User." });
@@ -126,14 +124,14 @@ namespace SSMS.Users
       try
       {
         // (2) Get user Data from DB
-        var user = _UserSrv.GetOne(u => u.UserId == changedpassword.UserId && Helpers.ValidateHash(changedpassword.OldPassword,u.PasswordSalt,u.PasswordHash) );
+        var user = _service.GetOne<User>(u => u.UserId == changedpassword.UserId && Helpers.ValidateHash(changedpassword.OldPassword,u.PasswordSalt,u.PasswordHash) );
         if (user == null)
           return BadRequest(new Error() { Message = "Invalid User." });
         // (3) hashing the new password and set the passwordSalt and passwordHash
         user.PasswordSalt = Helpers.GetSecuredRandStr();
         user.PasswordHash = Helpers.Hashing(changedpassword.NewPassword,user.PasswordSalt);
         // (4) Saving the new passwordSalt and passwordHash
-        _UserSrv.Save();
+        _service.Save();
         // (5) if everything is ok, return the full user
         return Ok(user);
       }
@@ -151,7 +149,7 @@ namespace SSMS.Users
       // get the userId from the Expired Access Token Claims
       string userId = claims.SingleOrDefault(c => c.Type == "UserId").Value;
       // retrieve the user and all of his refresh tokens from DB
-      user = _UserSrv.GetOne(new List<string>() { "RefreshTokens" }, u => u.UserId == userId );
+      user = _service.GetOne<User>(new List<string>() { "RefreshTokens" }, u => u.UserId == userId );
       // if the given refreshToken not found in RefreshTokens collection of that user
       // throw Exception [return BadRequest]
       if (user.RefreshTokens.All(rt => rt.Token != tokens.RefreshToken) )

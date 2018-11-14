@@ -14,13 +14,13 @@ namespace SSMS.Users
     {
         //Store the usersService object that comes
         //from DependencyInjection DI which injects it in the constructor
-        private BaseService<User, String> _UserSrv { get; }
+        private BaseService _service { get; }
         //Give the BaseConstructor the dependency it needs which is DB contect
         //To get Db Context, we receive it from DI then pass it to Base constructor
-        public UsersTestController(BaseService<User, String> usersService)
-                            : base(usersService, "users", "userId", null)
+        public UsersTestController(BaseService service)
+                            : base(service, "users", "userId", null)
         {
-            _UserSrv = usersService;
+            _service = service;
         }
         [NonAction]
         public IQueryable<User> GetQuery(Expression<Func<User, bool>> expression)
@@ -57,7 +57,7 @@ namespace SSMS.Users
        [HttpGet("Test-List")]
         public IActionResult testList()
         {
-           var res =  _UserSrv.GetList(item => (bool) item.GetValue("IsActive") == true);
+           var res =  _service.GetList<User>(item => (bool) item.GetValue("IsActive") == true);
            // var res= _UserSrv.GetQuery(item => item.IsActive == true);
             return Ok(res);
         }

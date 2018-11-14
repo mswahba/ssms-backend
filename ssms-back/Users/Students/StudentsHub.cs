@@ -10,11 +10,11 @@ namespace SSMS.Hubs
 {
   public class StudentsHub : BaseHub<Student, String>
   {
-    private BaseService<Student, String> _StudentSrv;
-    public StudentsHub(BaseService<Student, String> studentsService, Ado ado)
-                        : base(studentsService, "students", "studentId", ado)
+    private BaseService _service;
+    public StudentsHub(BaseService service, Ado ado)
+                        : base(service, "students", "studentId", ado)
     {
-      _StudentSrv = studentsService;
+      _service = service;
     }
   }
 }

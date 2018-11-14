@@ -8,15 +8,15 @@ namespace SSMS.Hubs
 {
   public class SchoolsHub : BaseHub<School, Byte>
   {
-    private BaseService<School, Byte> _SchoolSrv;
+    private BaseService _service;
     // in constructor take BaseService from DI
     // and setting its [TEntity,TKey] to [School, Byte] to Act as schoolsService
     // and take ado object from DI [used in Auto Generate New Ids in Add Method]
     // finally pass SQL [TableName, PK ColumnName] to BaseHub
-    public SchoolsHub(BaseService<School, Byte> schoolsService, Ado ado)
-                            : base(schoolsService, "schools", "SchoolId", ado)
+    public SchoolsHub(BaseService service, Ado ado)
+                            : base(service, "schools", "SchoolId", ado)
     {
-      _SchoolSrv = schoolsService;
+      _service = service;
     }
   }
 }

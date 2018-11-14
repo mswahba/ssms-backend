@@ -16,7 +16,7 @@ namespace SSMS
   [Route("[controller]")]
   public class BaseController<TEntity, TKey> : ControllerBase where TEntity : class
   {
-    private BaseService<TEntity, TKey> _service { get; }
+    private BaseService _service { get; }
     private string _tableName { get; }
     private string _keyName { get; }
     private Ado _ado { get; set; }
@@ -41,35 +41,28 @@ namespace SSMS
         return BadRequest(new Error() { Message = "Item doesn't exist" });
       // switch on the [deleteType] and perform the appropriate action
       int res;
-      try
+      switch (deleteType)
       {
-        switch (deleteType)
-        {
-          case "logical":
-            res = _service.DeleteLogical(entity);
-            if (res == -1)
-              return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
-            else if (res == -2)
-              return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
-            SetDeleteResult(entity, res, "logical");
-            return Ok(_deleteResult);
-          case "physical":
-            res = _service.Delete(entity);
-            SetDeleteResult(entity, res, "physical");
-            return Ok(_deleteResult);
-          default:
-            return BadRequest(new Error() { Message = "Unknow Delete Type" });
-        }
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ex);
+        case "logical":
+          res = _service.DeleteLogical(entity);
+          if (res == -1)
+            return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
+          else if (res == -2)
+            return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
+          SetDeleteResult(entity, res, "logical");
+          return Ok(_deleteResult);
+        case "physical":
+          res = _service.Delete(entity);
+          SetDeleteResult(entity, res, "physical");
+          return Ok(_deleteResult);
+        default:
+          return BadRequest(new Error() { Message = "Unknow Delete Type" });
       }
     }
     // receive the service (to deal with db)
     // and the table name of the entity (from entity Controller) and the PK field name
     // and the ado from DI
-    public BaseController(BaseService<TEntity, TKey> service, string tableName, string keyName, Ado ado)
+    public BaseController(BaseService service, string tableName, string keyName, Ado ado)
     {
       _tableName = tableName;
       _keyName = keyName;
@@ -98,30 +91,30 @@ namespace SSMS
       switch (listType.ToLower())
       {
         case "existing":
-          result = _service.GetQuery(item =>
+          result = _service.GetQuery<TEntity>(item =>
               item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
                         ? true
                         : false
           );
           break;
         case "deleted":
-          result = _service.GetQuery(item =>
+          result = _service.GetQuery<TEntity>(item =>
             item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
                         ? false
                         : true
           );
           break;
         case "all":
-          result = _service.GetQuery();
+          result = _service.GetQuery<TEntity>();
           break;
         default:
-          result = _service.GetQuery();
+          result = _service.GetQuery<TEntity>();
           break;
       }
       // if page size and number are provided, return page result  (from GetPage())
       if (pageSize != null && pageNumber != null)
       {
-        var pageResult = _service.GetPageResult(result, (int)pageSize, (int)pageNumber);
+        var pageResult = _service.GetPageResult<TEntity>(result, (int)pageSize, (int)pageNumber);
         return Ok(pageResult);
       }
       return Ok(result);
@@ -147,40 +140,33 @@ namespace SSMS
     {
       if (filters == null && fields == null && orderBy == null)
         return BadRequest(new Error() { Message = "Must supply at least one of the following : [Filters] and/or [Fileds] and/or [Order By]" });
-      IQueryable<TEntity> query = _service.GetQuery().AsQueryable();
+      IQueryable<TEntity> query = _service.GetQuery<TEntity>().AsQueryable();
       IQueryable result;
-      try
+      //if filters provided, apply filters and get the query after applying (where) on it
+      if (filters != null)
+        query = _service.ApplySqlWhere<TEntity>(filters, _tableName);
+      //if orderBy provided, Give it the previous query (either filtered or not )
+      //then apply sort and get the query after applying (orderBy) on it
+      if (orderBy != null)
+        query = _service.ApplySort(orderBy, query);
+      //put query value (whether filtered and ordered, filtered only, ordered only, nothing applied) in result
+      result = query;
+      //if select fields provided, apply dynamic select on the previous query
+      if (fields != null)
+        result = _service.ApplySelect(fields, query);
+      if (pageSize != null && pageNumber != null)
       {
-        //if filters provided, apply filters and get the query after applying (where) on it
-        if (filters != null)
-          query = _service.ApplySqlWhere(filters, _tableName);
-        //if orderBy provided, Give it the previous query (either filtered or not )
-        //then apply sort and get the query after applying (orderBy) on it
-        if (orderBy != null)
-          query = _service.ApplySort(orderBy, query);
-        //put query value (whether filtered and ordered, filtered only, ordered only, nothing applied) in result
-        result = query;
-        //if select fields provided, apply dynamic select on the previous query
-        if (fields != null)
-          result = _service.ApplySelect(fields, query);
-        if (pageSize != null && pageNumber != null)
-        {
-          var PageResult = _service.GetPageResult(result, (int)pageSize, (int)pageNumber);
-          return Ok(PageResult);
-        }
-        //Ok() takes the result (Linq query) , executes it , gets the data, convert it to JSON
-        return Ok(result);
+        var PageResult = _service.GetPageResult<TEntity>(result, (int)pageSize, (int)pageNumber);
+        return Ok(PageResult);
       }
-      catch (System.Exception ex)
-      {
-        return BadRequest(ex);
-      }
+      //Ok() takes the result (Linq query) , executes it , gets the data, convert it to JSON
+      return Ok(result);
     }
 
     [HttpGet("{id}")]
     public IActionResult Find(TKey id)
     {
-      return Ok(_service.GetOne(id));
+      return Ok(_service.Find<TEntity,TKey>(id));
     }
     [HttpPost("add")]
     public IActionResult Add([FromBody] TEntity entity)
@@ -212,7 +198,7 @@ namespace SSMS
         ";
         Console.WriteLine(_sqlAddCommand);
         // execute SQL Command and return its value
-        entity = _service.Add(_sqlAddCommand);
+        entity = _service.Add<TEntity>(_sqlAddCommand);
       }
       else
       {
@@ -226,42 +212,24 @@ namespace SSMS
     [HttpPut("update")]
     public IActionResult Update([FromBody]TEntity entity)
     {
-      if (!ModelState.IsValid)
-        return BadRequest(ModelState);
-      try
-      {
-        _service.Update(entity);
-        //if everything is ok, return the full  obj with all inserted values
-        return Ok(entity);
-      }
-      catch (System.Exception ex)
-      {
-        return BadRequest(ex);
-      }
+      _service.Update<TEntity>(entity);
+      //if everything is ok, return the full  obj with all inserted values
+      return Ok(entity);
     }
     // update Only ParentId --Used by Admins Only
     [HttpPut("update-Key")]
     public IActionResult UpdateKey([FromQuery] TKey newKey, TKey oldKey)
     {
-      if (!ModelState.IsValid)
-        return BadRequest(ModelState);
       if (newKey == null || oldKey == null)
         return BadRequest(new Error() { Message = "Must supply both newKey and oldKey ..." });
-      try
-      {
-        _service.UpdateKey(_tableName, _keyName, newKey, oldKey);
-        //Use Reflection : When we have a string OF a property and want to access a property value in runtime
-        //Get type,
-        //Get Property (binding Flags: ignore case sensitive, instance (not static), public) ,
-        //Get Value
-        TEntity entity = _service.GetOne(item => item.GetValue(_keyName).Equals(newKey));
-        //if everything is ok, return the full user obj with all inserted values
-        return Ok(entity);
-      }
-      catch (System.Exception ex)
-      {
-        return BadRequest(ex);
-      }
+      _service.UpdateKey(_tableName, _keyName, newKey, oldKey);
+      //Use Reflection : When we have a string OF a property and want to access a property value in runtime
+      //Get type,
+      //Get Property (binding Flags: ignore case sensitive, instance (not static), public) ,
+      //Get Value
+      TEntity entity = _service.GetOne<TEntity>(item => item.GetValue(_keyName).Equals(newKey));
+      //if everything is ok, return the full user obj with all inserted values
+      return Ok(entity);
     }
     //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
     // Then call the appropriate function from the BaseService class to execute operation
@@ -269,8 +237,6 @@ namespace SSMS
     [HttpPost("delete")]
     public IActionResult Delete([FromQuery] string deleteType, [FromBody] TEntity entity)
     {
-      if (!ModelState.IsValid)
-        return BadRequest(ModelState);
       return DoDelete(deleteType, entity);
     }
     //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
@@ -279,11 +245,8 @@ namespace SSMS
     [HttpDelete("delete-by-id")]
     public IActionResult Delete([FromQuery] string deleteType, [FromQuery] TKey key)
     {
-      // if the supplied key doesn't match the TKey DataType
-      if (!ModelState.IsValid)
-        return BadRequest(ModelState);
       // First get the entity using its key to send it to delete method
-      TEntity entity = _service.GetOne(key);
+      TEntity entity = _service.Find<TEntity, TKey>(key);
       return DoDelete(deleteType, entity);
     }
     /********************************************************** */
@@ -295,15 +258,8 @@ namespace SSMS
     [HttpGet("filter")]
     public IActionResult Filter([FromQuery] string filters)
     {
-      try
-      {
-        var res = _service.ApplyFilter(filters);
-        return Ok(res);
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ex);
-      }
+      var res = _service.ApplyFilter<TEntity>(filters);
+      return Ok(res);
     }
     // [controller]/sql-update?setters=[value]&filters=[value]
     // Apply sql update Caluse
@@ -312,7 +268,7 @@ namespace SSMS
     {
       if(setters == null && filters == null)
         return BadRequest(new Error() { Message = "must supply both setters and filters query string" });
-      int rows = _service.SqlUpdate(_tableName,setters,filters);
+      int rows = _service.SqlUpdate<TEntity>(_tableName,setters,filters);
       return Ok($"{rows} row(s) affected ...");
     }
     // [controller]/sql-where?filters=
@@ -320,15 +276,8 @@ namespace SSMS
     [HttpGet("sql-where")]
     public IActionResult SqlWhere([FromQuery] string filters)
     {
-      try
-      {
-        var res = _service.ApplySqlWhere(filters, _tableName);
-        return Ok(res);
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ex);
-      }
+      var res = _service.ApplySqlWhere<TEntity>(filters, _tableName);
+      return Ok(res);
     }
     // 'fields' is a comma separated string of entity fields we want to select
     // return entity that contains only these fields
@@ -344,7 +293,7 @@ namespace SSMS
       var fieldsArr = fields.SplitAndRemoveEmpty(',');
       Dictionary<string, object> obj;
       //Get collection of all fileds(columns) and items(rows)
-      var items = _service.GetQuery().ToList();
+      var items = _service.GetQuery<TEntity>().ToList();
       //filter the collection of items to return only the required fields
       // Select creates an empty array of type the same as that returns from its inside block
       // then iterates all items and adds the returned value to the newly created array
@@ -372,28 +321,15 @@ namespace SSMS
     {
       if (fields == null)
         return BadRequest(new Error() { Message = "Must supply fields" });
-      try
-      {
-        var res = _service.ApplySelect(fields, null);  //use linq.dynamic.core to generate the
-        return Ok(res);
-      }
-      catch (System.Exception ex)
-      {
-        return BadRequest(ex.Message);
-      }
+      // using linq.dynamic.core to generate the needed select statement
+      var res = _service.ApplySelect<TEntity>(fields, null);
+      return Ok(res);
     }
     [HttpGet("select-Ado")]
     public IActionResult SelectAdo([FromQuery] string sqlQuery)
     {
-      try
-      {
-        var result = _ado.ExecuteQuery(sqlQuery);
-        return Ok(result);
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ex);
-      }
+      var result = _ado.ExecuteQuery(sqlQuery);
+      return Ok(result);
     }
     // Users/sort?orderby= userId desc, userPassword
     [HttpGet("sort")]
@@ -401,15 +337,8 @@ namespace SSMS
     {
       if (orderBy == null)
         return BadRequest(new Error() { Message = "Must supply 'Order By' statement" });
-      try
-      {
-        var res = _service.ApplySort(orderBy, null);
-        return Ok(res);
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ex);
-      }
+      var res = _service.ApplySort<TEntity>(orderBy, null);
+      return Ok(res);
     }
     #endregion
   }

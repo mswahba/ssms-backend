@@ -58,14 +58,15 @@ namespace SSMS
       // AddSingleton configues settings to create only one instance of this type
       services.AddSingleton<Ado>();
       // AddScoped configues settings to create new instance of this type per http request
-      services.AddScoped<BaseService<User, String>>();
-      services.AddScoped<BaseService<Parent, String>>();
-      services.AddScoped<BaseService<Student, String>>();
-      services.AddScoped<BaseService<Employee, String>>();
-      services.AddScoped<BaseService<DocType, Byte>>();
-      services.AddScoped<BaseService<Country, Byte>>();
-      services.AddScoped<BaseService<School, Byte>>();
-      services.AddScoped<BaseService<RefreshToken, Int32>>();
+      services.AddScoped<BaseService>();
+      // services.AddScoped<BaseService<User, String>>();
+      // services.AddScoped<BaseService<Parent, String>>();
+      // services.AddScoped<BaseService<Student, String>>();
+      // services.AddScoped<BaseService<Employee, String>>();
+      // services.AddScoped<BaseService<DocType, Byte>>();
+      // services.AddScoped<BaseService<Country, Byte>>();
+      // services.AddScoped<BaseService<School, Byte>>();
+      // services.AddScoped<BaseService<RefreshToken, Int32>>();
       // Configure Swagger
       services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }));
       // Allow CORS

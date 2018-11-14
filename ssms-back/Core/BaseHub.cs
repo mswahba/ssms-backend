@@ -9,7 +9,7 @@ namespace SSMS
 {
   public class BaseHub<TEntity, TKey> : Hub where TEntity : class
   {
-    private BaseService<TEntity, TKey> _service;
+    private BaseService _service;
     private Dictionary<string, object> _deleteResult;
     private Ado _ado;
     private string _tableName;
@@ -18,7 +18,7 @@ namespace SSMS
     private string _columnNames;
     private string _columnValues;
     private string _clientMethod;
-    public BaseHub(BaseService<TEntity, TKey> service, string tableName, string keyName, Ado ado)
+    public BaseHub(BaseService service, string tableName, string keyName, Ado ado)
     {
       _service = service;
       _ado = ado;
@@ -98,12 +98,12 @@ namespace SSMS
           ";
           Console.WriteLine(_sqlAddCommand);
           // execute SQL Command and return its value
-          entity = _service.Add(_sqlAddCommand);
+          entity = _service.Add<TEntity>(_sqlAddCommand);
         }
         else
         {
           // add entity and saveChanges
-          _service.Add(entity);
+          _service.Add<TEntity>(entity);
         }
         // if everything is ok, return the full user obj with all inserted values
         await Clients.All.SendAsync(_clientMethod, new Response<TEntity>() { Data = entity });
@@ -119,7 +119,7 @@ namespace SSMS
       _clientMethod = "Updated";
       try
       {
-        _service.Update(entity);
+        _service.Update<TEntity>(entity);
         // if everything is ok, return the full obj with all inserted values
         await Clients.All.SendAsync(_clientMethod, new Response<TEntity>() { Data = entity });
       }
@@ -140,7 +140,7 @@ namespace SSMS
         // update entity Key in DB
         _service.UpdateKey(_tableName, _keyName, newKey, oldKey);
         // get the updatedKey entity
-        TEntity entity = _service.GetOne(item => item.GetValue(_keyName).Equals(newKey));
+        TEntity entity = _service.GetOne<TEntity>(item => item.GetValue(_keyName).Equals(newKey));
         // if everything is ok, return the full user obj with all inserted values
         await Clients.All.SendAsync(_clientMethod, new Response<TEntity>() { Data = entity });
       }
@@ -161,7 +161,7 @@ namespace SSMS
       else if (key == null && entity == null)
         await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Must supply either key OR entity ..." });
       else if (key != null)
-        entity = _service.GetOne(key);
+        entity = _service.Find<TEntity,TKey>(key);
       // if entity that comes from DB is null
       if (entity == null)
         await Clients.All.SendAsync(_clientMethod, new Response<String>() { Error = "Item doesn't exist ..." });

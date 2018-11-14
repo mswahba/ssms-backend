@@ -10,14 +10,14 @@ namespace SSMS.Shared
 {
     public class CountriesController : BaseController<Country,Byte>
     {
-        private BaseService<Country,Byte> _CountriesSrv { get; }
+        private BaseService _service;
         //in ctor take parent service from DI and pass it to the base controller
         //when sending this entity type and its key type,
         //we tranform the Base service to this entity service (parent)
-        public CountriesController(BaseService<Country,Byte> CountriesService, Ado ado)
-                                :base(CountriesService, "countries", "countryId", ado)
+        public CountriesController(BaseService service, Ado ado)
+                                :base(service, "countries", "countryId", ado)
         {
-            _CountriesSrv = CountriesService;
+            _service = service;
         }
     }
 }

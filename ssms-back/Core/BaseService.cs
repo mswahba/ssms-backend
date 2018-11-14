@@ -10,7 +10,7 @@ using SSMS.EntityModels;
 
 namespace SSMS
 {
-  public class BaseService<TEntity, TKey> where TEntity : class
+  public class BaseService
   {
     public BaseService(SSMSContext _db)
     {
@@ -20,7 +20,7 @@ namespace SSMS
     #region Privates Fields and Methods
     private SSMSContext db { get; }
     // build the condition of every key value pair in set command one by one
-    private string _BuildSetKeyVal(string[] keyValue)
+    private string _BuildSetKeyVal<TEntity>(string[] keyValue)
     {
       string _field = keyValue[0].Trim();
       string _value = keyValue[1].Trim();
@@ -42,7 +42,7 @@ namespace SSMS
       }
     }
     // build and return sql set clause of update statement from the stters string
-    private string _BuildSqlSet(string setters)
+    private string _BuildSqlSet<TEntity>(string setters)
     {
       // split setters and add every key value pair in set command as an item in an array
       string[] settersArr = setters.SplitAndRemoveEmpty(',');
@@ -52,13 +52,13 @@ namespace SSMS
       // and finally return the aggregate sqlSet statement
       return settersList.Aggregate("", (sqlSet, keyValue) =>
       {
-        sqlSet += _BuildSetKeyVal(keyValue);
+        sqlSet += _BuildSetKeyVal<TEntity>(keyValue);
         return sqlSet;
       });
     }
     //takes array of filters (each : field|operator|value)
     //formats it .... and generates the conditions of the sql where clause
-    private string _BuildCondition(string[] filter, string prefix)
+    private string _BuildCondition<TEntity>(string[] filter, string prefix)
     {
       string _field = filter[0].Trim();
       string _operator = filter[1].Trim();
@@ -147,7 +147,7 @@ namespace SSMS
       }
     }
     // build and return the sql where clause from the filters string [field|operator|value]
-    public string _BuildSqlWhere(string filters)
+    public string _BuildSqlWhere<TEntity>(string filters)
     {
       // split filters and add every filter as an item in an array
       string[] filtersArr = filters.SplitAndRemoveEmpty(',');
@@ -159,8 +159,8 @@ namespace SSMS
       return filtersList.Aggregate("", (sqlWhere, filter) =>
       {
         sqlWhere += (filtersList.First() == filter)
-                        ? _BuildCondition(filter, "where")
-                        : _BuildCondition(filter, "and");
+                        ? _BuildCondition<TEntity>(filter, "where")
+                        : _BuildCondition<TEntity>(filter, "and");
         return sqlWhere;
       });
     }
@@ -428,19 +428,19 @@ namespace SSMS
     #endregion
 
     #region Query Services
-    public TEntity GetOne(TKey id)
+    public TEntity Find<TEntity, TKey>(TKey id) where TEntity : class
     {
       return db.Set<TEntity>().Find(id);
     }
-    public TEntity GetOne(Expression<Func<TEntity, bool>> expression)
+    public TEntity GetOne<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
       return db.Set<TEntity>().Where(expression).SingleOrDefault();
     }
-    public TEntity GetOne(List<string> propsToInclude, Expression<Func<TEntity, bool>> expression)
+    public TEntity GetOne<TEntity>(List<string> propsToInclude, Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
       // if there is no PropsToInclude then return Filtered entity without navigation properties
       if (propsToInclude == null)
-        return GetOne(expression);
+        return GetOne<TEntity>(expression);
       // if there is any PropsToInclude then
       // Filter out any Props from PropsToInclude which isn't a navigation property
       // Then include all Filtered PropsToInclude in the ef query
@@ -460,12 +460,12 @@ namespace SSMS
       }
     }
     //takes a labmda expression and executes it (using .ToList()) and returns result as list
-    public List<TEntity> GetList(Expression<Func<TEntity, bool>> expression)
+    public List<TEntity> GetList<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
       return db.Set<TEntity>().Where(expression).ToList();
     }
     //returns all entities without applying any filter expression
-    public List<TEntity> GetList()
+    public List<TEntity> GetList<TEntity>() where TEntity : class
     {
       return db.Set<TEntity>().ToList();
     }
@@ -473,7 +473,7 @@ namespace SSMS
     // 1) get total items  based on ListType string (all/existing/deleted)
     // 2) calculate the count of items  based on ListType
     // 3) calculate the number of pages based on page size and count of items
-    public PageResult<TEntity> GetPageResult(IQueryable query, int pageSize, int pageNumber)
+    public PageResult<TEntity> GetPageResult<TEntity>(IQueryable query, int pageSize, int pageNumber) where TEntity : class
     {
       return new PageResult<TEntity>
       {
@@ -485,12 +485,12 @@ namespace SSMS
     }
     //takes a labmda expression (and doesn't execute it) and returns result as enumerable
     //so that I can reuse it and add more linq operators (count() or take())
-    public IQueryable<TEntity> GetQuery(Expression<Func<TEntity, bool>> expression)
+    public IQueryable<TEntity> GetQuery<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
       return db.Set<TEntity>().Where(expression);
     }
     //returns all rows of an entity, AsQuerable to chain it later
-    public IQueryable<TEntity> GetQuery()
+    public IQueryable<TEntity> GetQuery<TEntity>() where TEntity : class
     {
       return db.Set<TEntity>().AsQueryable();
     }
@@ -498,7 +498,7 @@ namespace SSMS
     // and converts it to array of filters,
     // each filter is string array [0] field [1] operator [2] value)
     // It uses checkFilter() , sends it (item {record} , filter {filed|operator|value})
-    public IQueryable<TEntity> ApplyFilter(string filters)
+    public IQueryable<TEntity> ApplyFilter<TEntity>(string filters) where TEntity : class
     {
       //split filters and add every filter as an item in an array
       string[] filtersArr = filters.Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -512,17 +512,17 @@ namespace SSMS
         query = query.Where(item => _CheckFilter(item, filter));
       return query;
     }
-    public IQueryable<TEntity> ApplySqlWhere(string filters, string tableName)
+    public IQueryable<TEntity> ApplySqlWhere<TEntity>(string filters, string tableName) where TEntity : class
     {
       // use no tracking so that db context won't track changes on this dbset
       // better performance than AsQueriable -- used in read only queries
       var query = db.Set<TEntity>().AsNoTracking();
       // build the sql select statment with sql where clause
-      string sqlQuery = $"select * from {tableName} {_BuildSqlWhere(filters)}";
+      string sqlQuery = $"select * from {tableName} {_BuildSqlWhere<TEntity>(filters)}";
       // finally return the linq query
       return query.FromSql(sqlQuery);
     }
-    public IQueryable<TEntity> ApplySort(string orderBy, IQueryable<TEntity> query)
+    public IQueryable<TEntity> ApplySort<TEntity>(string orderBy, IQueryable<TEntity> query) where TEntity : class
     {
       //if query is not provide, we start querying on the whole entity from the beginning
       // if we get the query, we continue working on it
@@ -532,7 +532,7 @@ namespace SSMS
       //use Linq.Dynamic.Core library to apply orderby using sql-like string not expression
       return query.OrderBy(orderBy);
     }
-    public IQueryable ApplySelect(string fields, IQueryable<TEntity> query)
+    public IQueryable ApplySelect<TEntity>(string fields, IQueryable<TEntity> query) where TEntity : class
     {
       //if query is not provide, we start querying on the whole entity from the beginning
       // if we get the query, we continue working on it
@@ -543,18 +543,18 @@ namespace SSMS
     #endregion
 
     #region Data Manipulation (Add-Update-Delete)
-    public int Add(TEntity entity)
+    public int Add<TEntity>(TEntity entity) where TEntity : class
     {
       // Use db.Set<TEntity> to access db set collection (tables)
       // instead of using db.Parents or db.users  to be generic
       db.Set<TEntity>().Add(entity);
       return db.SaveChanges();
     }
-    public TEntity Add(string sqlCommand)
+    public TEntity Add<TEntity>(string sqlCommand) where TEntity : class
     {
       return db.Set<TEntity>().FromSql(sqlCommand).FirstOrDefault();
     }
-    public int Update(TEntity entity)
+    public int Update<TEntity>(TEntity entity) where TEntity : class
     {
       //Attach the coming object to the db COntext
       //Change the coming object state to modified so that saveChanges generates an update statment
@@ -562,7 +562,7 @@ namespace SSMS
       return db.SaveChanges();
     }
     //update the primary key of any given table
-    public int UpdateKey(string tableName, string keyName, TKey newKey, TKey oldKey)
+    public int UpdateKey<TKey>(string tableName, string keyName, TKey newKey, TKey oldKey)
     {
       string sql = $"update {tableName} set ";
       if (Type.GetTypeCode(oldKey.GetType()) == TypeCode.String)
@@ -575,9 +575,9 @@ namespace SSMS
     // from the setters [comma separated key=value]
     // and the filters [comma separated key|operator|value]
     // finally execute the dynamically generated sql update statement
-    public int SqlUpdate(string tableName, string setters, string filters)
+    public int SqlUpdate<TEntity>(string tableName, string setters, string filters)
     {
-      string sql = $"update {tableName} set {_BuildSqlSet(setters)} {_BuildSqlWhere(filters)}";
+      string sql = $"update {tableName} set {_BuildSqlSet<TEntity>(setters)} {_BuildSqlWhere<TEntity>(filters)}";
       return db.Database.ExecuteSqlCommand(sql);
     }
     /// <summary>
@@ -586,7 +586,7 @@ namespace SSMS
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public int DeleteLogical(TEntity entity)
+    public int DeleteLogical<TEntity>(TEntity entity)
     {
       string propName = "IsDeleted";
       if (entity.GetProperty(propName) == null)
@@ -600,7 +600,7 @@ namespace SSMS
       return db.SaveChanges();
     }
     //takes entity to be deleted physically from DB, get the 'isDeleted' property , if exists delete the whole row from table
-    public int Delete(TEntity entity)
+    public int Delete<TEntity>(TEntity entity) where TEntity : class
     {
       db.Set<TEntity>().Remove(entity);
       return db.SaveChanges();
@@ -609,7 +609,7 @@ namespace SSMS
     //Behind the scenes, many other function can call attach like (add, remove..)
     //Also any entity returned from a query (find, firstOrDefault ....) will call Attach be Default
     //We use it only in cases where Attach won't be called by default (by Add() or Remove() or Change entity state)
-    public void Attach(TEntity entity)
+    public void Attach<TEntity>(TEntity entity) where TEntity : class
     {
       db.Set<TEntity>().Attach(entity);
     }
@@ -620,7 +620,7 @@ namespace SSMS
     // unchanged > do nothing
     //db.Entry function checkis if entity is attached or not,
     //if not, it attaches it to dbSet , then changes its state
-    public void SetState(TEntity entity, string state)
+    public void SetState<TEntity>(TEntity entity, string state) where TEntity : class
     {
       switch (state)
       {
@@ -642,6 +642,7 @@ namespace SSMS
     {
       return db.SaveChanges();
     }
+
     #endregion
   }
 }

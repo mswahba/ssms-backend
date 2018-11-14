@@ -9,11 +9,11 @@ namespace SSMS.Hubs
 {
   public class EmployeesHub : BaseHub<Employee, String>
   {
-    private BaseService<Employee, String> _EmployeeSrv;
-    public EmployeesHub(BaseService<Employee, String> employeesService, Ado ado)
-                            : base(employeesService, "employees", "empId", ado)
+    private BaseService _service;
+    public EmployeesHub(BaseService service, Ado ado)
+                            : base(service, "employees", "empId", ado)
     {
-      _EmployeeSrv = employeesService;
+      _service = service;
     }
   }
 }
