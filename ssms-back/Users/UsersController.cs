@@ -67,13 +67,13 @@ namespace SSMS.Users
       // (_) Add a new Item with refreshToken and deviceInfo in RefreshTokens List in the User entity
       // (_) Mapping from SignUp [View Model] to User [Entity Model]
       // (_) based on UserTypeId fill the appropriate child entity (Parent - Employee - Student)
-      user = Mapper.Map(signup, Request.GetDeviceInfo(), refreshToken);
+      user = Map.ToUser(signup, Request.GetDeviceInfo(), refreshToken);
       // (3) insert the User with its Refresh Token
       // (_) and its Child Entity [Parent - Employee - Student] into DB
       // (_) [insert into 3 tables: users, refreshTokens, one of (Parent - Employee - Student) ]
       _UserSrv.Add(user);
       // (4) Map the Entity User to View User [VUser]
-      vUser = Mapper.Map(user);
+      vUser = Map.ToVUser(user);
       // (5) if everything is ok, return the [vUser - accessToken - refreshToken]
       return Ok(new
         {
@@ -104,7 +104,7 @@ namespace SSMS.Users
       // (5) Insert OR Update in refreshTokens Table
       InsertOrUpdateRefreshToken(user, refreshToken, Request.GetDeviceInfo());
       // (6) Map the Entity User to View User [VUser]
-      vUser = Mapper.Map(user);
+      vUser = Map.ToVUser(user);
       // (7) if everything is ok, return the [vUser - accessToken - refreshToken]
       return Ok(new
         {
@@ -147,9 +147,9 @@ namespace SSMS.Users
     public IActionResult RefreshToken(JWTTokens tokens)
     {
       // validate and get Claims From the given expired access Token
-      var principal = Helpers.ValidateExpiredToken(tokens.AccessToken);
+      var claims = Helpers.ValidateExpiredToken(tokens.AccessToken);
       // get the userId from the Expired Access Token Claims
-      string userId = principal.Claims.SingleOrDefault(c => c.Type == "UserId").Value;
+      string userId = claims.SingleOrDefault(c => c.Type == "UserId").Value;
       // retrieve the user and all of his refresh tokens from DB
       user = _UserSrv.GetOne(new List<string>() { "RefreshTokens" }, u => u.UserId == userId );
       // if the given refreshToken not found in RefreshTokens collection of that user
@@ -157,7 +157,7 @@ namespace SSMS.Users
       if (user.RefreshTokens.All(rt => rt.Token != tokens.RefreshToken) )
         throw new SecurityTokenException("Invalid refresh token ...");
       // map user to vUser to get a new accessToken
-      vUser = Mapper.Map(user);
+      vUser = Map.ToVUser(user);
       string accessToken = Helpers.GetToken(vUser);
       string refreshToken = Helpers.GetSecuredRandStr();
       // update the user RefreshTokens with the new one

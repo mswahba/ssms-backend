@@ -69,7 +69,7 @@ namespace SSMS
       };
     }
     // Validate and Get Claims From the given Expired access Token
-    public static ClaimsPrincipal ValidateExpiredToken(string accessToken)
+    public static IEnumerable<Claim> ValidateExpiredToken(string accessToken)
     {
       // get the Token Validation Options
       var tokenValidationOptions = GetTokenValidationOptions(validateLifetime: true);
@@ -83,7 +83,7 @@ namespace SSMS
       if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
         throw new SecurityTokenException("Invalid accessToken!!");
       // finally return the token principal
-      return principal;
+      return principal.Claims;
     }
     // A Function to hash the given string Value using the given Salt
     public static string Hashing(string value, string salt)
