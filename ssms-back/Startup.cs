@@ -24,9 +24,9 @@ namespace SSMS
 {
   public class Startup
   {
-    public Startup(IConfiguration configuration)
+    public Startup(IConfiguration config)
     {
-      Configuration = configuration;
+      Config = config;
       // Console.WriteLine( string.Join("\n", Helpers.GetAllClasses("SSMS.Hubs")));
       // Console.WriteLine( string.Join("\n",
       //     new Student()
@@ -46,9 +46,12 @@ namespace SSMS
       // var vUser = Map.ToVUser("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1NTY2NTU2NjU1IiwiVXNlclR5cGVJZCI6IjMiLCJBY2NvdW50U3RhdHVzSWQiOiIxIiwiU3Vic2NyaWJlRGF0ZSI6IjA5LzExLzIwMTggMTA6NTM6MDAgUE0iLCJMYXN0QWN0aXZlIjoiMDkvMTEvMjAxOCAxMDo1Mjo1NSBQTSIsIklzRGVsZXRlZCI6IkZhbHNlIiwiZXhwIjoxNTQyNjA4ODg4LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.jk-Zl-MDlU8riZbAZNFCwxKftNvDys9P7uClbXVLxpU");
       // foreach (var prop in vUser.GetProperties())
       //   Console.WriteLine(prop.Name + ": " + prop.GetValue(vUser));
+      // int hours = Config.GetValue<int>("JWTLifetime");
+      // string hours = "appsettings.json".GetJsonValue<AppSettings>("JWTLifetime");
+      // Console.WriteLine(hours);
     }
 
-    public IConfiguration Configuration { get; }
+    public IConfiguration Config { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)

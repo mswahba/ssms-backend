@@ -17,9 +17,10 @@ namespace SSMS.Users
   {
     // Store the usersService object that comes
     // from DependencyInjection DI which injects it in the constructor
-    private VUser vUser;
-    private User user;
     private BaseService _service;
+    private static string _tableName = "users";
+    private User user;
+    private VUser vUser;
     // do Update The user Refresh Token [used in RefreshToken Action]
     private int UpdateRefreshToken(User user, string refreshToken, string deviceInfo)
     {
@@ -47,7 +48,7 @@ namespace SSMS.Users
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
     public UsersController(BaseService service, Ado ado)
-                        : base(service, "users", "userId", ado)
+                        : base(service, _tableName, "userId", ado)
     {
        //DI inject usersService object here from startup Class
       _service = service;
@@ -56,7 +57,7 @@ namespace SSMS.Users
     #region UserController Actions
 
     [AllowAnonymous]
-    [HttpPost("Signup")]
+    [HttpPost("signup")]
     public IActionResult SignUp([FromBody]SignUp signup)
     {
       // (1) Generate RefreshToken
@@ -84,7 +85,7 @@ namespace SSMS.Users
       );
     }
     [AllowAnonymous]
-    [HttpPost("SignIn")]
+    [HttpPost("signin")]
     public IActionResult SignIn(SignIn signin)
     {
       // (1) Get User by his Credentials [userId - userPassword]
@@ -115,7 +116,7 @@ namespace SSMS.Users
       );
     }
     [AllowAnonymous]
-    [HttpPost("ChangePassword")]
+    [HttpPost("change-password")]
     public IActionResult ChangePassword([FromBody]ChangedPassword changedpassword)
     {
       // (1) check if MS is valid
@@ -139,6 +140,33 @@ namespace SSMS.Users
       {
         return BadRequest(ex);
       }
+    }
+    [AllowAnonymous]
+    [HttpPost("forget-password")]
+    public IActionResult ForgetPassword(ForgettenPassword forgettenPassword)
+    {
+      // is Admin [Master] Code
+      if(forgettenPassword.VerificationCode.Length == 10)
+      {
+        // if the code doesn't match the Master Code return Exception [BadRequest]
+        if(forgettenPassword.VerificationCode != "appsettings.json".GetJsonValue<AppSettings>("MasterVerificationCode"))
+          throw new Exception("Invalid Verification Code!!!");
+        // (_) hashing the new password and set the passwordSalt and passwordHash
+        string passwordSalt = Helpers.GetSecuredRandStr();
+        string passwordHash = Helpers.Hashing(forgettenPassword.NewPassword,passwordSalt);
+        // (_) the setters
+        string setters = $"passwordSalt={passwordSalt},passwordHash={passwordHash}";
+        // (_) the filters
+        string filters = $"userId|=|{forgettenPassword.UserId}";
+        int rows = _service.SqlUpdate<User>(_tableName,setters,filters);
+        return Ok($"{rows} row(s) affected ...");
+      }
+      // is User Code
+      else
+      {
+
+      }
+      return Ok();
     }
     [AllowAnonymous]
     [HttpPost("refresh-token")]

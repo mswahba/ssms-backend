@@ -4,8 +4,9 @@ namespace SSMS
     {
         public string ConStr { get; set; }
         public string SecretKey { get; set; }
-        public string HashSalt { get; set; }
+        public string MasterVerificationCode { get; set; }
         public string JWTIssuer { get; set; }
         public string JWTAudience { get; set; }
+        public string JWTLifetime { get; set; }
     }
 }

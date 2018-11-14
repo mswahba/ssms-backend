@@ -29,6 +29,8 @@ namespace SSMS
       var secret = GetSecretKey();
       // hashing the secret string
       var creds = new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+      // get the token Lifetime in hours
+      int hours = Convert.ToInt32("appsettings.json".GetJsonValue<AppSettings>("JWTLifetime"));
       // get all user properties excluding any [Type = Collection]
       // then return new Collection<Claims> [ holding KeyValue pair of each User Property ]
       var claims = user.GetProperties()
@@ -39,7 +41,7 @@ namespace SSMS
           issuer: "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
           audience: "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
           claims: claims,
-          expires: DateTime.Now.AddDays(7),
+          expires: DateTime.UtcNow.AddHours(hours),
           signingCredentials: creds);
       // finally return the Token String
       return new JwtSecurityTokenHandler().WriteToken(token);
