@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SSMS.Users
 {
-    public class ForgettenPassword
+    public class ForgottenPassword
     {
         [Required]
         [MinLength(6),MaxLength(10)]

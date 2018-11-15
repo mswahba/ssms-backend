@@ -49,6 +49,8 @@ namespace SSMS
       // int hours = Config.GetValue<int>("JWTLifetime");
       // string hours = "appsettings.json".GetJsonValue<AppSettings>("JWTLifetime");
       // Console.WriteLine(hours);
+
+      Console.WriteLine(Helpers.ValidateHash("000000","idtMPnx4UqHp3zOaBQ6YvN41JSqXAmUikDU/FiKh3TI","mY63vmpNbk2F+gp1bROTIPZZdV3x7y6gtribcLrsirI"));
     }
 
     public IConfiguration Config { get; }

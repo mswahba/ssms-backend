@@ -22,7 +22,7 @@ namespace SSMS.Users
     private User user;
     private VUser vUser;
     // do Update The user Refresh Token [used in RefreshToken Action]
-    private int UpdateRefreshToken(User user, string refreshToken, string deviceInfo)
+    private int _UpdateRefreshToken(User user, string refreshToken, string deviceInfo)
     {
       var existingRefreshToken = user.RefreshTokens.FirstOrDefault(rt => rt.DeviceInfo == deviceInfo);
       if(existingRefreshToken != null)
@@ -34,23 +34,31 @@ namespace SSMS.Users
       return -1;
     }
     // do Insert Or Update The user Refresh Token [used in SignIn Action]
-    private void InsertOrUpdateRefreshToken(User user, string refreshToken, string deviceInfo)
+    private void _InsertOrUpdateRefreshToken(User user, string refreshToken, string deviceInfo)
     {
-      int updatedRows = UpdateRefreshToken(user,refreshToken,deviceInfo);
+      int updatedRows = _UpdateRefreshToken(user,refreshToken,deviceInfo);
       if(updatedRows == -1)
         _service.Add<RefreshToken>(new RefreshToken() { Token =  refreshToken, DeviceInfo = deviceInfo, UserId = user.UserId });
     }
-    // get list of all refreshTokens for that userId
-    private List<RefreshToken> GetRefreshTokens(string userId)
+    // do Change the userPassword with the newPassword
+    private IActionResult _DoChangePassword(User user, string newPassword)
     {
-      return _service.GetList<RefreshToken>(rt => rt.UserId == userId);
+      // (3) hashing the new password and set the passwordSalt and passwordHash
+      user.PasswordSalt = Helpers.GetSecuredRandStr();
+      user.PasswordHash = Helpers.Hashing(newPassword, user.PasswordSalt);
+      // (4) Saving the new passwordSalt and passwordHash
+      _service.Save();
+      // (5) Map the Entity User to View User [VUser]
+      vUser = Map.ToVUser(user);
+      // (6) if everything is ok, return the full vUser
+      return Ok(vUser);
     }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
     public UsersController(BaseService service, Ado ado)
                         : base(service, _tableName, "userId", ado)
     {
-       //DI inject usersService object here from startup Class
+       // DI inject usersService object here from startup Class
       _service = service;
     }
 
@@ -97,11 +105,11 @@ namespace SSMS.Users
         return BadRequest(new Error() { Message = "Invalid User." });
       // (3) if User is [not Enabled OR isDeleted] return badRequest
       if (user.AccountStatusId != 2 && user.IsDeleted == true)
-        return BadRequest( new Error() { Message = "This account hasn't been activated Yet." });
+        return BadRequest(new Error() { Message = "This account hasn't been activated Yet." });
       // (4) Generate RefreshToken
       string refreshToken = Helpers.GetSecuredRandStr();
       // (5) Insert OR Update in refreshTokens Table
-      InsertOrUpdateRefreshToken(user, refreshToken, Request.GetDeviceInfo());
+      _InsertOrUpdateRefreshToken(user, refreshToken, Request.GetDeviceInfo());
       // (6) Map the Entity User to View User [VUser]
       vUser = Map.ToVUser(user);
       // (7) if everything is ok, return the [vUser - accessToken - refreshToken]
@@ -119,54 +127,64 @@ namespace SSMS.Users
     [HttpPost("change-password")]
     public IActionResult ChangePassword([FromBody]ChangedPassword changedpassword)
     {
-      // (1) check if MS is valid
-      if (!ModelState.IsValid)
-        return BadRequest(ModelState);
-      try
-      {
-        // (2) Get user Data from DB
-        var user = _service.GetOne<User>(u => u.UserId == changedpassword.UserId && Helpers.ValidateHash(changedpassword.OldPassword,u.PasswordSalt,u.PasswordHash) );
-        if (user == null)
-          return BadRequest(new Error() { Message = "Invalid User." });
-        // (3) hashing the new password and set the passwordSalt and passwordHash
-        user.PasswordSalt = Helpers.GetSecuredRandStr();
-        user.PasswordHash = Helpers.Hashing(changedpassword.NewPassword,user.PasswordSalt);
-        // (4) Saving the new passwordSalt and passwordHash
-        _service.Save();
-        // (5) if everything is ok, return the full user
-        return Ok(user);
-      }
-      catch (System.Exception ex)
-      {
-        return BadRequest(ex);
-      }
+      // (1) Get User by his Credentials [UserId - OldPassword]
+      var user = _service.GetOne<User>(u => u.UserId == changedpassword.UserId && Helpers.ValidateHash(changedpassword.OldPassword, u.PasswordSalt, u.PasswordHash));
+      // (2) if user not found then return [BadRequest]
+      if (user == null)
+        return BadRequest(new Error() { Message = "Invalid User." });
+      return _DoChangePassword(user, changedpassword.NewPassword);
     }
     [AllowAnonymous]
     [HttpPost("forget-password")]
-    public IActionResult ForgetPassword(ForgettenPassword forgettenPassword)
+    public IActionResult ForgetPassword(ForgottenPassword forgottenPassword)
     {
       // is Admin [Master] Code
-      if(forgettenPassword.VerificationCode.Length == 10)
+      if(forgottenPassword.VerificationCode.Length == 10)
       {
         // if the code doesn't match the Master Code return Exception [BadRequest]
-        if(forgettenPassword.VerificationCode != "appsettings.json".GetJsonValue<AppSettings>("MasterVerificationCode"))
+        if(forgottenPassword.VerificationCode != "appsettings.json".GetJsonValue<AppSettings>("MasterVerificationCode"))
           throw new Exception("Invalid Verification Code!!!");
-        // (_) hashing the new password and set the passwordSalt and passwordHash
-        string passwordSalt = Helpers.GetSecuredRandStr();
-        string passwordHash = Helpers.Hashing(forgettenPassword.NewPassword,passwordSalt);
-        // (_) the setters
-        string setters = $"passwordSalt={passwordSalt},passwordHash={passwordHash}";
-        // (_) the filters
-        string filters = $"userId|=|{forgettenPassword.UserId}";
-        int rows = _service.SqlUpdate<User>(_tableName,setters,filters);
-        return Ok($"{rows} row(s) affected ...");
+        user = _service.Find<User, string>(forgottenPassword.UserId);
+        // (_) If user not found then return Exception [BadRequest]
+        if (user == null)
+          throw new Exception("Invalid User !!!");
+        // (_) if user and code ok then Change Password with the new one
+        return _DoChangePassword(user, forgottenPassword.NewPassword);
+        // // (_) hashing the new password and set the passwordSalt and passwordHash
+        // string passwordSalt = Helpers.GetSecuredRandStr();
+        // string passwordHash = Helpers.Hashing(forgottenPassword.NewPassword,passwordSalt);
+        // // (_) the setters
+        // string setters = $"passwordSalt={passwordSalt},passwordHash={passwordHash}";
+        // // (_) the filters
+        // string filters = $"userId|=|{forgottenPassword.UserId}";
+        // int rows = _service.SqlUpdate<User>(_tableName,setters,filters);
+        // return Ok($"{rows} row(s) affected ...");
       }
       // is User Code
       else
       {
-
+        // (_) Get User by UserId Including all its VerificationCodes
+        user = _service.GetOne<User>(new List<string>() { "VerificationCodes" }, u => u.UserId == forgottenPassword.UserId );
+        // (_) If user not found then return [BadRequest]
+        if (user == null)
+          throw new Exception("Invalid User !!!");
+        // (_) Get VerificationCodeLifetime in Hours from AppSettings
+        int expiryHours = Convert.ToInt32("appsettings.json".GetJsonValue<AppSettings>("VerificationCodeLifetime"));
+        // (_) Get VerificationCode where
+        // code = forgottenPassword.VerificationCode
+        // and CodeTypeId == 1 [FORGET_PASSWORD]
+        // and not expired
+        var code = user.VerificationCodes.FirstOrDefault(vc =>
+          vc.Code ==  forgottenPassword.VerificationCode &&
+          vc.SentTime >= DateTime.UtcNow.AddHours(3-expiryHours) &&
+          vc.CodeTypeId == 1
+        );
+        // (_) if code not found then return [BadRequest]
+        if(code == null)
+          throw new Exception("Invalid OR Expired VerificationCode !!!");
+        // (_) if user and code ok then Change Password with the new one
+        return _DoChangePassword(user, forgottenPassword.NewPassword);
       }
-      return Ok();
     }
     [AllowAnonymous]
     [HttpPost("refresh-token")]
@@ -187,7 +205,7 @@ namespace SSMS.Users
       string accessToken = Helpers.GetToken(vUser);
       string refreshToken = Helpers.GetSecuredRandStr();
       // update the user RefreshTokens with the new one
-      UpdateRefreshToken(user, refreshToken, Request.GetDeviceInfo());
+      _UpdateRefreshToken(user, refreshToken, Request.GetDeviceInfo());
       // (_) if everything is ok, return the [vUser - accessToken - refreshToken]
       return Ok(new
         {
@@ -199,7 +217,6 @@ namespace SSMS.Users
         }
       );
     }
-
     #endregion
 
   }

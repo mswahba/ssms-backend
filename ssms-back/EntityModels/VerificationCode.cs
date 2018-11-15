@@ -8,6 +8,7 @@ namespace SSMS.EntityModels
         public VerificationCode()
         {
             IsDeleted = false;
+            SentTime = DateTime.UtcNow.AddHours(3);
         }
 
         public byte CodeId { get; set; }

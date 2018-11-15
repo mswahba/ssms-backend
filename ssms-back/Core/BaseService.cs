@@ -52,7 +52,10 @@ namespace SSMS
       // and finally return the aggregate sqlSet statement
       return settersList.Aggregate("", (sqlSet, keyValue) =>
       {
-        sqlSet += _BuildSetKeyVal<TEntity>(keyValue);
+        if(settersList.First() == keyValue)
+          sqlSet += _BuildSetKeyVal<TEntity>(keyValue);
+        else
+          sqlSet += $", {_BuildSetKeyVal<TEntity>(keyValue)}";
         return sqlSet;
       });
     }
@@ -578,6 +581,7 @@ namespace SSMS
     public int SqlUpdate<TEntity>(string tableName, string setters, string filters)
     {
       string sql = $"update {tableName} set {_BuildSqlSet<TEntity>(setters)} {_BuildSqlWhere<TEntity>(filters)}";
+      Console.WriteLine(sql);
       return db.Database.ExecuteSqlCommand(sql);
     }
     /// <summary>
