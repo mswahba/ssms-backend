@@ -60,9 +60,7 @@ namespace SSMS.EntityModels
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       if (!optionsBuilder.IsConfigured)
-      {
         optionsBuilder.UseSqlServer("appsettings.json".GetJsonValue<AppSettings>("ConStr"));
-      }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1765,7 +1763,7 @@ namespace SSMS.EntityModels
       {
         entity.HasKey(e => e.CodeId);
 
-        entity.ToTable("verificationCode");
+        entity.ToTable("verificationCodes");
 
         entity.Property(e => e.CodeId).HasColumnName("codeId");
 
@@ -1788,7 +1786,7 @@ namespace SSMS.EntityModels
                   .HasForeignKey(vc => vc.UserId)
                   .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FK_users_verificationCodes");
-        
+
         entity.HasOne(vc => vc.VerificationCodeType)
                   .WithMany(vct => vct.VerificationCodes)
                   .HasForeignKey(vc => vc.CodeTypeId)

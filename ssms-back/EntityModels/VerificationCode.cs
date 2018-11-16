@@ -11,7 +11,7 @@ namespace SSMS.EntityModels
             SentTime = DateTime.UtcNow.AddHours(3);
         }
 
-        public byte CodeId { get; set; }
+        public int CodeId { get; set; }
         public string Code { get; set; }
         public DateTime SentTime { get; set; }
         public byte? CodeTypeId { get; set; }

@@ -33,21 +33,22 @@ namespace SSMS
       {
         case TypeCode.String:
         case TypeCode.DateTime:
-          return $"{_field} = '{_value}' ";
+          return $"{_field} = '{_value}'";
         case TypeCode.Boolean:
           _value = Convert.ToBoolean(_value) == true ? "1" : "0";
-          return $"{_field} = {_value} ";
+          return $"{_field} = {_value}";
         default:
-          return $"{_field} = {_value} ";
+          return $"{_field} = {_value}";
       }
     }
     // build and return sql set clause of update statement from the stters string
+    // setters comma separated string of each :(key|value)
     private string _BuildSqlSet<TEntity>(string setters)
     {
       // split setters and add every key value pair in set command as an item in an array
       string[] settersArr = setters.SplitAndRemoveEmpty(',');
       // list to hold every key value pair in set command as an arry with 2 items
-      List<string[]> settersList = settersArr.Select(item => item.SplitAndRemoveEmpty('='))
+      List<string[]> settersList = settersArr.Select(item => item.SplitAndRemoveEmpty('|'))
                                              .ToList();
       // and finally return the aggregate sqlSet statement
       return settersList.Aggregate("", (sqlSet, keyValue) =>
@@ -59,8 +60,8 @@ namespace SSMS
         return sqlSet;
       });
     }
-    //takes array of filters (each : field|operator|value)
-    //formats it .... and generates the conditions of the sql where clause
+    // takes array of filters each :(field|operator|value)
+    // formats it .... and generates the conditions of the sql where clause
     private string _BuildCondition<TEntity>(string[] filter, string prefix)
     {
       string _field = filter[0].Trim();
@@ -581,7 +582,6 @@ namespace SSMS
     public int SqlUpdate<TEntity>(string tableName, string setters, string filters)
     {
       string sql = $"update {tableName} set {_BuildSqlSet<TEntity>(setters)} {_BuildSqlWhere<TEntity>(filters)}";
-      Console.WriteLine(sql);
       return db.Database.ExecuteSqlCommand(sql);
     }
     /// <summary>

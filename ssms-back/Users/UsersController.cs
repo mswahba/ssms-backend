@@ -150,17 +150,8 @@ namespace SSMS.Users
           throw new Exception("Invalid User !!!");
         // (_) if user and code ok then Change Password with the new one
         return _DoChangePassword(user, forgottenPassword.NewPassword);
-        // // (_) hashing the new password and set the passwordSalt and passwordHash
-        // string passwordSalt = Helpers.GetSecuredRandStr();
-        // string passwordHash = Helpers.Hashing(forgottenPassword.NewPassword,passwordSalt);
-        // // (_) the setters
-        // string setters = $"passwordSalt={passwordSalt},passwordHash={passwordHash}";
-        // // (_) the filters
-        // string filters = $"userId|=|{forgottenPassword.UserId}";
-        // int rows = _service.SqlUpdate<User>(_tableName,setters,filters);
-        // return Ok($"{rows} row(s) affected ...");
       }
-      // is User Code
+      // is User [email - sms] Code
       else
       {
         // (_) Get User by UserId Including all its VerificationCodes
@@ -169,14 +160,12 @@ namespace SSMS.Users
         if (user == null)
           throw new Exception("Invalid User !!!");
         // (_) Get VerificationCodeLifetime in Hours from AppSettings
-        int expiryHours = Convert.ToInt32("appsettings.json".GetJsonValue<AppSettings>("VerificationCodeLifetime"));
-        // (_) Get VerificationCode where
-        // code = forgottenPassword.VerificationCode
-        // and CodeTypeId == 1 [FORGET_PASSWORD]
-        // and not expired
+        int codeLifetime = Convert.ToInt32("appsettings.json".GetJsonValue<AppSettings>("VerificationCodeLifetime"));
+        // (_) Get VerificationCode where code = forgottenPassword.VerificationCode
+        // and CodeTypeId == 1 [FORGET_PASSWORD] and not expired
         var code = user.VerificationCodes.FirstOrDefault(vc =>
           vc.Code ==  forgottenPassword.VerificationCode &&
-          vc.SentTime >= DateTime.UtcNow.AddHours(3-expiryHours) &&
+          vc.SentTime >= DateTime.UtcNow.AddHours(3-codeLifetime) &&
           vc.CodeTypeId == 1
         );
         // (_) if code not found then return [BadRequest]
