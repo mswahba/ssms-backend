@@ -107,7 +107,7 @@ namespace SSMS
           DeliveryMethod = SmtpDeliveryMethod.Network,
           Host = Config.GetValue<String>("Email_Host"),
           Port = Config.GetValue<int>("Email_Port"),
-          EnableSsl = Config.GetValue<bool>("Email_Port"),
+          EnableSsl = Config.GetValue<bool>("Email_SSL"),
           Credentials = new NetworkCredential(
             Config.GetValue<String>("Email_UserName"),
             Config.GetValue<String>("Email_Password")
