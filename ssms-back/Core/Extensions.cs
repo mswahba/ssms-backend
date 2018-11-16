@@ -231,6 +231,15 @@ namespace SSMS
       var dInfo = Parser.GetDefault().Parse(req.Headers["User-Agent"].ToString());
       return $"{dInfo.Device.Family}|{dInfo.OS.Family}|{dInfo.UA.Family}";
     }
+    // get the full user [person] name based on lang [Ar-En]
+    public static string GetFullName(this Person person, string lang)
+    {
+      string fName = "FName"+lang;
+      string mName = "MName"+lang;
+      string gName = "GName"+lang;
+      string lName = "LName"+lang;
+      return $"{person.GetValue(fName)} {person.GetValue(mName)} {person.GetValue(gName)} {person.GetValue(lName)}";
+    }
 
   }
 }

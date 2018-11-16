@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SSMS.EntityModels
 {
-    public partial class Employee
+    public partial class Employee : Person
     {
         public Employee()
         {

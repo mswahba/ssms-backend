@@ -20,6 +20,8 @@ using SSMS.Hubs;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using System.Net.Mail;
+
 namespace SSMS
 {
   public class Startup
@@ -46,11 +48,19 @@ namespace SSMS
       // var vUser = Map.ToVUser("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1NTY2NTU2NjU1IiwiVXNlclR5cGVJZCI6IjMiLCJBY2NvdW50U3RhdHVzSWQiOiIxIiwiU3Vic2NyaWJlRGF0ZSI6IjA5LzExLzIwMTggMTA6NTM6MDAgUE0iLCJMYXN0QWN0aXZlIjoiMDkvMTEvMjAxOCAxMDo1Mjo1NSBQTSIsIklzRGVsZXRlZCI6IkZhbHNlIiwiZXhwIjoxNTQyNjA4ODg4LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.jk-Zl-MDlU8riZbAZNFCwxKftNvDys9P7uClbXVLxpU");
       // foreach (var prop in vUser.GetProperties())
       //   Console.WriteLine(prop.Name + ": " + prop.GetValue(vUser));
-      // int hours = Config.GetValue<int>("JWTLifetime");
-      // string hours = "appsettings.json".GetJsonValue<AppSettings>("JWTLifetime");
+      // int hours = Config.GetValue<int>("JWT_Lifetime");
+      // string hours = "appsettings.json".GetJsonValue<AppSettings>("JWT_Lifetime");
       // Console.WriteLine(hours);
 
       // Console.WriteLine(Helpers.ValidateHash("000000","idtMPnx4UqHp3zOaBQ6YvN41JSqXAmUikDU/FiKh3TI","mY63vmpNbk2F+gp1bROTIPZZdV3x7y6gtribcLrsirI"));
+
+      // var Host = Config.GetValue<String>("Email_Host");
+      // var Port = Config.GetValue<int>("Email_Port");
+      // var UserName = Config.GetValue<String>("Email_UserName");
+      // var Password = Config.GetValue<String>("Email_Password");
+      // Console.WriteLine($"{Host}\n{Port}\n{UserName}\n{Password}");
+      // Random randm = new Random();
+      // Console.WriteLine(randm.Next(100000,999999));
     }
 
     public IConfiguration Config { get; }
@@ -64,14 +74,6 @@ namespace SSMS
       services.AddSingleton<Ado>();
       // AddScoped configues settings to create new instance of this type per http request
       services.AddScoped<BaseService>();
-      // services.AddScoped<BaseService<User, String>>();
-      // services.AddScoped<BaseService<Parent, String>>();
-      // services.AddScoped<BaseService<Student, String>>();
-      // services.AddScoped<BaseService<Employee, String>>();
-      // services.AddScoped<BaseService<DocType, Byte>>();
-      // services.AddScoped<BaseService<Country, Byte>>();
-      // services.AddScoped<BaseService<School, Byte>>();
-      // services.AddScoped<BaseService<RefreshToken, Int32>>();
       // Configure Swagger
       services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }));
       // Allow CORS
@@ -96,6 +98,22 @@ namespace SSMS
           options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
           options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         });
+      // Add SMTP Mail Service
+      services.AddScoped<SmtpClient>((serviceProvider) =>
+      {
+        return new SmtpClient()
+        {
+          UseDefaultCredentials = false,
+          EnableSsl = true,
+          DeliveryMethod = SmtpDeliveryMethod.Network,
+          Host = Config.GetValue<String>("Email_Host"),
+          Port = Config.GetValue<int>("Email_Port"),
+          Credentials = new NetworkCredential(
+            Config.GetValue<String>("Email_UserName"),
+            Config.GetValue<String>("Email_Password")
+          )
+        };
+      });
       // configure MVC options
       // config => config.Filters.Add(typeof(ApiExceptionFilterAttribute))
       services.AddMvc()

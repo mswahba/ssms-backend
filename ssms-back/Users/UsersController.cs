@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ namespace SSMS.Users
     // Store the usersService object that comes
     // from DependencyInjection DI which injects it in the constructor
     private BaseService _service;
+    private readonly SmtpClient _smtpClient;
     private static string _tableName = "users";
     private User user;
     private VUser vUser;
@@ -55,11 +57,12 @@ namespace SSMS.Users
     }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
-    public UsersController(BaseService service, Ado ado)
+    public UsersController(BaseService service, Ado ado, SmtpClient smtpClient)
                         : base(service, _tableName, "userId", ado)
     {
        // DI inject usersService object here from startup Class
       _service = service;
+      _smtpClient = smtpClient;
     }
 
     #region UserController Actions
@@ -176,6 +179,40 @@ namespace SSMS.Users
       }
     }
     [AllowAnonymous]
+    [HttpGet("send-verification-code")]
+    public async Task<IActionResult> SendVerificationCode(string userId, byte codeTypeId)
+    {
+      // (1) get the full user data from DB [with his navigation properties] to get his email
+      user = _service.GetOne<User>(new List<string>() { "_Employee", "_Parent", "_Student" }, u => u.UserId == userId );
+      // get the user email from one of ["_Employee", "_Parent", "_Student"] properties
+      string emailTo = user._Student?.Email ?? user._Parent?.Email ?? user._Employee?.Email;
+      string userName = user._Student?.GetFullName("Ar") ?? user._Parent?.GetFullName("Ar") ?? user._Employee?.GetFullName("Ar");
+      // (2) generate new VerificationCode and Add new Record in VerificationCodes Table
+      string vCode = new Random().Next(100000,999999).ToString();
+      VerificationCode newVCode = new VerificationCode()
+      {
+        Code = vCode,
+        CodeTypeId = codeTypeId,
+        UserId = userId,
+      };
+      int addResult = _service.Add<VerificationCode>(newVCode);
+      // (3) send email to that user with the his VerificationCode
+      // only if user has an email and the previous Add Operation succeeded
+      if(emailTo != null && addResult == 1)
+      {
+        await _smtpClient.SendMailAsync(new MailMessage(
+                from: "appsettings.json".GetJsonValue<AppSettings>("Email_From"),
+                to: emailTo,
+                subject: $"{userName}: Verification Code from SSMS to change your password",
+                body: $@"Dear: {userName}
+                        please use the following Verification Code {vCode} to change your password
+                      "
+              ));
+        return Ok($"an email message with a new verification code has been sent to {emailTo} related to {userName}");
+      }
+      return Ok($"{userName}'s account doesn't have an email ...");
+    }
+    [AllowAnonymous]
     [HttpPost("refresh-token")]
     public IActionResult RefreshToken(JWTTokens tokens)
     {
@@ -206,6 +243,7 @@ namespace SSMS.Users
         }
       );
     }
+
     #endregion
 
   }

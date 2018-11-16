@@ -30,7 +30,7 @@ namespace SSMS
       // hashing the secret string
       var creds = new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
       // get the token Lifetime in hours
-      int hours = Convert.ToInt32("appsettings.json".GetJsonValue<AppSettings>("JWTLifetime"));
+      int hours = Convert.ToInt32("appsettings.json".GetJsonValue<AppSettings>("JWT_Lifetime"));
       // get all user properties excluding any [Type = Collection]
       // then return new Collection<Claims> [ holding KeyValue pair of each User Property ]
       var claims = user.GetProperties()
@@ -38,8 +38,8 @@ namespace SSMS
                       .Select(property => new Claim(property.Name, (property.GetValue(user) != null) ? property.GetValue(user).ToString() : ""));
       // Create Token with Token Options
       var token = new JwtSecurityToken(
-          issuer: "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
-          audience: "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
+          issuer: "appsettings.json".GetJsonValue<AppSettings>("JWT_Issuer"),
+          audience: "appsettings.json".GetJsonValue<AppSettings>("JWT_Audience"),
           claims: claims,
           expires: DateTime.UtcNow.AddHours(hours),
           signingCredentials: creds);
@@ -65,8 +65,8 @@ namespace SSMS
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWTIssuer"),
-        ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWTAudience"),
+        ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWT_Issuer"),
+        ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWT_Audience"),
         IssuerSigningKey = Helpers.GetSecretKey()
       };
     }
@@ -110,6 +110,10 @@ namespace SSMS
               ? types.Where(t => t.Namespace == nameSpace)
               : types;
     }
+    // sending mail messages
+    public static void SendMail(string mailTo, string subject, string body)
+    {
 
+    }
   }
 }
