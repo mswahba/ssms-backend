@@ -104,10 +104,10 @@ namespace SSMS
         return new SmtpClient()
         {
           UseDefaultCredentials = false,
-          EnableSsl = true,
           DeliveryMethod = SmtpDeliveryMethod.Network,
           Host = Config.GetValue<String>("Email_Host"),
           Port = Config.GetValue<int>("Email_Port"),
+          EnableSsl = Config.GetValue<bool>("Email_Port"),
           Credentials = new NetworkCredential(
             Config.GetValue<String>("Email_UserName"),
             Config.GetValue<String>("Email_Password")

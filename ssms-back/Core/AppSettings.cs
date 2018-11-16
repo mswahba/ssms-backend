@@ -11,6 +11,7 @@ namespace SSMS
     public string JWT_Lifetime { get; set; }
     public string Email_Host { get; set; }
     public string Email_Port { get; set; }
+    public string Email_SSL { get; set; }
     public string Email_UserName { get; set; }
     public string Email_Password { get; set; }
     public string Email_From { get; set; }
