@@ -21,7 +21,6 @@ namespace SSMS
   {
     private readonly BaseService _service;
     private readonly IMapper _mapper;
-    private readonly Ado _ado;
     private readonly string _tableName;
     private readonly string _keyName;
 
@@ -103,13 +102,12 @@ namespace SSMS
     // receive the service (to deal with db)
     // and the table name of the entity (from entity Controller) and the PK field name
     // and the ado from DI
-    public BaseController(BaseService service, IMapper mapper, string tableName, string keyName, Ado ado)
+    public BaseController(BaseService service, IMapper mapper, string tableName, string keyName)
     {
       _tableName = tableName;
       _keyName = keyName;
       _service = service;
       _mapper = mapper;
-      _ado = ado;
     }
     //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table besed on route param-
     //we send the list type as Route parameter ("all OR "deleted" OR "Existing")
@@ -369,7 +367,7 @@ namespace SSMS
     [HttpGet("select-Ado")]
     public IActionResult SelectAdo([FromQuery] string sqlQuery)
     {
-      var result = _ado.ExecuteQuery(sqlQuery);
+      var result = Ado.ExecuteQuery(sqlQuery);
       return Ok(result);
     }
     // Users/sort?orderby= userId desc, userPassword

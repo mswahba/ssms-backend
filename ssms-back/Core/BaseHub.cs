@@ -11,17 +11,15 @@ namespace SSMS
   {
     private BaseService _service;
     private Dictionary<string, object> _deleteResult;
-    private Ado _ado;
     private string _tableName;
     private string _keyName;
     private string _sqlAddCommand;
     private string _columnNames;
     private string _columnValues;
     private string _clientMethod;
-    public BaseHub(BaseService service, string tableName, string keyName, Ado ado)
+    public BaseHub(BaseService service, string tableName, string keyName)
     {
       _service = service;
-      _ado = ado;
       _tableName = tableName;
       _keyName = keyName;
     }

@@ -17,8 +17,8 @@ namespace SSMS.Users.Parents
     //in ctor take parent service from DI and pass it to the base controller
     //when sending this entity type and its key type,
     //we tranform the Base service to this entity service (parent)
-    public ParentsController(BaseService service, IMapper mapper, Ado ado)
-                                : base(service, mapper, "parents", "parentId", ado)
+    public ParentsController(BaseService service, IMapper mapper)
+                                : base(service, mapper, "parents", "parentId")
     {
       _service = service;
       _mapper = mapper;

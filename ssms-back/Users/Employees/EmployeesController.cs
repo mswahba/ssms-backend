@@ -14,8 +14,8 @@ namespace SSMS.Users.Employees
     private readonly BaseService _service;
     private readonly IMapper _mapper;
 
-    public EmployeesController(BaseService service, IMapper mapper, Ado ado)
-                                : base(service, mapper, "employees", "empId", ado)
+    public EmployeesController(BaseService service, IMapper mapper)
+                                : base(service, mapper, "employees", "empId")
     {
       _service = service;
       _mapper = mapper;

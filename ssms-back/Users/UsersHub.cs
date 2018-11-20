@@ -15,8 +15,8 @@ namespace SSMS.Hubs
     // and setting its [TEntity,TKey] to [User, String] to Act as usersService
     // and take ado object from DI [used in Auto Generate New Ids in Add Method]
     // finally pass SQL [TableName, PK ColumnName] to BaseHub
-    public UsersHub(BaseService service, Ado ado)
-                        : base(service, "users", "userId", ado)
+    public UsersHub(BaseService service)
+                        : base(service, "users", "userId")
     {
       _service = service;
     }

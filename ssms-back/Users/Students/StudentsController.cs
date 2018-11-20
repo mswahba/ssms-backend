@@ -14,8 +14,8 @@ namespace SSMS.Students
     private readonly BaseService _service;
     private readonly IMapper _mapper;
 
-    public StudentsController(BaseService service, IMapper mapper, Ado ado)
-                            : base(service, mapper, "students", "studentId", ado)
+    public StudentsController(BaseService service, IMapper mapper)
+                            : base(service, mapper, "students", "studentId")
     {
       _service = service;
       _mapper = mapper;

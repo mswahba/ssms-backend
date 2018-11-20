@@ -11,8 +11,8 @@ namespace SSMS.Hubs
   public class StudentsHub : BaseHub<Student, String>
   {
     private BaseService _service;
-    public StudentsHub(BaseService service, Ado ado)
-                        : base(service, "students", "studentId", ado)
+    public StudentsHub(BaseService service)
+                        : base(service, "students", "studentId")
     {
       _service = service;
     }

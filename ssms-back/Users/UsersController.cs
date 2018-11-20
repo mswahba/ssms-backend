@@ -59,8 +59,8 @@ namespace SSMS.Users
     }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
-    public UsersController(BaseService service, Ado ado, SmtpClient smtpClient, IMapper mapper)
-                        : base(service, mapper, _tableName, "userId", ado)
+    public UsersController(BaseService service, SmtpClient smtpClient, IMapper mapper)
+                        : base(service, mapper, _tableName, "userId")
     {
        // DI inject usersService object here from startup Class
       _service = service;

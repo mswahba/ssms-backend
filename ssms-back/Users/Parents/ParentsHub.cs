@@ -14,8 +14,8 @@ namespace SSMS.Hubs
     // and setting its [TEntity,TKey] to [Parent, String] to Act as parentsService
     // and take ado object from DI [used in Auto Generate New Ids in Add Method]
     // finally pass SQL [TableName, PK ColumnName] to BaseHub
-    public ParentsHub(BaseService service, Ado ado)
-                            : base(service, "parents", "parentId", ado)
+    public ParentsHub(BaseService service)
+                            : base(service, "parents", "parentId")
     {
       _service = service;
     }

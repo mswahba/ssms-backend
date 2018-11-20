@@ -22,7 +22,7 @@ namespace SSMS.Users
     //Give the BaseConstructor the dependency it needs which is DB contect
     //To get Db Context, we receive it from DI then pass it to Base constructor
     public UsersTestController(BaseService service, IMapper mapper)
-                            : base(service, mapper, "users", "userId", null)
+                            : base(service, mapper, "users", "userId")
     {
       _service = service;
       _mapper = mapper;

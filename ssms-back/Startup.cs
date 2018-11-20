@@ -71,8 +71,6 @@ namespace SSMS
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      // AddSingleton configues settings to create only one instance of this type
-      services.AddSingleton<Ado>();
       // AddScoped configues settings to create new instance of this type per http request
       services.AddScoped<BaseService>();
       // Add automapper
@@ -107,7 +105,17 @@ namespace SSMS
         }));
       // JWT Authentication
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options => options.TokenValidationParameters = Helpers.GetTokenValidationOptions(validateLifetime: true));
+        .AddJwtBearer(options => {
+          options.TokenValidationParameters = Helpers.GetTokenValidationOptions(validateLifetime: true);
+          options.Events = new JwtBearerEvents()
+          {
+            OnAuthenticationFailed = context => {
+              if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                context.Response.Headers.Add("Token-Expired", "true");
+              return Task.CompletedTask;
+            }
+          };
+        });
       // Add SignalR
       services.AddSignalR(hubOptions =>
         {

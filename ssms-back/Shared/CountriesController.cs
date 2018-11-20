@@ -17,8 +17,8 @@ namespace SSMS.Shared
     //in ctor take parent service from DI and pass it to the base controller
     //when sending this entity type and its key type,
     //we tranform the Base service to this entity service (parent)
-    public CountriesController(BaseService service, IMapper mapper, Ado ado)
-                                : base(service, mapper, "countries", "countryId", ado)
+    public CountriesController(BaseService service, IMapper mapper)
+                                : base(service, mapper, "countries", "countryId")
     {
       _service = service;
       _mapper = mapper;

@@ -13,8 +13,8 @@ namespace SSMS.Hubs
     // and setting its [TEntity,TKey] to [DocType, Byte] to Act as docTypesService
     // and take ado object from DI [used in Auto Generate New Ids in Add Method]
     // finally pass SQL [TableName, PK ColumnName] to BaseHub
-    public DocTypesHub(BaseService service, Ado ado)
-                            : base(service, "docTypes", "docTypeId", ado)
+    public DocTypesHub(BaseService service)
+                            : base(service, "docTypes", "docTypeId")
     {
       _service = service;
     }

@@ -10,8 +10,8 @@ namespace SSMS.Hubs
   public class EmployeesHub : BaseHub<Employee, String>
   {
     private BaseService _service;
-    public EmployeesHub(BaseService service, Ado ado)
-                            : base(service, "employees", "empId", ado)
+    public EmployeesHub(BaseService service)
+                            : base(service, "employees", "empId")
     {
       _service = service;
     }

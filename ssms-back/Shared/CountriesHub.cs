@@ -13,8 +13,8 @@ namespace SSMS.Hubs
     // and setting its [TEntity,TKey] to [Country, Byte] to Act as countriesService
     // and take ado object from DI [used in Auto Generate New Ids in Add Method]
     // finally pass SQL [TableName, PK ColumnName] to BaseHub
-    public CountriesHub(BaseService service, Ado ado)
-                            : base(service, "countries", "countryId", ado)
+    public CountriesHub(BaseService service)
+                            : base(service, "countries", "countryId")
     {
       _service = service;
     }
