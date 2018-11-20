@@ -1,25 +1,27 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using System.Net.Mail;
 using SSMS.EntityModels;
 using SSMS.ViewModels;
+using AutoMapper;
 
 namespace SSMS.Users
 {
   // Inherit from BaseCOntroller to get all the actions inside it in the derived controller
   // [Authorize]
-  public class UsersController : BaseController<User, String>
+  public class UsersController : BaseController<User, String, VUser>
   {
-    // Store the usersService object that comes
-    // from DependencyInjection DI which injects it in the constructor
-    private BaseService _service;
+    // Store the BaseService object that comes from [DI] which injects it in the constructor
+    private readonly BaseService _service;
+    // Store the SmtpClient object that comes from [DI]
     private readonly SmtpClient _smtpClient;
+    private readonly IMapper _mapper;
     private static string _tableName = "users";
     private User user;
     private VUser vUser;
@@ -57,12 +59,13 @@ namespace SSMS.Users
     }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
-    public UsersController(BaseService service, Ado ado, SmtpClient smtpClient)
-                        : base(service, _tableName, "userId", ado)
+    public UsersController(BaseService service, Ado ado, SmtpClient smtpClient, IMapper mapper)
+                        : base(service, mapper, _tableName, "userId", ado)
     {
        // DI inject usersService object here from startup Class
       _service = service;
       _smtpClient = smtpClient;
+      _mapper = mapper;
     }
 
     #region UserController Actions

@@ -1,26 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using SSMS.EntityModels;
-using SSMS.Users;
-using SSMS.Shared;
+using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Mvc;
-using SSMS.Hubs;
 using System.Net;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using System.Net.Mail;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using AutoMapper;
+using SSMS.Hubs;
+using SSMS.EntityModels;
+using SSMS.Users;
+using SSMS.Shared;
 
 namespace SSMS
 {
@@ -45,7 +46,7 @@ namespace SSMS
       // foreach (var item in principal.Claims.Where(c => c.Type == "UserId"))
       //   Console.WriteLine(item.Type + " " + item.Value);
 
-      // var vUser = Map.ToVUser("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1NTY2NTU2NjU1IiwiVXNlclR5cGVJZCI6IjMiLCJBY2NvdW50U3RhdHVzSWQiOiIxIiwiU3Vic2NyaWJlRGF0ZSI6IjA5LzExLzIwMTggMTA6NTM6MDAgUE0iLCJMYXN0QWN0aXZlIjoiMDkvMTEvMjAxOCAxMDo1Mjo1NSBQTSIsIklzRGVsZXRlZCI6IkZhbHNlIiwiZXhwIjoxNTQyNjA4ODg4LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.jk-Zl-MDlU8riZbAZNFCwxKftNvDys9P7uClbXVLxpU");
+      // var vUser = Mapper.Map<VUser>("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1NTY2NTU2NjU1IiwiVXNlclR5cGVJZCI6IjMiLCJBY2NvdW50U3RhdHVzSWQiOiIxIiwiU3Vic2NyaWJlRGF0ZSI6IjA5LzExLzIwMTggMTA6NTM6MDAgUE0iLCJMYXN0QWN0aXZlIjoiMDkvMTEvMjAxOCAxMDo1Mjo1NSBQTSIsIklzRGVsZXRlZCI6IkZhbHNlIiwiZXhwIjoxNTQyNjA4ODg4LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.jk-Zl-MDlU8riZbAZNFCwxKftNvDys9P7uClbXVLxpU");
       // foreach (var prop in vUser.GetProperties())
       //   Console.WriteLine(prop.Name + ": " + prop.GetValue(vUser));
       // int hours = Config.GetValue<int>("JWT_Lifetime");
@@ -61,6 +62,8 @@ namespace SSMS
       // Console.WriteLine($"{Host}\n{Port}\n{UserName}\n{Password}");
       // Random randm = new Random();
       // Console.WriteLine(randm.Next(100000,999999));
+
+      // Console.WriteLine(nameof(User) == nameof(ViewModels.VUser));
     }
 
     public IConfiguration Config { get; }
@@ -68,12 +71,30 @@ namespace SSMS
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      // Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
-      services.AddDbContext<SSMSContext>();
       // AddSingleton configues settings to create only one instance of this type
       services.AddSingleton<Ado>();
       // AddScoped configues settings to create new instance of this type per http request
       services.AddScoped<BaseService>();
+      // Add automapper
+      services.AddAutoMapper();
+      // Add SMTP Mail Service
+      services.AddScoped<SmtpClient>((serviceProvider) =>
+      {
+        return new SmtpClient()
+        {
+          UseDefaultCredentials = false,
+          DeliveryMethod = SmtpDeliveryMethod.Network,
+          Host = Config.GetValue<String>("Email_Host"),
+          Port = Config.GetValue<int>("Email_Port"),
+          EnableSsl = Config.GetValue<bool>("Email_SSL"),
+          Credentials = new NetworkCredential(
+            Config.GetValue<String>("Email_UserName"),
+            Config.GetValue<String>("Email_Password")
+          )
+        };
+      });
+      // Register a type of DbContext so that it can be used in DI (inside dependent classes' constructors)
+      services.AddDbContext<SSMSContext>();
       // Configure Swagger
       services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }));
       // Allow CORS
@@ -98,22 +119,6 @@ namespace SSMS
           options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
           options.PayloadSerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         });
-      // Add SMTP Mail Service
-      services.AddScoped<SmtpClient>((serviceProvider) =>
-      {
-        return new SmtpClient()
-        {
-          UseDefaultCredentials = false,
-          DeliveryMethod = SmtpDeliveryMethod.Network,
-          Host = Config.GetValue<String>("Email_Host"),
-          Port = Config.GetValue<int>("Email_Port"),
-          EnableSsl = Config.GetValue<bool>("Email_SSL"),
-          Credentials = new NetworkCredential(
-            Config.GetValue<String>("Email_UserName"),
-            Config.GetValue<String>("Email_Password")
-          )
-        };
-      });
       // configure MVC options
       // config => config.Filters.Add(typeof(ApiExceptionFilterAttribute))
       services.AddMvc()

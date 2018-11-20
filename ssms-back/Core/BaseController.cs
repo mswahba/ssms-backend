@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SSMS.EntityModels;
 using SSMS.MvcFilters;
+using AutoMapper;
 
 namespace SSMS
 {
@@ -14,26 +15,30 @@ namespace SSMS
   [ApiExceptionFilter]
   [ApiController]
   [Route("[controller]")]
-  public class BaseController<TEntity, TKey> : ControllerBase where TEntity : class
+  public class BaseController<TEntity, TKey, TVEntity> : ControllerBase
+    where TEntity : class
+    where TVEntity : class
   {
-    private BaseService _service { get; }
-    private string _tableName { get; }
-    private string _keyName { get; }
-    private Ado _ado { get; set; }
+    private readonly BaseService _service;
+    private readonly IMapper _mapper;
+    private readonly Ado _ado;
+    private readonly string _tableName;
+    private readonly string _keyName;
 
     private string _sqlAddCommand;
     private string _columnNames;
     private string _columnValues;
     private Dictionary<string, object> _deleteResult;
+    private List<string> _BlockedFromAdd = new List<string>() { "User" };
 
-    private void SetDeleteResult(TEntity entity, int res, string deleteType)
+    private void _SetDeleteResult(TEntity entity, int res, string deleteType)
     {
       _deleteResult = new Dictionary<string, object>();
       _deleteResult.Add(_keyName, entity.GetValue(_keyName));
       _deleteResult.Add("DeleteType", deleteType);
       _deleteResult.Add("Message", $"{res} Item(s) Deleted successfully...");
     }
-    private IActionResult DoDelete(string deleteType, TEntity entity)
+    private IActionResult _DoDelete(string deleteType, TEntity entity)
     {
       if (deleteType == null)
         return BadRequest(new Error() { Message = "Can't identify The type of the Delete operation" });
@@ -49,24 +54,61 @@ namespace SSMS
             return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
           else if (res == -2)
             return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
-          SetDeleteResult(entity, res, "logical");
+          _SetDeleteResult(entity, res, "logical");
           return Ok(_deleteResult);
         case "physical":
           res = _service.Delete(entity);
-          SetDeleteResult(entity, res, "physical");
+          _SetDeleteResult(entity, res, "physical");
           return Ok(_deleteResult);
         default:
           return BadRequest(new Error() { Message = "Unknow Delete Type" });
       }
     }
+    // map the page result
+    private PageResult<TVEntity> _mapPageResult(PageResult<TEntity> pageResult)
+    {
+      return new PageResult<TVEntity>()
+      {
+        PageItems = _mapper.Map<List<TVEntity>>(pageResult.PageItems),
+        TotalItems = pageResult.TotalItems,
+        TotalPages = pageResult.TotalPages
+      };
+    }
+    // get the query result:
+    // check if there is paging then getPageResult else return query
+    // check if there is mapping then mapPageResult [TEntity to TVEntity] else return pageResult
+    private IActionResult _GetQueryResult(int? pageSize, int? pageNumber, IQueryable<TEntity> query)
+    {
+      // if page size and number are provided, return page result  (from GetPage())
+      if (pageSize != null && pageNumber != null)
+      {
+        var pageResult = _service.GetPageResult<TEntity>(query, (int)pageSize, (int)pageNumber);
+        if (typeof(TEntity).Name != typeof(TVEntity).Name)
+          return Ok(_mapPageResult(pageResult));
+        return Ok(pageResult);
+      }
+      if (typeof(TEntity).Name != typeof(TVEntity).Name)
+        return Ok(_mapper.Map<List<TVEntity>>(query.ToList()));
+      return Ok(query);
+    }
+    // get the entity result:
+    // check if there is mapping then map Entity to VEntity else return Entity
+    private IActionResult _GetEntityResult(TEntity entity)
+    {
+      // if everything is ok, return the full user Or the mapped user
+      if (typeof(TEntity).Name != typeof(TVEntity).Name)
+        return Ok(_mapper.Map<TVEntity>(entity));
+      return Ok(entity);
+    }
     // receive the service (to deal with db)
     // and the table name of the entity (from entity Controller) and the PK field name
     // and the ado from DI
-    public BaseController(BaseService service, string tableName, string keyName, Ado ado)
+    public BaseController(BaseService service, IMapper mapper, string tableName, string keyName, Ado ado)
     {
       _tableName = tableName;
       _keyName = keyName;
       _service = service;
+      _mapper = mapper;
       _ado = ado;
     }
     //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table besed on route param-
@@ -87,38 +129,33 @@ namespace SSMS
         return BadRequest(new Error() { Message = "Unknow List Type.[all] OR [deleted] OR [existing] only acceptable" });
       //If page size & number aren't provided from the query string
       //then return regular result based on list type.
-      IQueryable<TEntity> result;
+      IQueryable<TEntity> query;
       switch (listType.ToLower())
       {
         case "existing":
-          result = _service.GetQuery<TEntity>(item =>
+          query = _service.GetQuery<TEntity>(item =>
               item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
                         ? true
                         : false
           );
           break;
         case "deleted":
-          result = _service.GetQuery<TEntity>(item =>
+          query = _service.GetQuery<TEntity>(item =>
             item.GetValue("IsDeleted") == null || (bool)item.GetValue("IsDeleted") == false
                         ? false
                         : true
           );
           break;
         case "all":
-          result = _service.GetQuery<TEntity>();
+          query = _service.GetQuery<TEntity>();
           break;
         default:
-          result = _service.GetQuery<TEntity>();
+          query = _service.GetQuery<TEntity>();
           break;
       }
-      // if page size and number are provided, return page result  (from GetPage())
-      if (pageSize != null && pageNumber != null)
-      {
-        var pageResult = _service.GetPageResult<TEntity>(result, (int)pageSize, (int)pageNumber);
-        return Ok(pageResult);
-      }
-      return Ok(result);
+      return _GetQueryResult(pageSize, pageNumber, query);
     }
+
     /// <summary>
     ///Make it as default action for the controller
     ///    [controller]?filters=.....&fileds=.....&orderby=....
@@ -139,38 +176,45 @@ namespace SSMS
                                 [FromQuery] int? pageNumber)
     {
       if (filters == null && fields == null && orderBy == null)
-        return BadRequest(new Error() { Message = "Must supply at least one of the following : [Filters] and/or [Fileds] and/or [Order By]" });
+        return BadRequest(new Error() { Message = "Must supply at least one of the following : [filters] and/or [fields] and/or [orderBy]" });
       IQueryable<TEntity> query = _service.GetQuery<TEntity>().AsQueryable();
-      IQueryable result;
-      //if filters provided, apply filters and get the query after applying (where) on it
+      IQueryable dynamicQuery;
+      // if filters provided, apply filters and get the query after applying (where) on it
       if (filters != null)
         query = _service.ApplySqlWhere<TEntity>(filters, _tableName);
-      //if orderBy provided, Give it the previous query (either filtered or not )
-      //then apply sort and get the query after applying (orderBy) on it
+      // if orderBy provided, Give it the previous query (either filtered or not )
+      // then apply sort and get the query after applying (orderBy) on it
       if (orderBy != null)
         query = _service.ApplySort(orderBy, query);
-      //put query value (whether filtered and ordered, filtered only, ordered only, nothing applied) in result
-      result = query;
-      //if select fields provided, apply dynamic select on the previous query
+      // put query value (whether filtered and ordered, filtered only, ordered only, nothing applied) in result
+      dynamicQuery = query;
+      // if select fields provided, apply dynamic select on the previous query
       if (fields != null)
-        result = _service.ApplySelect(fields, query);
-      if (pageSize != null && pageNumber != null)
       {
-        var PageResult = _service.GetPageResult<TEntity>(result, (int)pageSize, (int)pageNumber);
-        return Ok(PageResult);
+        dynamicQuery = _service.ApplySelect<TEntity>(fields, query);
+        if (pageSize != null && pageNumber != null)
+        {
+          var PageResult = _service.GetPageResult(dynamicQuery, (int)pageSize, (int)pageNumber);
+          return Ok(PageResult);
+        }
+        return Ok(dynamicQuery);
       }
-      //Ok() takes the result (Linq query) , executes it , gets the data, convert it to JSON
-      return Ok(result);
+      return _GetQueryResult(pageSize, pageNumber, query);
     }
 
     [HttpGet("{id}")]
     public IActionResult Find(TKey id)
     {
-      return Ok(_service.Find<TEntity,TKey>(id));
+      var entity = _service.Find<TEntity, TKey>(id);
+      if (entity == null)
+        return BadRequest(new Error() { Message = "Invalid Id ..." });
+      return _GetEntityResult(entity);
     }
     [HttpPost("add")]
     public IActionResult Add([FromBody] TEntity entity)
     {
+      if( _BlockedFromAdd.Any(eName => eName == typeof(TEntity).Name) )
+        return BadRequest(new Error() { Message = "Oops! this action is not available for this entity !!" });
       // throw new Exception("something went wrong!!");
       // if autoId has value [ok] then generate newId and set keyName of this entity
       // otherwise the entity keyField [PK] has value [from User Input]
@@ -205,16 +249,14 @@ namespace SSMS
         // add entity and saveChanges
         _service.Add(entity);
       }
-      // if everything is ok, return the full user obj with all inserted values
-      return Ok(entity);
+      return _GetEntityResult(entity);
     }
     //Update all parent Data -- used either by Parent or Admin
     [HttpPut("update")]
     public IActionResult Update([FromBody]TEntity entity)
     {
       _service.Update<TEntity>(entity);
-      //if everything is ok, return the full  obj with all inserted values
-      return Ok(entity);
+      return _GetEntityResult(entity);
     }
     // update Only ParentId --Used by Admins Only
     [HttpPut("update-Key")]
@@ -228,8 +270,7 @@ namespace SSMS
       //Get Property (binding Flags: ignore case sensitive, instance (not static), public) ,
       //Get Value
       TEntity entity = _service.GetOne<TEntity>(item => item.GetValue(_keyName).Equals(newKey));
-      //if everything is ok, return the full user obj with all inserted values
-      return Ok(entity);
+      return _GetEntityResult(entity);
     }
     //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
     // Then call the appropriate function from the BaseService class to execute operation
@@ -237,7 +278,7 @@ namespace SSMS
     [HttpPost("delete")]
     public IActionResult Delete([FromQuery] string deleteType, [FromBody] TEntity entity)
     {
-      return DoDelete(deleteType, entity);
+      return _DoDelete(deleteType, entity);
     }
     //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
     // Then call the appropriate function from the BaseService class to execute operation
@@ -247,7 +288,7 @@ namespace SSMS
     {
       // First get the entity using its key to send it to delete method
       TEntity entity = _service.Find<TEntity, TKey>(key);
-      return DoDelete(deleteType, entity);
+      return _DoDelete(deleteType, entity);
     }
     /********************************************************** */
     #region assistant Actions
@@ -258,8 +299,8 @@ namespace SSMS
     [HttpGet("filter")]
     public IActionResult Filter([FromQuery] string filters)
     {
-      var res = _service.ApplyFilter<TEntity>(filters);
-      return Ok(res);
+      var query = _service.ApplyFilter<TEntity>(filters);
+      return Ok(query);
     }
     // [controller]/sql-update?setters=[value]&filters=[value]
     // Apply sql update Caluse
@@ -276,8 +317,8 @@ namespace SSMS
     [HttpGet("sql-where")]
     public IActionResult SqlWhere([FromQuery] string filters)
     {
-      var res = _service.ApplySqlWhere<TEntity>(filters, _tableName);
-      return Ok(res);
+      var query = _service.ApplySqlWhere<TEntity>(filters, _tableName);
+      return Ok(query);
     }
     // 'fields' is a comma separated string of entity fields we want to select
     // return entity that contains only these fields
@@ -322,8 +363,8 @@ namespace SSMS
       if (fields == null)
         return BadRequest(new Error() { Message = "Must supply fields" });
       // using linq.dynamic.core to generate the needed select statement
-      var res = _service.ApplySelect<TEntity>(fields, null);
-      return Ok(res);
+      var query = _service.ApplySelect<TEntity>(fields, null);
+      return Ok(query);
     }
     [HttpGet("select-Ado")]
     public IActionResult SelectAdo([FromQuery] string sqlQuery)
@@ -337,8 +378,8 @@ namespace SSMS
     {
       if (orderBy == null)
         return BadRequest(new Error() { Message = "Must supply 'Order By' statement" });
-      var res = _service.ApplySort<TEntity>(orderBy, null);
-      return Ok(res);
+      var query = _service.ApplySort<TEntity>(orderBy, null);
+      return Ok(query);
     }
     #endregion
   }

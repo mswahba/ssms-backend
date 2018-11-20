@@ -47,6 +47,7 @@ GO
 
 ALTER TABLE [dbo].[verificationCodes] CHECK CONSTRAINT [FK_verificationCodeTypes_verificationCodes]
 
+ALTER TABLE [dbo].[verificationCodes] ADD isDeleted bit null
 
 select * from users
 
@@ -57,4 +58,21 @@ select * from verificationCodes
 select * from verificationCodeTypes
 
 insert into verificationCodes values('123456', DATEADD(HOUR,3,GETUTCDATE()), 1, '1133557799')
+
 update verificationCodes set sentTime = DATEADD(HOUR,3,GETUTCDATE())
+
+update verificationCodes set isDeleted = 0
+
+select * from parents
+
+update parents set
+fNameAr = '„Õ„œ', mNameAr = 'Õ”‰', gNameAr = '⁄»œ «··ÿÌ›', lNameAr = '«·»‘—Ì'
+where parentId = '1133557799'
+
+update parents set
+email = 'ahmady09@gmail.com'
+where parentId = '1133557799'
+
+update parents set
+fNameAr = '√Õ„œ', mNameAr = 'Õ”Ì‰', gNameAr = '⁄»œ «·Õ„Ìœ', lNameAr = '«·«”ÌÊÿÌ'
+where parentId = '5566556655'

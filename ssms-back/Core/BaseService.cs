@@ -12,13 +12,13 @@ namespace SSMS
 {
   public class BaseService
   {
-    public BaseService(SSMSContext _db)
+    public BaseService(SSMSContext db)
     {
-      db = _db;
+      _db = db;
     }
 
     #region Privates Fields and Methods
-    private SSMSContext db { get; }
+    private SSMSContext _db { get; }
     // build the condition of every key value pair in set command one by one
     private string _BuildSetKeyVal<TEntity>(string[] keyValue)
     {
@@ -434,11 +434,11 @@ namespace SSMS
     #region Query Services
     public TEntity Find<TEntity, TKey>(TKey id) where TEntity : class
     {
-      return db.Set<TEntity>().Find(id);
+      return _db.Set<TEntity>().Find(id);
     }
     public TEntity GetOne<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
-      return db.Set<TEntity>().Where(expression).SingleOrDefault();
+      return _db.Set<TEntity>().Where(expression).SingleOrDefault();
     }
     public TEntity GetOne<TEntity>(List<string> propsToInclude, Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
@@ -451,8 +451,8 @@ namespace SSMS
       // Finally return Filtered entity with all needed navigation properties
       else
       {
-        var query = db.Set<TEntity>().AsQueryable();
-        propsToInclude = db.Model
+        var query = _db.Set<TEntity>().AsQueryable();
+        propsToInclude = _db.Model
             .FindEntityType(typeof(TEntity))
             .GetNavigations()
             .Where(navProperty => navProperty.Name == propsToInclude.Find(IncProperty => navProperty.Name == IncProperty))
@@ -466,37 +466,54 @@ namespace SSMS
     //takes a labmda expression and executes it (using .ToList()) and returns result as list
     public List<TEntity> GetList<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
-      return db.Set<TEntity>().Where(expression).ToList();
+      return _db.Set<TEntity>().Where(expression).ToList();
     }
     //returns all entities without applying any filter expression
     public List<TEntity> GetList<TEntity>() where TEntity : class
     {
-      return db.Set<TEntity>().ToList();
+      return _db.Set<TEntity>().ToList();
     }
-    //Does the following:
+    // GetPageResult Does the following:
     // 1) get total items  based on ListType string (all/existing/deleted)
     // 2) calculate the count of items  based on ListType
     // 3) calculate the number of pages based on page size and count of items
-    public PageResult<TEntity> GetPageResult<TEntity>(IQueryable query, int pageSize, int pageNumber) where TEntity : class
+    public PageResult<T> GetPageResult<T>(IQueryable<T> query, int pageSize, int pageNumber)
+      where T : class
     {
-      return new PageResult<TEntity>
+      var count = query.Count();
+      return new PageResult<T>
       {
-        PageItems = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToDynamicList(),
-        TotalItems = query.Count(),
-        //Ceiling is a math function that adjusts any decimal fraction to the next integer
-        TotalPages = (int)Math.Ceiling((decimal)query.Count() / pageSize),
+        PageItems = query.Skip(pageSize * (pageNumber - 1))
+                          .Take(pageSize)
+                          .ToList(),
+        TotalItems = count,
+        // Ceiling is a math function that adjusts any decimal fraction to the next integer
+        TotalPages = (int)Math.Ceiling((decimal)count / pageSize),
+      };
+    }
+    public PageResult GetPageResult(IQueryable query, int pageSize, int pageNumber)
+    {
+      var count = query.Count();
+      return new PageResult
+      {
+        PageItems = query.Skip(pageSize * (pageNumber - 1))
+                          .Take(pageSize)
+                          .ToDynamicList(),
+        TotalItems = count,
+        // Ceiling is a math function that adjusts any decimal fraction to the next integer
+        TotalPages = (int)Math.Ceiling((decimal)count / pageSize),
       };
     }
     //takes a labmda expression (and doesn't execute it) and returns result as enumerable
     //so that I can reuse it and add more linq operators (count() or take())
     public IQueryable<TEntity> GetQuery<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
-      return db.Set<TEntity>().Where(expression);
+      return _db.Set<TEntity>().Where(expression);
     }
     //returns all rows of an entity, AsQuerable to chain it later
     public IQueryable<TEntity> GetQuery<TEntity>() where TEntity : class
     {
-      return db.Set<TEntity>().AsQueryable();
+      return _db.Set<TEntity>().AsQueryable();
     }
     // receives a comma separated string of filters
     // and converts it to array of filters,
@@ -511,7 +528,7 @@ namespace SSMS
                                               .ToList();
       //use no tracking so that db context won't track changes on this dbset
       //better performance that AsQueriable -- used in read only queries
-      var query = db.Set<TEntity>().AsNoTracking();
+      var query = _db.Set<TEntity>().AsNoTracking();
       foreach (var filter in filtersList)
         query = query.Where(item => _CheckFilter(item, filter));
       return query;
@@ -520,7 +537,7 @@ namespace SSMS
     {
       // use no tracking so that db context won't track changes on this dbset
       // better performance than AsQueriable -- used in read only queries
-      var query = db.Set<TEntity>().AsNoTracking();
+      var query = _db.Set<TEntity>().AsNoTracking();
       // build the sql select statment with sql where clause
       string sqlQuery = $"select * from {tableName} {_BuildSqlWhere<TEntity>(filters)}";
       // finally return the linq query
@@ -530,17 +547,18 @@ namespace SSMS
     {
       //if query is not provide, we start querying on the whole entity from the beginning
       // if we get the query, we continue working on it
-      query = (query == null) ? db.Set<TEntity>().AsNoTracking() : query;
+      query = (query == null) ? _db.Set<TEntity>().AsNoTracking() : query;
       // convert comma separated list to array so that we can remove empty items
       orderBy = orderBy.RemoveEmptyElements(',');
       //use Linq.Dynamic.Core library to apply orderby using sql-like string not expression
       return query.OrderBy(orderBy);
     }
-    public IQueryable ApplySelect<TEntity>(string fields, IQueryable<TEntity> query) where TEntity : class
+    public IQueryable ApplySelect<TEntity>(string fields, IQueryable query)
+      where TEntity : class
     {
       //if query is not provide, we start querying on the whole entity from the beginning
       // if we get the query, we continue working on it
-      query = (query == null) ? db.Set<TEntity>().AsNoTracking() : query;
+      query = (query == null) ? _db.Set<TEntity>().AsNoTracking() : query;
       fields = fields.RemoveEmptyElements(',');
       return query.Select($"new({fields})");
     }
@@ -551,19 +569,19 @@ namespace SSMS
     {
       // Use db.Set<TEntity> to access db set collection (tables)
       // instead of using db.Parents or db.users  to be generic
-      db.Set<TEntity>().Add(entity);
-      return db.SaveChanges();
+      _db.Set<TEntity>().Add(entity);
+      return _db.SaveChanges();
     }
     public TEntity Add<TEntity>(string sqlCommand) where TEntity : class
     {
-      return db.Set<TEntity>().FromSql(sqlCommand).FirstOrDefault();
+      return _db.Set<TEntity>().FromSql(sqlCommand).FirstOrDefault();
     }
     public int Update<TEntity>(TEntity entity) where TEntity : class
     {
       //Attach the coming object to the db COntext
       //Change the coming object state to modified so that saveChanges generates an update statment
-      db.Entry(entity).State = EntityState.Modified;
-      return db.SaveChanges();
+      _db.Entry(entity).State = EntityState.Modified;
+      return _db.SaveChanges();
     }
     //update the primary key of any given table
     public int UpdateKey<TKey>(string tableName, string keyName, TKey newKey, TKey oldKey)
@@ -573,7 +591,7 @@ namespace SSMS
         sql += $"{keyName} = '{newKey}' where {keyName} = '{oldKey}'";
       else
         sql += $"{keyName} = {newKey} where {keyName} = {oldKey}";
-      return db.Database.ExecuteSqlCommand(sql);
+      return _db.Database.ExecuteSqlCommand(sql);
     }
     // build sql update statment with set keyValue pair and with where clause
     // from the setters [comma separated key=value]
@@ -582,7 +600,7 @@ namespace SSMS
     public int SqlUpdate<TEntity>(string tableName, string setters, string filters)
     {
       string sql = $"update {tableName} set {_BuildSqlSet<TEntity>(setters)} {_BuildSqlWhere<TEntity>(filters)}";
-      return db.Database.ExecuteSqlCommand(sql);
+      return _db.Database.ExecuteSqlCommand(sql);
     }
     /// <summary>
     /// takes entity to be deleted, get the 'isDeleted' property value , if exists get  its value
@@ -601,13 +619,13 @@ namespace SSMS
       if (value == true)
         return -2;
       entity.SetValue("IsDeleted", true);
-      return db.SaveChanges();
+      return _db.SaveChanges();
     }
     //takes entity to be deleted physically from DB, get the 'isDeleted' property , if exists delete the whole row from table
     public int Delete<TEntity>(TEntity entity) where TEntity : class
     {
-      db.Set<TEntity>().Remove(entity);
-      return db.SaveChanges();
+      _db.Set<TEntity>().Remove(entity);
+      return _db.SaveChanges();
     }
     //to attach the entity to the DBCOntext so that the change tracker is aware of it
     //Behind the scenes, many other function can call attach like (add, remove..)
@@ -615,7 +633,7 @@ namespace SSMS
     //We use it only in cases where Attach won't be called by default (by Add() or Remove() or Change entity state)
     public void Attach<TEntity>(TEntity entity) where TEntity : class
     {
-      db.Set<TEntity>().Attach(entity);
+      _db.Set<TEntity>().Attach(entity);
     }
     //sets entity state , 4 cases
     // added > executes insert statement
@@ -629,22 +647,22 @@ namespace SSMS
       switch (state)
       {
         case "Added":
-          db.Entry(entity).State = EntityState.Added;
+          _db.Entry(entity).State = EntityState.Added;
           break;
         case "Modified":
-          db.Entry(entity).State = EntityState.Modified;
+          _db.Entry(entity).State = EntityState.Modified;
           break;
         case "Deleted":
-          db.Entry(entity).State = EntityState.Deleted;
+          _db.Entry(entity).State = EntityState.Deleted;
           break;
         default:
-          db.Entry(entity).State = EntityState.Unchanged;
+          _db.Entry(entity).State = EntityState.Unchanged;
           break;
       }
     }
     public int Save()
     {
-      return db.SaveChanges();
+      return _db.SaveChanges();
     }
 
     #endregion
