@@ -1,4 +1,4 @@
-namespace SSMS.Users
+namespace SSMS.ViewModels
 {
   public class JWTTokens
   {
