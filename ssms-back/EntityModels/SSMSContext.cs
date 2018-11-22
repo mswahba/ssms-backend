@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using SSMS.ViewModels;
 
 namespace SSMS.EntityModels
 {
@@ -56,6 +57,10 @@ namespace SSMS.EntityModels
     public virtual DbSet<RefreshToken> RefreshTokens {get; set;}
     public virtual DbSet<WeekPlan> WeeksPlans { get; set; }
 
+    #endregion
+
+    #region DbQuery
+    public DbQuery<VParentFullNameAr> VParentsFullNameAr{get;set;}
     #endregion
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -1865,6 +1870,8 @@ namespace SSMS.EntityModels
                   .HasForeignKey(d => d.WeekId)
                   .HasConstraintName("FK_weeksPlans_academicWeeks");
       });
+      // view and query mapping
+      modelBuilder.Query<VParentFullNameAr>().ToView("v_parentsFullNameAr");
     }
   }
 }

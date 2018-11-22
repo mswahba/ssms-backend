@@ -431,7 +431,7 @@ namespace SSMS
     }
     #endregion
 
-    #region Query Services
+    #region Query [Tables] Services
     public TEntity Find<TEntity, TKey>(TKey id) where TEntity : class
     {
       return _db.Set<TEntity>().Find(id);
@@ -561,6 +561,21 @@ namespace SSMS
       query = (query == null) ? _db.Set<TEntity>().AsNoTracking() : query;
       fields = fields.RemoveEmptyElements(',');
       return query.Select($"new({fields})");
+    }
+    #endregion
+
+    #region Query [Views and QueryType] Services
+    public IQueryable<T> GetView<T>()
+      where T : class
+    {
+      return _db.Query<T>();
+    }
+    public object GetView(Type type)
+    {
+      return  _db.GetType()
+                .GetMethod("Query")
+                .MakeGenericMethod(type)
+                .Invoke(_db, new object[] { });
     }
     #endregion
 
