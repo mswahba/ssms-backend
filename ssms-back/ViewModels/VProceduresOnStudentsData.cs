@@ -1,35 +1,38 @@
 using System;
 
-public class VProceduresOnStudentsData
+namespace SSMS.ViewModels
 {
-    public string studentId { get; set; }
-    public string studentNameAr { get; set; }
-    public string studentNameEn { get; set; }
-    public string schoolNameAr { get; set; }
-    public string schoolNameEn { get; set; }
-    public string branchNameAr { get; set; }
-    public string branchNameEn { get; set; }
-    public string stageNameAr { get; set; }
-    public string stageNameEn { get; set; }
-    public string gradeNameAr { get; set; }
-    public string gradeNameEn { get; set; }
-    public string classNameAr { get; set; }
-    public string classNameEn { get; set; }
-    public short violationId { get; set; }
-    public string violationNameAr { get; set; }
-    public string violationNameEn { get; set; }
-    public byte? categoryId { get; set; }
-    public DateTime? violationDate { get; set; }
-    public int studentViolationId { get; set; }
-    public short procedureId { get; set; }
-    public string procedureNameAr { get; set; }
-    public string procedureNameEn { get; set; }
+public class VProcedureOnStudentData
+{
+    public string StudentId { get; set; }
+    public string StudentNameAr { get; set; }
+    public string StudentNameEn { get; set; }
+    public string SchoolNameAr { get; set; }
+    public string SchoolNameEn { get; set; }
+    public string BranchNameAr { get; set; }
+    public string BranchNameEn { get; set; }
+    public string StageNameAr { get; set; }
+    public string SstageNameEn { get; set; }
+    public string GradeNameAr { get; set; }
+    public string GradeNameEn { get; set; }
+    public string ClassNameAr { get; set; }
+    public string ClassNameEn { get; set; }
+    public short ViolationId { get; set; }
+    public string ViolationNameAr { get; set; }
+    public string ViolationNameEn { get; set; }
+    public byte? CategoryId { get; set; }
+    public DateTime? ViolationDate { get; set; }
+    public int StudentViolationId { get; set; }
+    public short ProcedureId { get; set; }
+    public string ProcedureNameAr { get; set; }
+    public string ProcedureNameEn { get; set; }
     public byte? ProcedureCategoryId { get; set; }
-    public DateTime? procedureDate { get; set; }
-    public int empJobId { get; set; }
-    public string empNameAr { get; set; }
-    public string empNameEn { get; set; }
-    public short jobId { get; set; }
-    public string jobNameAr { get; set; }
-    public string jobNameEn { get; set; }
+    public DateTime? ProcedureDate { get; set; }
+    public int EmpJobId { get; set; }
+    public string EmpNameAr { get; set; }
+    public string EmpNameEn { get; set; }
+    public short JobId { get; set; }
+    public string JobNameAr { get; set; }
+    public string JobNameEn { get; set; }
+}
 }

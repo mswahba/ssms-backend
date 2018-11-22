@@ -1,38 +1,41 @@
 using System;
 
+namespace SSMS.ViewModels
+{
 public class VTeacherEduData
 {
-    public string userId { get; set; }
-    public byte statusId { get; set; }
-    public string statusAr { get; set; }
-    public string statusEn { get; set; }
-    public int empJobId { get; set; }
-    public byte schoolID { get; set; }
-    public string schoolNameAr { get; set; }
-    public string schoolNameEn { get; set; }
-    public byte branchId { get; set; }
-    public string branchNameAr { get; set; }
-    public string branchNameEn { get; set; }
-    public byte stageId { get; set; }
-    public string stageNameAr { get; set; }
-    public string stageNameEn { get; set; }
-    public byte gradeId { get; set; }
-    public string gradeNameAr { get; set; }
-    public string gradeNameEn { get; set; }
-    public byte majorId { get; set; }
-    public string majorNameAr { get; set; }
-    public string majorNameEn { get; set; }
-    public string classroomIds { get; set; }
-    public byte? periodsQuorum { get; set; }
-    public byte? substituteQuorum { get; set; }
-    public byte semesterId { get; set; }
-    public string semesterNameAr { get; set; }
-    public string semesterNameEn { get; set; }
-    public byte yearId { get; set; }
-    public string yearNameG { get; set; }
-    public string yearNameH { get; set; }
-    public short gradeSubjectId { get; set; }
-    public byte subjectId { get; set; }
-    public string subjectNameAr { get; set; }
-    public string subjectNameEn { get; set; }
+    public string UserId { get; set; }
+    public byte StatusId { get; set; }
+    public string StatusAr { get; set; }
+    public string StatusEn { get; set; }
+    public int EmpJobId { get; set; }
+    public byte SchoolID { get; set; }
+    public string SchoolNameAr { get; set; }
+    public string SchoolNameEn { get; set; }
+    public byte BranchId { get; set; }
+    public string BranchNameAr { get; set; }
+    public string BranchNameEn { get; set; }
+    public byte StageId { get; set; }
+    public string StageNameAr { get; set; }
+    public string StageNameEn { get; set; }
+    public byte GradeId { get; set; }
+    public string GradeNameAr { get; set; }
+    public string GradeNameEn { get; set; }
+    public byte MajorId { get; set; }
+    public string MajorNameAr { get; set; }
+    public string MajorNameEn { get; set; }
+    public string ClassroomIds { get; set; }
+    public byte? PeriodsQuorum { get; set; }
+    public byte? SubstituteQuorum { get; set; }
+    public byte SemesterId { get; set; }
+    public string SemesterNameAr { get; set; }
+    public string SemesterNameEn { get; set; }
+    public byte YearId { get; set; }
+    public string YearNameG { get; set; }
+    public string YearNameH { get; set; }
+    public short GradeSubjectId { get; set; }
+    public byte SubjectId { get; set; }
+    public string SubjectNameAr { get; set; }
+    public string SubjectNameEn { get; set; }
+}
 }

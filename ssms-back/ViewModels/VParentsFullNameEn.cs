@@ -1,7 +1,10 @@
 using System;
 
+namespace SSMS.ViewModels
+{
 public class VParentFullNameEn
 {
-    public string parentId { get; set; }
-    public string parentNameEn { get; set; }
+    public string ParentId { get; set; }
+    public string ParentNameEn { get; set; }
+}
 }

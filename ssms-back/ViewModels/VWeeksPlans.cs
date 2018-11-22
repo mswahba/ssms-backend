@@ -1,27 +1,30 @@
 using System;
 
-public class VWeeksPlans
+namespace SSMS.ViewModels
 {
-    public short weekPlanId { get; set; }
-    public byte yearId { get; set; }
-    public string yearNameG { get; set; }
-    public string yearNameH { get; set; }
-    public byte semesterId { get; set; }
-    public string semesterNameAr { get; set; }
-    public string semesterNameEn { get; set; }
-    public short weekId { get; set; }
-    public string weekNameAr { get; set; }
-    public string weekNameEn { get; set; }
-    public byte? dayId { get; set; }
-    public string classNameAr { get; set; }
-    public string classNameEn { get; set; }
-    public string subjectNameAr { get; set; }
-    public string subjectNameEn { get; set; }
-    public DateTime? date { get; set; }
-    public int? lessonId { get; set; }
-    public string homework { get; set; }
-    public string quiz { get; set; }
-    public int timeTableId { get; set; }
-    public string lessonTitle { get; set; }
-    public string lessonObjectives { get; set; }
+public class VWeekPlan
+{
+    public short WeekPlanId { get; set; }
+    public byte YearId { get; set; }
+    public string YearNameG { get; set; }
+    public string YearNameH { get; set; }
+    public byte SemesterId { get; set; }
+    public string SemesterNameAr { get; set; }
+    public string SemesterNameEn { get; set; }
+    public short WeekId { get; set; }
+    public string WeekNameAr { get; set; }
+    public string WeekNameEn { get; set; }
+    public byte? DayId { get; set; }
+    public string ClassNameAr { get; set; }
+    public string ClassNameEn { get; set; }
+    public string SubjectNameAr { get; set; }
+    public string SubjectNameEn { get; set; }
+    public DateTime? Date { get; set; }
+    public int? LessonId { get; set; }
+    public string Homework { get; set; }
+    public string Quiz { get; set; }
+    public int TimeTableId { get; set; }
+    public string LessonTitle { get; set; }
+    public string LessonObjectives { get; set; }
+}
 }

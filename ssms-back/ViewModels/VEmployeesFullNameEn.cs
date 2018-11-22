@@ -1,7 +1,10 @@
 using System;
 
-public class VEmployeesFullNameEn
+namespace SSMS.ViewModels
 {
-    public string empId { get; set; }
-    public string empNameEn { get; set; }
+public class VEmployeeFullNameEn
+{
+    public string EmpId { get; set; }
+    public string EmpNameEn { get; set; }
+}
 }

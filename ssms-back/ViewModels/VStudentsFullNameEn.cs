@@ -1,7 +1,10 @@
 using System;
 
-public class VStudentsFullNameEn
+namespace SSMS.ViewModels
 {
-    public string studentId { get; set; }
-    public string studentNameEn { get; set; }
+public class VStudentFullNameEn
+{
+    public string StudentId { get; set; }
+    public string StudentNameEn { get; set; }
+}
 }

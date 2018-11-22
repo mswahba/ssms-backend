@@ -1,24 +1,27 @@
 using System;
 
-public class VStudentsViolationsData
+namespace SSMS.ViewModels
 {
-    public string studentId { get; set; }
-    public string studentNameAr { get; set; }
-    public string studentNameEn { get; set; }
-    public string schoolNameAr { get; set; }
-    public string schoolNameEn { get; set; }
-    public string branchNameAr { get; set; }
-    public string branchNameEn { get; set; }
-    public string stageNameAr { get; set; }
-    public string stageNameEn { get; set; }
-    public string gradeNameAr { get; set; }
-    public string gradeNameEn { get; set; }
-    public string classNameAr { get; set; }
-    public string classNameEn { get; set; }
-    public short violationId { get; set; }
-    public string violationNameAr { get; set; }
-    public string violationNameEn { get; set; }
-    public byte? categoryId { get; set; }
-    public DateTime? violationDate { get; set; }
-    public int studentViolationId { get; set; }
+public class VStudentViolationData
+{
+    public string StudentId { get; set; }
+    public string StudentNameAr { get; set; }
+    public string StudentNameEn { get; set; }
+    public string SchoolNameAr { get; set; }
+    public string SchoolNameEn { get; set; }
+    public string BranchNameAr { get; set; }
+    public string BranchNameEn { get; set; }
+    public string StageNameAr { get; set; }
+    public string StageNameEn { get; set; }
+    public string GradeNameAr { get; set; }
+    public string GradeNameEn { get; set; }
+    public string ClassNameAr { get; set; }
+    public string ClassNameEn { get; set; }
+    public short ViolationId { get; set; }
+    public string ViolationNameAr { get; set; }
+    public string ViolationNameEn { get; set; }
+    public byte? CategoryId { get; set; }
+    public DateTime? ViolationDate { get; set; }
+    public int StudentViolationId { get; set; }
+}
 }

@@ -1,31 +1,34 @@
 using System;
 
-public class VEmpoyeesJobsData
+namespace SSMS.ViewModels
 {
-    public int empJobId { get; set; }
-    public bool? gender { get; set; }
-    public string mobile { get; set; }
-    public string email { get; set; }
-    public DateTime? birthDateG { get; set; }
-    public string addressKsa { get; set; }
-    public string empId { get; set; }
-    public string branchNameAr { get; set; }
-    public byte branchId { get; set; }
-    public string branchNameEn { get; set; }
-    public byte departmentId { get; set; }
-    public string departmentNameAr { get; set; }
-    public string departmentNameEn { get; set; }
-    public short jobId { get; set; }
-    public string jobNameAr { get; set; }
+public class VEmpoyeeJobsData
+{
+    public int EmpJobId { get; set; }
+    public bool? Gender { get; set; }
+    public string Mobile { get; set; }
+    public string Email { get; set; }
+    public DateTime? BirthDateG { get; set; }
+    public string AddressKsa { get; set; }
+    public string EmpId { get; set; }
+    public string BranchNameAr { get; set; }
+    public byte BranchId { get; set; }
+    public string BranchNameEn { get; set; }
+    public byte DepartmentId { get; set; }
+    public string DepartmentNameAr { get; set; }
+    public string DepartmentNameEn { get; set; }
+    public short JobId { get; set; }
+    public string JobNameAr { get; set; }
     public string jobNameEn { get; set; }
-    public byte schoolID { get; set; }
-    public string schoolNameAr { get; set; }
-    public string schoolNameEn { get; set; }
-    public string userId { get; set; }
-    public byte userTypeId { get; set; }
-    public string userTypeName { get; set; }
-    public string statusAr { get; set; }
-    public string statusEn { get; set; }
-    public string empNameAr { get; set; }
-    public string empNameEn { get; set; }
+    public byte SchoolID { get; set; }
+    public string SchoolNameAr { get; set; }
+    public string SchoolNameEn { get; set; }
+    public string UserId { get; set; }
+    public byte UserTypeId { get; set; }
+    public string UserTypeName { get; set; }
+    public string StatusAr { get; set; }
+    public string StatusEn { get; set; }
+    public string EmpNameAr { get; set; }
+    public string EmpNameEn { get; set; }
+}
 }

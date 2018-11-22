@@ -1,33 +1,36 @@
 using System;
 
-public class VStudentsEduData
+namespace SSMS.ViewModels
 {
-    public string studentId { get; set; }
-    public string studentNameAr { get; set; }
-    public string studentNameEn { get; set; }
-    public byte schoolID { get; set; }
-    public string schoolNameAr { get; set; }
-    public string schoolNameEn { get; set; }
-    public byte branchId { get; set; }
-    public string branchNameAr { get; set; }
-    public string branchNameEn { get; set; }
-    public byte stageId { get; set; }
-    public string stageNameAr { get; set; }
-    public string stageNameEn { get; set; }
-    public byte gradeId { get; set; }
-    public string gradeNameAr { get; set; }
-    public string gradeNameEn { get; set; }
-    public short classroomId { get; set; }
-    public string classNameAr { get; set; }
-    public string classNameEn { get; set; }
-    public int classStudentId { get; set; }
-    public DateTime? startDate { get; set; }
-    public DateTime? endDate { get; set; }
-    public byte yearId { get; set; }
-    public string yearNameG { get; set; }
-    public string yearNameH { get; set; }
-    public DateTime? yearStartDateG { get; set; }
-    public string yearStartDateH { get; set; }
-    public DateTime? yearEndDateG { get; set; }
-    public string yearEndDateH { get; set; }
+public class VStudentEduData
+{
+    public string StudentId { get; set; }
+    public string StudentNameAr { get; set; }
+    public string StudentNameEn { get; set; }
+    public byte SchoolID { get; set; }
+    public string SchoolNameAr { get; set; }
+    public string SchoolNameEn { get; set; }
+    public byte BranchId { get; set; }
+    public string BranchNameAr { get; set; }
+    public string BranchNameEn { get; set; }
+    public byte StageId { get; set; }
+    public string StageNameAr { get; set; }
+    public string StageNameEn { get; set; }
+    public byte GradeId { get; set; }
+    public string GradeNameAr { get; set; }
+    public string GradeNameEn { get; set; }
+    public short ClassroomId { get; set; }
+    public string ClassNameAr { get; set; }
+    public string ClassNameEn { get; set; }
+    public int ClassStudentId { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public byte YearId { get; set; }
+    public string YearNameG { get; set; }
+    public string YearNameH { get; set; }
+    public DateTime? YearStartDateG { get; set; }
+    public string YearStartDateH { get; set; }
+    public DateTime? YearEndDateG { get; set; }
+    public string YearEndDateH { get; set; }
+}
 }

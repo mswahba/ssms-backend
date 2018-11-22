@@ -2,9 +2,9 @@ using System;
 
 namespace SSMS.ViewModels
 {
-  public class VEmployeesFullNameAr
+  public class VEmployeeFullNameAr
   {
-    public string empId { get; set; }
-    public string empNameAr { get; set; }
+    public string EmpId { get; set; }
+    public string EmpNameAr { get; set; }
   }
 }

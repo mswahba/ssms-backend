@@ -1,20 +1,23 @@
 using System;
 
-public class VClassroomsData
+namespace SSMS.ViewModels
 {
-    public byte schoolID { get; set; }
-    public string schoolNameAr { get; set; }
-    public string schoolNameEn { get; set; }
-    public byte branchId { get; set; }
-    public string branchNameAr { get; set; }
-    public string branchNameEn { get; set; }
-    public byte stageId { get; set; }
-    public string stageNameAr { get; set; }
-    public string stageNameEn { get; set; }
-    public byte gradeId { get; set; }
-    public string gradeNameAr { get; set; }
-    public string gradeNameEn { get; set; }
-    public short classroomId { get; set; }
-    public string classNameAr { get; set; }
-    public string classNameEn { get; set; }
+public class VClassroomData
+{
+    public byte SchoolID { get; set; }
+    public string SchoolNameAr { get; set; }
+    public string SchoolNameEn { get; set; }
+    public byte SranchId { get; set; }
+    public string BranchNameAr { get; set; }
+    public string BranchNameEn { get; set; }
+    public byte StageId { get; set; }
+    public string StageNameAr { get; set; }
+    public string StageNameEn { get; set; }
+    public byte GradeId { get; set; }
+    public string GradeNameAr { get; set; }
+    public string GradeNameEn { get; set; }
+    public short ClassroomId { get; set; }
+    public string ClassNameAr { get; set; }
+    public string ClassNameEn { get; set; }
+}
 }

@@ -1,17 +1,20 @@
 using System;
 
-public class VEmpActions
+namespace SSMS.ViewModels
 {
-    public short actionId { get; set; }
-    public string actionNameAr { get; set; }
-    public string actionNameEn { get; set; }
-    public string actionUrl { get; set; }
-    public short jobId { get; set; }
-    public string jobNameAr { get; set; }
-    public string jobNameEn { get; set; }
-    public string jobDescription { get; set; }
-    public int empJobId { get; set; }
-    public string empId { get; set; }
-    public string empNameEn { get; set; }
-    public string empNameAr { get; set; }
+public class VEmpAction
+{
+    public short ActionId { get; set; }
+    public string ActionNameAr { get; set; }
+    public string ActionNameEn { get; set; }
+    public string ActionUrl { get; set; }
+    public short JobId { get; set; }
+    public string JobNameAr { get; set; }
+    public string JobNameEn { get; set; }
+    public string JobDescription { get; set; }
+    public int EmpJobId { get; set; }
+    public string EmpId { get; set; }
+    public string EmpNameEn { get; set; }
+    public string EmpNameAr { get; set; }
+}
 }
