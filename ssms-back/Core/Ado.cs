@@ -10,7 +10,7 @@ namespace SSMS
   public static class Ado
   {
     static readonly SqlConnection con = new SqlConnection("appsettings.json".GetJsonValue<AppSettings>("ConStr"));
-    static SqlCommand command = new SqlCommand();
+    static SqlCommand command = new SqlCommand("",con);
     static SqlDataAdapter adapter = new SqlDataAdapter();
     static DataTable table = new DataTable();
     // Dictionary > represents a row , string is the [ColumnName] , Object is [ColumnValue]
@@ -19,6 +19,7 @@ namespace SSMS
     // List of Dictionary > represents table which is a list of (Dictionary of Rows)
     static List<Dictionary<string, object>> result = new List<Dictionary<string, object>>();
     static object value;
+    static int rows;
 
     public static List<Dictionary<string, object>> ExecuteQuery(string sqlQuery)
     {
@@ -27,8 +28,9 @@ namespace SSMS
       // Clear table rows and Columns before filling it.
       table.Rows.Clear();
       table.Columns.Clear();
-      command.Connection = con;
+      // set the CommandText of the command
       command.CommandText = sqlQuery;
+      // set the SelectCommand of the adapter
       adapter.SelectCommand = command;
       //use incoming SQL Query to select data from DB and fill the table using Adapter
       adapter.Fill(table);
@@ -59,6 +61,15 @@ namespace SSMS
       value = command.ExecuteScalar();
       con.Close();
       return value;
+    }
+    public static int ExecuteNonQuery(string sqlCommand)
+    {
+      command.CommandText = sqlCommand;
+      if (con.State != ConnectionState.Open)
+        con.Open();
+      rows = command.ExecuteNonQuery();
+      con.Close();
+      return rows;
     }
   }
 }
