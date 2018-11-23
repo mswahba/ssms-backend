@@ -1,0 +1,11 @@
+SELECT *
+FROM users
+ORDER BY CURRENT_TIMESTAMP
+OFFSET     6 ROWS      -- skip
+FETCH NEXT 3 ROWS ONLY -- take
+
+SELECT * FROM users ORDER BY CURRENT_TIMESTAMP OFFSET 6 ROWS FETCH NEXT 3 ROWS ONLY
+
+update users set userTypeId = 2 where userId = '7788778877'
+
+ALTER DATABASE assadara_ssms SET ENABLE_BROKER with rollback immediate

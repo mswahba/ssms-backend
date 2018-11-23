@@ -1891,25 +1891,27 @@ namespace SSMS.EntityModels
       });
 
       #endregion
+
       #region Query [Views]  Mapping
-      modelBuilder.Query<VParentFullNameAr>().ToView("v_parentsFullNameAr");
-      modelBuilder.Query<VParentFullNameEn>().ToView("v_parentsFullNameEn");
-      modelBuilder.Query<VStudentFullNameAr>().ToView("v_StudentsFullNameAr");
-      modelBuilder.Query<VStudentFullNameEn>().ToView("v_StudentsFullNameEn");
+      modelBuilder.Query<VAcademicCalender>().ToView("v_AcademicCalenders");
+      modelBuilder.Query<VBaseEduData>().ToView("v_BaseEduData");
+      modelBuilder.Query<VClassroomData>().ToView("v_ClassroomsData");
+      modelBuilder.Query<VEmpAction>().ToView("v_EmployeesActions");
       modelBuilder.Query<VEmployeeFullNameAr>().ToView("v_EmployeesFullNameAr");
       modelBuilder.Query<VEmployeeFullNameEn>().ToView("v_EmployeesFullNameEn");
       modelBuilder.Query<VEmpoyeeJobsData>().ToView("v_EmpoyeesJobsData");
-      modelBuilder.Query<VAcademicCalender>().ToView("v_AcademicCalender");
-      modelBuilder.Query<VBaseEduData>().ToView("v_BaseEduData");
-      modelBuilder.Query<VClassroomData>().ToView("v_ClassroomsData");
-      modelBuilder.Query<VEmpAction>().ToView("v_EmpActions");
+      modelBuilder.Query<VParentFullNameAr>().ToView("v_ParentsFullNameAr");
+      modelBuilder.Query<VParentFullNameEn>().ToView("v_ParentsFullNameEn");
       modelBuilder.Query<VProcedureOnStudentData>().ToView("v_ProceduresOnStudentsData");
       modelBuilder.Query<VStudentEduData>().ToView("v_StudentsEduData");
+      modelBuilder.Query<VStudentFullNameAr>().ToView("v_StudentsFullNameAr");
+      modelBuilder.Query<VStudentFullNameEn>().ToView("v_StudentsFullNameEn");
       modelBuilder.Query<VStudentViolationData>().ToView("v_StudentsViolationsData");
-      modelBuilder.Query<VTeacherEduData>().ToView("v_TeacherEduData");
-      modelBuilder.Query<VTimeTable>().ToView("v_TimeTable");
+      modelBuilder.Query<VTeacherEduData>().ToView("v_TeachersEduData");
+      modelBuilder.Query<VTimeTable>().ToView("v_TimeTables");
       modelBuilder.Query<VWeekPlan>().ToView("v_WeeksPlans");
       #endregion
+
     }
   }
 }
