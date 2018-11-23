@@ -62,21 +62,22 @@ namespace SSMS.EntityModels
     #region DbQuery
     public DbQuery<VParentFullNameAr> VParentsFullNameAr{get;set;}
     public DbQuery<VParentFullNameEn> VParentsFullNameEn{get;set;}
-    public DbQuery<VAcademicCalender> VAcademicCalender{get;set;}
+    public DbQuery<VAcademicCalender> VAcademicCalenders{get;set;}
     public DbQuery<VBaseEduData> VBaseEduData{get;set;}
     public DbQuery<VClassroomData> VClassroomsData{get;set;}
     public DbQuery<VEmpAction> VEmpActions{get;set;}
-    public DbQuery<VEmployeeFullNameAr> VEmployeesFullNameAr{get;set;}  
-    public DbQuery<VEmployeeFullNameEn> VEmployeesFullNameEn{get;set;}  
-    public DbQuery<VEmpoyeeJobsData> VEmpoyeesJobsData{get;set;}  
+    public DbQuery<VEmployeeFullNameAr> VEmployeesFullNameAr{get;set;}
+    public DbQuery<VEmployeeFullNameEn> VEmployeesFullNameEn{get;set;}
+    public DbQuery<VEmpoyeeJobsData> VEmpoyeesJobsData{get;set;}
     public DbQuery<VProcedureOnStudentData> VProceduresOnStudentsData{get;set;}
     public DbQuery<VStudentEduData> VStudentsEduData{get;set;}
     public DbQuery<VStudentFullNameAr> VStudentsFullNameAr{get;set;}
     public DbQuery<VStudentFullNameEn> VStudentsFullNameEn{get;set;}
     public DbQuery<VStudentViolationData> VStudentsViolationsData{get;set;}
-    public DbQuery<VTeacherEduData> VTeacherEduData{get;set;}
-    public DbQuery<VTimeTable> VTimeTable{get;set;}
+    public DbQuery<VTeacherEduData> VTeachersEduData{get;set;}
+    public DbQuery<VTimeTable> VTimeTables{get;set;}
     public DbQuery<VWeekPlan> VWeeksPlans{get;set;}
+
     #endregion
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -85,6 +86,8 @@ namespace SSMS.EntityModels
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+      #region Entity [Tables] Mapping
+
       modelBuilder.Entity<AcademicSemester>(entity =>
       {
         entity.HasKey(e => e.SemesterId);
@@ -1886,27 +1889,27 @@ namespace SSMS.EntityModels
                   .HasForeignKey(d => d.WeekId)
                   .HasConstraintName("FK_weeksPlans_academicWeeks");
       });
-      // view and query mapping
+
+      #endregion
+      #region Query [Views]  Mapping
       modelBuilder.Query<VParentFullNameAr>().ToView("v_parentsFullNameAr");
-      modelBuilder.Query<VParentFullNameEn>().ToView("v_parentsFullNameEn");      
-      modelBuilder.Query<VStudentFullNameAr>().ToView("v_StudentsFullNameAr");      
-      modelBuilder.Query<VStudentFullNameEn>().ToView("v_StudentsFullNameEn");      
-      modelBuilder.Query<VEmployeeFullNameAr>().ToView("v_EmployeesFullNameAr");      
-      modelBuilder.Query<VEmployeeFullNameEn>().ToView("v_EmployeesFullNameEn");  
-      modelBuilder.Query<VEmpoyeeJobsData>().ToView("v_EmpoyeesJobsData");      
-      modelBuilder.Query<VAcademicCalender>().ToView("v_AcademicCalender");      
-      modelBuilder.Query<VBaseEduData>().ToView("v_BaseEduData");      
-      modelBuilder.Query<VClassroomData>().ToView("v_ClassroomsData");      
+      modelBuilder.Query<VParentFullNameEn>().ToView("v_parentsFullNameEn");
+      modelBuilder.Query<VStudentFullNameAr>().ToView("v_StudentsFullNameAr");
+      modelBuilder.Query<VStudentFullNameEn>().ToView("v_StudentsFullNameEn");
+      modelBuilder.Query<VEmployeeFullNameAr>().ToView("v_EmployeesFullNameAr");
+      modelBuilder.Query<VEmployeeFullNameEn>().ToView("v_EmployeesFullNameEn");
+      modelBuilder.Query<VEmpoyeeJobsData>().ToView("v_EmpoyeesJobsData");
+      modelBuilder.Query<VAcademicCalender>().ToView("v_AcademicCalender");
+      modelBuilder.Query<VBaseEduData>().ToView("v_BaseEduData");
+      modelBuilder.Query<VClassroomData>().ToView("v_ClassroomsData");
       modelBuilder.Query<VEmpAction>().ToView("v_EmpActions");
-      modelBuilder.Query<VProcedureOnStudentData>().ToView("v_ProceduresOnStudentsData");   
-      modelBuilder.Query<VStudentEduData>().ToView("v_StudentsEduData");      
-      modelBuilder.Query<VStudentViolationData>().ToView("v_StudentsViolationsData");      
-      modelBuilder.Query<VTeacherEduData>().ToView("v_TeacherEduData");      
-      modelBuilder.Query<VTimeTable>().ToView("v_TimeTable");      
-      modelBuilder.Query<VWeekPlan>().ToView("v_WeeksPlans");            
-
-
-
+      modelBuilder.Query<VProcedureOnStudentData>().ToView("v_ProceduresOnStudentsData");
+      modelBuilder.Query<VStudentEduData>().ToView("v_StudentsEduData");
+      modelBuilder.Query<VStudentViolationData>().ToView("v_StudentsViolationsData");
+      modelBuilder.Query<VTeacherEduData>().ToView("v_TeacherEduData");
+      modelBuilder.Query<VTimeTable>().ToView("v_TimeTable");
+      modelBuilder.Query<VWeekPlan>().ToView("v_WeeksPlans");
+      #endregion
     }
   }
 }
