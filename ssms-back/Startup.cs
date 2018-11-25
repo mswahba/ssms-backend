@@ -71,6 +71,8 @@ namespace SSMS
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      // get the DI
+      Helpers.DI = services;
       // AddScoped configues settings to create new instance of this type per http request
       services.AddScoped<BaseService>();
       // Add automapper
@@ -136,11 +138,18 @@ namespace SSMS
           options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
           options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         });
+      // Test GetService from DI
+      // var db = Helpers.GetService<SSMSContext>();
+      // Console.WriteLine(db.Users.Count());
+      // var config = Helpers.GetService<IConfiguration>();
+      // Console.WriteLine(config.GetValue<bool>("Logging:IncludeScopes"));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
+      // get the DI
+      // Helpers.DI = app.ApplicationServices;
       // Exception Page [Error Page]
       if (env.IsDevelopment())
         app.UseDeveloperExceptionPage();

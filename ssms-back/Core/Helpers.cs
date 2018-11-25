@@ -7,16 +7,20 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.Extensions.DependencyInjection;
 using SSMS.EntityModels;
 using SSMS.ViewModels;
 using SSMS.Users;
+using SSMS.Hubs;
 
 namespace SSMS
 {
   public static class Helpers
   {
+    // get the DI [Dependency Injection Service]
+    public static IServiceCollection DI { get; set; }
     // get SecretKey from appsettings.json file
     public static SymmetricSecurityKey GetSecretKey()
     {
@@ -110,10 +114,10 @@ namespace SSMS
               ? types.Where(t => t.Namespace == nameSpace)
               : types;
     }
-    // sending mail messages
-    public static void SendMail(string mailTo, string subject, string body)
+    public static T GetService<T>() where T : class
     {
-
+      return DI.BuildServiceProvider().GetService<T>();
     }
+
   }
 }

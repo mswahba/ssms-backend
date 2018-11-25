@@ -365,12 +365,6 @@ namespace SSMS
       var query = _service.ApplySelect<TEntity>(fields, null);
       return Ok(query);
     }
-    [HttpGet("select-Ado")]
-    public IActionResult SelectAdo([FromQuery] string sqlQuery)
-    {
-      var result = Ado.ExecuteQuery(sqlQuery);
-      return Ok(result);
-    }
     // Users/sort?orderby= userId desc, userPassword
     [HttpGet("sort")]
     public IActionResult Sort([FromQuery] string orderBy)
@@ -379,26 +373,6 @@ namespace SSMS
         return BadRequest(new Error() { Message = "Must supply 'Order By' statement" });
       var query = _service.ApplySort<TEntity>(orderBy, null);
       return Ok(query);
-    }
-    [HttpGet("parent-fullname/{lang}")]
-    public IActionResult ParentFullName([FromRoute] string lang)
-    {
-      switch (lang.ToLower())
-      {
-        case "ar":
-          return Ok(_service.GetView<VParentFullNameAr>());
-        case "en":
-          return Ok(_service.GetView<VParentFullNameEn>());
-        default:
-          return BadRequest(new Error() { Message = "Not a valid Lang !!" });
-      }
-    }
-    [HttpGet("views/{viewName}")]
-    public IActionResult Views([FromRoute] string viewName)
-    {
-      Type viewType = Helpers.GetAllClasses("SSMS.ViewModels")
-            .SingleOrDefault(t => t.Name == viewName);
-      return Ok(_service.GetView(viewType));
     }
 
     #endregion
