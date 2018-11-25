@@ -27,6 +27,7 @@ namespace SSMS
 {
   public class Startup
   {
+    public IConfiguration Config { get; }
     public Startup(IConfiguration config)
     {
       Config = config;
@@ -64,9 +65,9 @@ namespace SSMS
       // Console.WriteLine(randm.Next(100000,999999));
 
       // Console.WriteLine(nameof(User) == nameof(ViewModels.VUser));
+      // var db = (SSMSContext)Activator.CreateInstance(typeof(SSMSContext));
+      // Console.WriteLine(db.Users.Count());
     }
-
-    public IConfiguration Config { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
@@ -143,6 +144,8 @@ namespace SSMS
       // Console.WriteLine(db.Users.Count());
       // var config = Helpers.GetService<IConfiguration>();
       // Console.WriteLine(config.GetValue<bool>("Logging:IncludeScopes"));
+      SqlTableWatcher.Watch<User>("users");
+      // SqlTableWatcher.RegisterAllTableWatchers();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
