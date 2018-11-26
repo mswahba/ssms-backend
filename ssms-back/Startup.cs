@@ -141,11 +141,12 @@ namespace SSMS
         });
       // Test GetService from DI
       // var db = Helpers.GetService<SSMSContext>();
+      // Console.WriteLine(db.Model.FindEntityType(typeof(User)).Relational().TableName);
       // Console.WriteLine(db.Users.Count());
       // var config = Helpers.GetService<IConfiguration>();
       // Console.WriteLine(config.GetValue<bool>("Logging:IncludeScopes"));
-      SqlTableWatcher.Watch<User>("users");
-      // SqlTableWatcher.RegisterAllTableWatchers();
+      // SqlTableWatcher.Watch<User>("users");
+      SqlTableWatcher.RegisterTablesWatchers(new string[] { "User", "School", "Country", "Action" });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

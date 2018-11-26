@@ -4,13 +4,17 @@ using Microsoft.Extensions.Configuration;
 using TableDependency.SqlClient;
 using TableDependency.SqlClient.Base.Enums;
 using TableDependency.SqlClient.Base.EventArgs;
+using SSMS.EntityModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace SSMS
 {
   public static class SqlTableWatcher
   {
     // get the db connectionString from the appsettings.json
-    private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>("ConStr");
+    private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>("ConnectionStrings:local");
+    // get the ef db context from the DI
+    private static SSMSContext _db = Helpers.GetService<SSMSContext>();
     // do the needed action on every [Insert - Update - Delete] operation
     private static void OnChange<T>(object sender, RecordChangedEventArgs<T> e)
       where T : class, new()
@@ -46,17 +50,26 @@ namespace SSMS
       tableDependency.Start();
       Console.WriteLine($"SqlTableWatcher Started on: {tableName} table.");
     }    
-    // loop through all Table Entities and register SqlTableWatcher
-    public static void RegisterAllTableWatchers()
+    // loop through Entities [all - given types] and register SqlTableWatcher
+    public static void RegisterTablesWatchers(string[] types)
     {
+      // hold the filter predicate
+      Func<Type, bool> predicate;
+      // if there are no types then filter out the SSMSContext
+      if (types == null)
+        predicate = c => c.Name != "SSMSContext";
+      // else only get the listed types
+      else
+        predicate = c => types.Any(t => t == c.Name);
+      // register sqltablewatchers
       Helpers.GetAllClasses("SSMS.EntityModels")
-              .Where(c => c.Name != "SSMSContext")
+              .Where(predicate)
               .ToList()
               .ForEach(type => {
                 typeof(SqlTableWatcher)
                   .GetMethod("Watch")
                   .MakeGenericMethod(type)
-                  .Invoke(Activator.CreateInstance(type), new object[] { type.Name });
+                  .Invoke(Activator.CreateInstance(type), new object[] { _db.Model.FindEntityType(type).Relational().TableName });
               });
     }    
   }
