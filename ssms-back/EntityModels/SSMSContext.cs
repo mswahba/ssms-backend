@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 using SSMS.ViewModels;
 
 namespace SSMS.EntityModels
@@ -81,8 +82,10 @@ namespace SSMS.EntityModels
     #endregion
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+      string key = "ConnectionStrings:assadara_ssms";
+      // string key = "ConStr";
       if (!optionsBuilder.IsConfigured)
-        optionsBuilder.UseSqlServer("appsettings.json".GetJsonValue<AppSettings>("ConStr"));
+        optionsBuilder.UseSqlServer( Helpers.GetService<IConfiguration>().GetValue<string>(key));
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

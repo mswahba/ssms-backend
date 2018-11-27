@@ -12,7 +12,7 @@ namespace SSMS
   public static class SqlTableWatcher
   {
     // get the db connectionString from the appsettings.json
-    private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>("ConnectionStrings:local");
+    private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>("ConnectionStrings:assadara_ssms");
     // get the ef db context from the DI
     private static SSMSContext _db = Helpers.GetService<SSMSContext>();
     // do the needed action on every [Insert - Update - Delete] operation
@@ -49,9 +49,9 @@ namespace SSMS
       tableDependency.OnChanged += OnChange;
       tableDependency.Start();
       Console.WriteLine($"SqlTableWatcher Started on: {tableName} table.");
-    }    
+    }
     // loop through Entities [all - given types] and register SqlTableWatcher
-    public static void RegisterTablesWatchers(string[] types)
+    public static void WatchAll(string[] types)
     {
       // hold the filter predicate
       Func<Type, bool> predicate;
@@ -71,6 +71,6 @@ namespace SSMS
                   .MakeGenericMethod(type)
                   .Invoke(Activator.CreateInstance(type), new object[] { _db.Model.FindEntityType(type).Relational().TableName });
               });
-    }    
+    }
   }
 }

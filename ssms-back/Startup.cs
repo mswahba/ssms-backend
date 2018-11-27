@@ -146,7 +146,7 @@ namespace SSMS
       // var config = Helpers.GetService<IConfiguration>();
       // Console.WriteLine(config.GetValue<bool>("Logging:IncludeScopes"));
       // SqlTableWatcher.Watch<User>("users");
-      SqlTableWatcher.RegisterTablesWatchers(new string[] { "User", "School", "Country", "Action" });
+      SqlTableWatcher.WatchAll(new string[] { "User", "School", "Country", "Action" });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
