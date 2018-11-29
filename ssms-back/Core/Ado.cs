@@ -4,12 +4,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace SSMS
 {
   public static class Ado
   {
-    static readonly SqlConnection con = new SqlConnection("appsettings.json".GetJsonValue<AppSettings>("ConStr"));
+    static string key = "ConnectionStrings:server:assadara_ssms";
+    static readonly SqlConnection con = new SqlConnection(Helpers.GetService<IConfiguration>().GetValue<string>(key));
     static SqlCommand command = new SqlCommand("",con);
     static SqlDataAdapter adapter = new SqlDataAdapter();
     static DataTable table = new DataTable();

@@ -14,6 +14,7 @@ using SSMS.EntityModels;
 using SSMS.ViewModels;
 using SSMS.Users;
 using SSMS.Hubs;
+using Microsoft.Extensions.Configuration;
 
 namespace SSMS
 {
@@ -29,12 +30,13 @@ namespace SSMS
     // Generate JWT [JSON Web Token]
     public static string GetToken(VUser user)
     {
+      var config = GetService<IConfiguration>();
       // get the secret string
       var secret = GetSecretKey();
       // hashing the secret string
       var creds = new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
       // get the token Lifetime in hours
-      int hours = Convert.ToInt32("appsettings.json".GetJsonValue<AppSettings>("JWT_Lifetime"));
+      int hours = config.GetValue<int>("JWT:Lifetime");
       // get all user properties excluding any [Type = Collection]
       // then return new Collection<Claims> [ holding KeyValue pair of each User Property ]
       var claims = user.GetProperties()
@@ -42,8 +44,8 @@ namespace SSMS
                       .Select(property => new Claim(property.Name, (property.GetValue(user) != null) ? property.GetValue(user).ToString() : ""));
       // Create Token with Token Options
       var token = new JwtSecurityToken(
-          issuer: "appsettings.json".GetJsonValue<AppSettings>("JWT_Issuer"),
-          audience: "appsettings.json".GetJsonValue<AppSettings>("JWT_Audience"),
+          issuer: config.GetValue<string>("JWT:Issuer"),
+          audience: config.GetValue<string>("JWT:Audience"),
           claims: claims,
           expires: DateTime.UtcNow.AddHours(hours),
           signingCredentials: creds);
@@ -63,15 +65,16 @@ namespace SSMS
     // A Function to return new TokenValidationParameters object
     public static TokenValidationParameters GetTokenValidationOptions(bool validateLifetime)
     {
+      var config = GetService<IConfiguration>();
       return new TokenValidationParameters
       {
         ValidateLifetime = validateLifetime,
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "appsettings.json".GetJsonValue<AppSettings>("JWT_Issuer"),
-        ValidAudience = "appsettings.json".GetJsonValue<AppSettings>("JWT_Audience"),
-        IssuerSigningKey = Helpers.GetSecretKey()
+        ValidIssuer = config.GetValue<string>("JWT:Issuer"),
+        ValidAudience = config.GetValue<string>("JWT:Audience"),
+        IssuerSigningKey = GetSecretKey()
       };
     }
     // Validate and Get Claims From the given Expired access Token
@@ -114,6 +117,7 @@ namespace SSMS
               ? types.Where(t => t.Namespace == nameSpace)
               : types;
     }
+    // Get DI Services
     public static T GetService<T>() where T : class
     {
       return DI.BuildServiceProvider().GetService<T>();

@@ -82,8 +82,7 @@ namespace SSMS.EntityModels
     #endregion
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-      string key = "ConnectionStrings:assadara_ssms";
-      // string key = "ConStr";
+      string key = "ConnectionStrings:server:assadara_ssms";
       if (!optionsBuilder.IsConfigured)
         optionsBuilder.UseSqlServer( Helpers.GetService<IConfiguration>().GetValue<string>(key));
     }

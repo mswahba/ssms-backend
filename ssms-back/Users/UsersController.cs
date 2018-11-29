@@ -10,6 +10,7 @@ using System.Net.Mail;
 using SSMS.EntityModels;
 using SSMS.ViewModels;
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 
 namespace SSMS.Users
 {
@@ -204,7 +205,7 @@ namespace SSMS.Users
       if(emailTo != null && addResult == 1)
       {
         await _smtpClient.SendMailAsync(new MailMessage(
-                from: "appsettings.json".GetJsonValue<AppSettings>("Email_From"),
+                from: Helpers.GetService<IConfiguration>().GetValue<string>("Email:From"),
                 to: emailTo,
                 subject: $"{userName}: Verification Code from SSMS to change your password",
                 body: $@"Dear: {userName}

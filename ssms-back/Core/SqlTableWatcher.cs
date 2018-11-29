@@ -11,8 +11,9 @@ namespace SSMS
 {
   public static class SqlTableWatcher
   {
+    private static string key = "ConnectionStrings:server:assadara_ssms";
     // get the db connectionString from the appsettings.json
-    private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>("ConnectionStrings:assadara_ssms");
+    private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>(key);
     // get the ef db context from the DI
     private static SSMSContext _db = Helpers.GetService<SSMSContext>();
     // do the needed action on every [Insert - Update - Delete] operation
