@@ -27,45 +27,12 @@ namespace SSMS
 {
   public class Startup
   {
-    public IConfiguration Config { get; }
+    private readonly IConfiguration _config;
     public Startup(IConfiguration config)
     {
-      Config = config;
-      // Console.WriteLine( string.Join("\n", Helpers.GetAllClasses("SSMS.Hubs")));
-      // Console.WriteLine( string.Join("\n",
-      //     new Student()
-      //         .GetProperties()
-      //         .Where(prop => {
-      //           var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
-      //           return Type.GetTypeCode(propertyType) != TypeCode.Object;
-      //         })
-      //         .Select( prop => prop.Name)
-      // ));
-
-      // Console.WriteLine(Helpers.GetSecuredRandStr());
-      // var principal = Helpers.ValidateExpiredToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1NTY2NTU2NjU1IiwiVXNlclR5cGVJZCI6IjMiLCJBY2NvdW50U3RhdHVzSWQiOiIxIiwiU3Vic2NyaWJlRGF0ZSI6IjA5LzExLzIwMTggMTA6NTM6MDAgUE0iLCJMYXN0QWN0aXZlIjoiMDkvMTEvMjAxOCAxMDo1Mjo1NSBQTSIsIklzRGVsZXRlZCI6IkZhbHNlIiwiZXhwIjoxNTQyNjA4ODg4LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.jk-Zl-MDlU8riZbAZNFCwxKftNvDys9P7uClbXVLxpU");
-      // foreach (var item in principal.Claims.Where(c => c.Type == "UserId"))
-      //   Console.WriteLine(item.Type + " " + item.Value);
-
-      // var vUser = Mapper.Map<VUser>("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI1NTY2NTU2NjU1IiwiVXNlclR5cGVJZCI6IjMiLCJBY2NvdW50U3RhdHVzSWQiOiIxIiwiU3Vic2NyaWJlRGF0ZSI6IjA5LzExLzIwMTggMTA6NTM6MDAgUE0iLCJMYXN0QWN0aXZlIjoiMDkvMTEvMjAxOCAxMDo1Mjo1NSBQTSIsIklzRGVsZXRlZCI6IkZhbHNlIiwiZXhwIjoxNTQyNjA4ODg4LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMDAifQ.jk-Zl-MDlU8riZbAZNFCwxKftNvDys9P7uClbXVLxpU");
-      // foreach (var prop in vUser.GetProperties())
-      //   Console.WriteLine(prop.Name + ": " + prop.GetValue(vUser));
-      // int hours = Config.GetValue<int>("JWT:Lifetime");
-      // Console.WriteLine(hours);
-
-      // Console.WriteLine(Helpers.ValidateHash("000000","idtMPnx4UqHp3zOaBQ6YvN41JSqXAmUikDU/FiKh3TI","mY63vmpNbk2F+gp1bROTIPZZdV3x7y6gtribcLrsirI"));
-
-      // var Host = Config.GetValue<String>("Email:Host");
-      // var Port = Config.GetValue<int>("Email:Port");
-      // var UserName = Config.GetValue<String>("Email:UserName");
-      // var Password = Config.GetValue<String>("Email:Password");
-      // Console.WriteLine($"{Host}\n{Port}\n{UserName}\n{Password}");
-      // Random randm = new Random();
-      // Console.WriteLine(randm.Next(100000,999999));
-
-      // Console.WriteLine(nameof(User) == nameof(ViewModels.VUser));
-      // var db = (SSMSContext)Activator.CreateInstance(typeof(SSMSContext));
-      // Console.WriteLine(db.Users.Count());
+      _config = config;
+      // test code
+      Test.onStartupCtor(_config);
     }
 
     // This method gets called by the runtime. Use this method to add services to the container.
@@ -84,12 +51,12 @@ namespace SSMS
         {
           UseDefaultCredentials = false,
           DeliveryMethod = SmtpDeliveryMethod.Network,
-          Host = Config.GetValue<String>("Email:Host"),
-          Port = Config.GetValue<int>("Email:Port"),
-          EnableSsl = Config.GetValue<bool>("Email:SSL"),
+          Host = _config.GetValue<String>("Email:Host"),
+          Port = _config.GetValue<int>("Email:Port"),
+          EnableSsl = _config.GetValue<bool>("Email:SSL"),
           Credentials = new NetworkCredential(
-            Config.GetValue<String>("Email:UserName"),
-            Config.GetValue<String>("Email:Password")
+            _config.GetValue<String>("Email:UserName"),
+            _config.GetValue<String>("Email:Password")
           )
         };
       });
@@ -138,22 +105,13 @@ namespace SSMS
           options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
           options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         });
-      // Test GetService from DI
-      // var db = Helpers.GetService<SSMSContext>();
-      // Console.WriteLine(db.Model.FindEntityType(typeof(User)).Relational().TableName);
-      // Console.WriteLine(db.Users.Count());
-      // var config = Helpers.GetService<IConfiguration>();
-      // Console.WriteLine(config.GetValue<bool>("Logging:IncludeScopes"));
-      // SqlTableWatcher.Watch<User>("users");
-      // SqlTableWatcher.WatchAll(null);
-      SqlTableWatcher.WatchAll(new string[] { "User", "School", "Country", "Action" });
+      // test code
+      Test.onConfigServices();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
-      // get the DI
-      // Helpers.DI = app.ApplicationServices;
       // Exception Page [Error Page]
       if (env.IsDevelopment())
         app.UseDeveloperExceptionPage();
@@ -183,15 +141,6 @@ namespace SSMS
       // use SignalR and define client-side connection routes [url]
       app.UseSignalR(routes =>
       {
-        // // get all classes in SSMS.Hubs namespace and loop through them
-        // foreach (Type T in Helpers.GetAllClasses("SSMS.Hubs"))
-        // {
-        //   // dynamically invoke the Generic [MapHub] Method in [routes] object
-        //   routes.GetType()
-        //         .GetMethod("MapHub")
-        //         .MakeGenericMethod(T)
-        //         .Invoke(routes, new object[] { T.Name });
-        // }
         routes.MapHub<UsersHub>("/users-hub");
         routes.MapHub<ParentsHub>("/parents-hub");
         routes.MapHub<StudentsHub>("/students-hub");

@@ -25,7 +25,8 @@ namespace SSMS
     // get SecretKey from appsettings.json file
     public static SymmetricSecurityKey GetSecretKey()
     {
-      return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("appsettings.json".GetJsonValue<AppSettings>("SecretKey")));
+      string secret = GetService<IConfiguration>().GetValue<string>("SecretKey"); // "appsettings.json".GetJsonValue<AppSettings>("SecretKey");
+      return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
     }
     // Generate JWT [JSON Web Token]
     public static string GetToken(VUser user)

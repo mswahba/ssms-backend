@@ -23,6 +23,7 @@ namespace SSMS.Users
     // Store the SmtpClient object that comes from [DI]
     private readonly SmtpClient _smtpClient;
     private readonly IMapper _mapper;
+    private readonly IConfiguration _config;
     private static string _tableName = "users";
     private User user;
     private VUser vUser;
@@ -60,13 +61,14 @@ namespace SSMS.Users
     }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
-    public UsersController(BaseService service, SmtpClient smtpClient, IMapper mapper)
+    public UsersController(BaseService service, SmtpClient smtpClient, IMapper mapper, IConfiguration config)
                         : base(service, mapper, _tableName, "userId")
     {
        // DI inject usersService object here from startup Class
       _service = service;
       _smtpClient = smtpClient;
       _mapper = mapper;
+      _config = config;
     }
 
     #region UserController Actions
@@ -149,7 +151,7 @@ namespace SSMS.Users
       if(forgottenPassword.VerificationCode.Length == 10)
       {
         // if the code doesn't match the Master Code return Exception [BadRequest]
-        if(forgottenPassword.VerificationCode != "appsettings.json".GetJsonValue<AppSettings>("MasterVerificationCode"))
+        if(forgottenPassword.VerificationCode != _config.GetValue<string>("MasterVerificationCode") )
           throw new Exception("Invalid Verification Code!!!");
         user = _service.Find<User, string>(forgottenPassword.UserId);
         // (_) If user not found then return Exception [BadRequest]
@@ -167,7 +169,7 @@ namespace SSMS.Users
         if (user == null)
           throw new Exception("Invalid User !!!");
         // (_) Get VerificationCodeLifetime in Hours from AppSettings
-        int codeLifetime = Convert.ToInt32("appsettings.json".GetJsonValue<AppSettings>("VerificationCodeLifetime"));
+        int codeLifetime = _config.GetValue<int>("VerificationCodeLifetime");
         // (_) Get VerificationCode where code = forgottenPassword.VerificationCode
         // and CodeTypeId == 1 [FORGET_PASSWORD] and not expired
         var code = user.VerificationCodes.FirstOrDefault(vc =>

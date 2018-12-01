@@ -1,21 +1,41 @@
 using System;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using TableDependency.SqlClient;
 using TableDependency.SqlClient.Base.Enums;
 using TableDependency.SqlClient.Base.EventArgs;
-using SSMS.EntityModels;
+using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using SSMS.EntityModels;
 
 namespace SSMS
 {
   public static class SqlTableWatcher
   {
+    // hold the db connection string key
     private static string key = "ConnectionStrings:server:assadara_ssms";
+    // hold all SqlTablesWatchers
+    private static Dictionary<string,dynamic> tablesWatchers = new Dictionary<string,dynamic>();
+    // hold the types list
+    private static List<Type> types = new List<Type>();
     // get the db connectionString from the appsettings.json
     private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>(key);
     // get the ef db context from the DI
     private static SSMSContext _db = Helpers.GetService<SSMSContext>();
+    // fill the types List to be used in both [WatchAll - StopAll] Methods
+    private static void GetTypes(string[] typeNames)
+    {
+      // if there are no types then filter out the SSMSContext
+      if (typeNames == null)
+        types = Helpers.GetAllClasses("SSMS.EntityModels")
+                  .Where(c => c.Name != "SSMSContext")
+                  .ToList();
+      // else only get the listed types
+      else
+        types = typeNames
+                  .Select(tName => Type.GetType($"SSMS.EntityModels.{tName}"))
+                  .ToList();
+    }
     // do the needed action on every [Insert - Update - Delete] operation
     private static void OnChange<T>(object sender, RecordChangedEventArgs<T> e)
       where T : class, new()
@@ -45,33 +65,46 @@ namespace SSMS
     public static void Watch<T>(string tableName)
       where T : class, new()
     {
-      var tableDependency = new SqlTableDependency<T>(conStr, tableName);
-      tableDependency.OnError += OnError;
-      tableDependency.OnChanged += OnChange;
-      tableDependency.Start();
+      // hold the current table watcher
+      var tableWatcher = new SqlTableDependency<T>(conStr, tableName);
+      // bind tableDependency events
+      tableWatcher.OnError += OnError;
+      tableWatcher.OnChanged += OnChange;
+      // start the tableDependency service
+      tableWatcher.Start();
+      // add the current tableDependency to the tablesWatchers dictionary
+      tablesWatchers.Add(tableName,tableWatcher);
+      // log to the console
       Console.WriteLine($"SqlTableWatcher Started on: {tableName} table.");
     }
-    // loop through Entities [all - given types] and register SqlTableWatcher
-    public static void WatchAll(string[] types)
+    public static void Stop(string tableName)
     {
-      // hold the filter predicate
-      Func<Type, bool> predicate;
-      // if there are no types then filter out the SSMSContext
-      if (types == null)
-        predicate = c => c.Name != "SSMSContext";
-      // else only get the listed types
-      else
-        predicate = c => types.Any(t => t == c.Name);
+      // stop the tableDependency service
+      tablesWatchers[tableName].Stop();
+      // log to the console
+      Console.WriteLine($"SqlTableWatcher Stopped on: {tableName} table.");
+    }
+    // loop through Entities [all - given types] and register [start] SqlTableWatcher
+    public static void WatchAll(string[] typeNames)
+    {
+      // fill the TypeList [types]
+      GetTypes(typeNames);
       // register sqltablewatchers
-      Helpers.GetAllClasses("SSMS.EntityModels")
-              .Where(predicate)
-              .ToList()
-              .ForEach(type => {
-                typeof(SqlTableWatcher)
-                  .GetMethod("Watch")
-                  .MakeGenericMethod(type)
-                  .Invoke(Activator.CreateInstance(type), new object[] { _db.Model.FindEntityType(type).Relational().TableName });
-              });
+      types.ForEach(type =>
+      {
+        typeof(SqlTableWatcher)
+          .GetMethod("Watch")
+          .MakeGenericMethod(type)
+          .Invoke(Activator.CreateInstance(type), new object[] { _db.Model.FindEntityType(type).Relational().TableName });
+      });
+    }
+    // loop through Entities [all - given types] and stop SqlTableWatcher
+    public static void StopAll(string[] typeNames)
+    {
+      // fill the TypeList [types]
+      GetTypes(typeNames);
+      // stop sqltablewatchers
+      types.ForEach(type => Stop(_db.Model.FindEntityType(type).Relational().TableName));
     }
   }
 }
