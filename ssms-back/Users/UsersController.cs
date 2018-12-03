@@ -11,6 +11,8 @@ using SSMS.EntityModels;
 using SSMS.ViewModels;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.SignalR;
+using SSMS.Hubs;
 
 namespace SSMS.Users
 {
@@ -24,6 +26,7 @@ namespace SSMS.Users
     private readonly SmtpClient _smtpClient;
     private readonly IMapper _mapper;
     private readonly IConfiguration _config;
+    private readonly IHubContext<DbHub> _hubContext;
     private static string _tableName = "users";
     private User user;
     private VUser vUser;
@@ -31,10 +34,10 @@ namespace SSMS.Users
     private int _UpdateRefreshToken(User user, string refreshToken, string deviceInfo)
     {
       var existingRefreshToken = user.RefreshTokens.FirstOrDefault(rt => rt.DeviceInfo == deviceInfo);
-      if(existingRefreshToken != null)
+      if (existingRefreshToken != null)
       {
         existingRefreshToken.Token = refreshToken;
-        _service.SetState<RefreshToken>(existingRefreshToken,"Modified");
+        _service.SetState<RefreshToken>(existingRefreshToken, "Modified");
         return _service.Save();
       }
       return -1;
@@ -42,9 +45,9 @@ namespace SSMS.Users
     // do Insert Or Update The user Refresh Token [used in SignIn Action]
     private void _InsertOrUpdateRefreshToken(User user, string refreshToken, string deviceInfo)
     {
-      int updatedRows = _UpdateRefreshToken(user,refreshToken,deviceInfo);
-      if(updatedRows == -1)
-        _service.Add<RefreshToken>(new RefreshToken() { Token =  refreshToken, DeviceInfo = deviceInfo, UserId = user.UserId });
+      int updatedRows = _UpdateRefreshToken(user, refreshToken, deviceInfo);
+      if (updatedRows == -1)
+        _service.Add<RefreshToken>(new RefreshToken() { Token = refreshToken, DeviceInfo = deviceInfo, UserId = user.UserId });
     }
     // do Change the userPassword with the newPassword
     private IActionResult _DoChangePassword(User user, string newPassword)
@@ -61,14 +64,15 @@ namespace SSMS.Users
     }
     // Give the BaseConstructor the dependency it needs which is DB contect
     // To get Db Context, we receive it from DI then pass it to Base constructor
-    public UsersController(BaseService service, SmtpClient smtpClient, IMapper mapper, IConfiguration config)
-                        : base(service, mapper, _tableName, "userId")
+    public UsersController(BaseService service, SmtpClient smtpClient, IMapper mapper, IConfiguration config, IHubContext<DbHub> hubContext)
+                        : base(service, mapper, hubContext, _tableName, "userId")
     {
-       // DI inject usersService object here from startup Class
+      // DI inject usersService object here from startup Class
       _service = service;
       _smtpClient = smtpClient;
       _mapper = mapper;
       _config = config;
+      _hubContext = hubContext;
     }
 
     #region UserController Actions
@@ -92,13 +96,14 @@ namespace SSMS.Users
       vUser = Map.ToVUser(user);
       // (5) if everything is ok, return the [vUser - accessToken - refreshToken]
       return Ok(new
+      {
+        User = vUser,
+        Tokens = new JWTTokens()
         {
-          User = vUser,
-          Tokens = new JWTTokens() {
-            AccessToken = Helpers.GetToken(vUser),
-            RefreshToken = refreshToken
-          }
+          AccessToken = Helpers.GetToken(vUser),
+          RefreshToken = refreshToken
         }
+      }
       );
     }
     [AllowAnonymous]
@@ -108,7 +113,7 @@ namespace SSMS.Users
       // (1) Get User by his Credentials [userId - userPassword]
       // and validate the userPassword against Passwordhash
       // and if exists, include all user RefreshTokens
-      user = _service.GetOne<User>(new List<string>() { "RefreshTokens" }, u => u.UserId == signin.UserId && Helpers.ValidateHash(signin.UserPassword,u.PasswordSalt,u.PasswordHash) );
+      user = _service.GetOne<User>(new List<string>() { "RefreshTokens" }, u => u.UserId == signin.UserId && Helpers.ValidateHash(signin.UserPassword, u.PasswordSalt, u.PasswordHash));
       // (2) if User doesn't exist return badRequest
       if (user == null)
         return BadRequest(new Error() { Message = "Invalid User." });
@@ -123,13 +128,14 @@ namespace SSMS.Users
       vUser = Map.ToVUser(user);
       // (7) if everything is ok, return the [vUser - accessToken - refreshToken]
       return Ok(new
+      {
+        User = vUser,
+        Tokens = new JWTTokens()
         {
-          User = vUser,
-          Tokens = new JWTTokens() {
-            AccessToken = Helpers.GetToken(vUser),
-            RefreshToken = refreshToken
-          }
+          AccessToken = Helpers.GetToken(vUser),
+          RefreshToken = refreshToken
         }
+      }
       );
     }
     [AllowAnonymous]
@@ -148,10 +154,10 @@ namespace SSMS.Users
     public IActionResult ForgetPassword(ForgottenPassword forgottenPassword)
     {
       // is Admin [Master] Code
-      if(forgottenPassword.VerificationCode.Length == 10)
+      if (forgottenPassword.VerificationCode.Length == 10)
       {
         // if the code doesn't match the Master Code return Exception [BadRequest]
-        if(forgottenPassword.VerificationCode != _config.GetValue<string>("MasterVerificationCode") )
+        if (forgottenPassword.VerificationCode != _config.GetValue<string>("MasterVerificationCode"))
           throw new Exception("Invalid Verification Code!!!");
         user = _service.Find<User, string>(forgottenPassword.UserId);
         // (_) If user not found then return Exception [BadRequest]
@@ -164,7 +170,7 @@ namespace SSMS.Users
       else
       {
         // (_) Get User by UserId Including all its VerificationCodes
-        user = _service.GetOne<User>(new List<string>() { "VerificationCodes" }, u => u.UserId == forgottenPassword.UserId );
+        user = _service.GetOne<User>(new List<string>() { "VerificationCodes" }, u => u.UserId == forgottenPassword.UserId);
         // (_) If user not found then return [BadRequest]
         if (user == null)
           throw new Exception("Invalid User !!!");
@@ -173,12 +179,12 @@ namespace SSMS.Users
         // (_) Get VerificationCode where code = forgottenPassword.VerificationCode
         // and CodeTypeId == 1 [FORGET_PASSWORD] and not expired
         var code = user.VerificationCodes.FirstOrDefault(vc =>
-          vc.Code ==  forgottenPassword.VerificationCode &&
-          vc.SentTime >= DateTime.UtcNow.AddHours(3-codeLifetime) &&
+          vc.Code == forgottenPassword.VerificationCode &&
+          vc.SentTime >= DateTime.UtcNow.AddHours(3 - codeLifetime) &&
           vc.CodeTypeId == 1
         );
         // (_) if code not found then return [BadRequest]
-        if(code == null)
+        if (code == null)
           throw new Exception("Invalid OR Expired VerificationCode !!!");
         // (_) if user and code ok then Change Password with the new one
         return _DoChangePassword(user, forgottenPassword.NewPassword);
@@ -189,12 +195,12 @@ namespace SSMS.Users
     public async Task<IActionResult> SendVerificationCode(string userId, byte codeTypeId)
     {
       // (1) get the full user data from DB [with his navigation properties] to get his email
-      user = _service.GetOne<User>(new List<string>() { "_Employee", "_Parent", "_Student" }, u => u.UserId == userId );
+      user = _service.GetOne<User>(new List<string>() { "_Employee", "_Parent", "_Student" }, u => u.UserId == userId);
       // get the user email from one of ["_Employee", "_Parent", "_Student"] properties
       string emailTo = user._Student?.Email ?? user._Parent?.Email ?? user._Employee?.Email;
       string userName = user._Student?.GetFullName("Ar") ?? user._Parent?.GetFullName("Ar") ?? user._Employee?.GetFullName("Ar");
       // (2) generate new VerificationCode and Add new Record in VerificationCodes Table
-      string vCode = new Random().Next(100000,999999).ToString();
+      string vCode = new Random().Next(100000, 999999).ToString();
       VerificationCode newVCode = new VerificationCode()
       {
         Code = vCode,
@@ -204,7 +210,7 @@ namespace SSMS.Users
       int addResult = _service.Add<VerificationCode>(newVCode);
       // (3) send email to that user with the his VerificationCode
       // only if user has an email and the previous Add Operation succeeded
-      if(emailTo != null && addResult == 1)
+      if (emailTo != null && addResult == 1)
       {
         await _smtpClient.SendMailAsync(new MailMessage(
                 from: Helpers.GetService<IConfiguration>().GetValue<string>("Email:From"),
@@ -227,10 +233,10 @@ namespace SSMS.Users
       // get the userId from the Expired Access Token Claims
       string userId = claims.SingleOrDefault(c => c.Type == "UserId").Value;
       // retrieve the user and all of his refresh tokens from DB
-      user = _service.GetOne<User>(new List<string>() { "RefreshTokens" }, u => u.UserId == userId );
+      user = _service.GetOne<User>(new List<string>() { "RefreshTokens" }, u => u.UserId == userId);
       // if the given refreshToken not found in RefreshTokens collection of that user
       // throw Exception [return BadRequest]
-      if (user.RefreshTokens.All(rt => rt.Token != tokens.RefreshToken) )
+      if (user.RefreshTokens.All(rt => rt.Token != tokens.RefreshToken))
         throw new SecurityTokenException("Invalid refresh token ...");
       // map user to vUser to get a new accessToken
       vUser = Map.ToVUser(user);
@@ -240,13 +246,14 @@ namespace SSMS.Users
       _UpdateRefreshToken(user, refreshToken, Request.GetDeviceInfo());
       // (_) if everything is ok, return the [vUser - accessToken - refreshToken]
       return Ok(new
+      {
+        User = vUser,
+        Tokens = new JWTTokens()
         {
-          User = vUser,
-          Tokens = new JWTTokens() {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
-          }
+          AccessToken = accessToken,
+          RefreshToken = refreshToken
         }
+      }
       );
     }
 

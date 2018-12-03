@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using SSMS.EntityModels;
+using SSMS.Hubs;
 
 namespace SSMS.Users.Employees
 {
@@ -13,12 +15,14 @@ namespace SSMS.Users.Employees
   {
     private readonly BaseService _service;
     private readonly IMapper _mapper;
+    private readonly IHubContext<DbHub> _hubContext;
 
-    public EmployeesController(BaseService service, IMapper mapper)
-                                : base(service, mapper, "employees", "empId")
+    public EmployeesController(BaseService service, IMapper mapper, IHubContext<DbHub> hubContext)
+                                : base(service, mapper, hubContext, "employees", "empId")
     {
       _service = service;
       _mapper = mapper;
+      _hubContext = hubContext;
     }
   }
 }

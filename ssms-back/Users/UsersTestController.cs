@@ -6,7 +6,9 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using SSMS.EntityModels;
+using SSMS.Hubs;
 using SSMS.ViewModels;
 
 namespace SSMS.Users
@@ -18,14 +20,16 @@ namespace SSMS.Users
     //from DependencyInjection DI which injects it in the constructor
     private readonly BaseService _service;
     private readonly IMapper _mapper;
+    private readonly IHubContext<DbHub> _hubContext;
 
     //Give the BaseConstructor the dependency it needs which is DB contect
     //To get Db Context, we receive it from DI then pass it to Base constructor
-    public UsersTestController(BaseService service, IMapper mapper)
-                            : base(service, mapper, "users", "userId")
+    public UsersTestController(BaseService service, IMapper mapper, IHubContext<DbHub> hubContext)
+                            : base(service, mapper, hubContext, "users", "userId")
     {
       _service = service;
       _mapper = mapper;
+      _hubContext = hubContext;
     }
     [NonAction]
     public IQueryable<User> GetQuery(Expression<Func<User, bool>> expression)

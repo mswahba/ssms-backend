@@ -9,6 +9,9 @@ using SSMS.EntityModels;
 using SSMS.MvcFilters;
 using AutoMapper;
 using SSMS.ViewModels;
+using Microsoft.AspNetCore.SignalR;
+using SSMS.Hubs;
+using System.Threading.Tasks;
 
 namespace SSMS
 {
@@ -22,9 +25,12 @@ namespace SSMS
   {
     private readonly BaseService _service;
     private readonly IMapper _mapper;
+    private readonly IHubContext<DbHub> _hubContext;
     private readonly string _tableName;
     private readonly string _keyName;
 
+    private readonly string _clientMethod = "onChange";
+    private string _changeType;
     private string _sqlAddCommand;
     private string _columnNames;
     private string _columnValues;
@@ -38,7 +44,7 @@ namespace SSMS
       _deleteResult.Add("DeleteType", deleteType);
       _deleteResult.Add("Message", $"{res} Item(s) Deleted successfully...");
     }
-    private IActionResult _DoDelete(string deleteType, TEntity entity)
+    private async Task<IActionResult> _DoDelete(string deleteType, TEntity entity)
     {
       if (deleteType == null)
         return BadRequest(new Error() { Message = "Can't identify The type of the Delete operation" });
@@ -46,6 +52,7 @@ namespace SSMS
         return BadRequest(new Error() { Message = "Item doesn't exist" });
       // switch on the [deleteType] and perform the appropriate action
       int res;
+      _changeType = "Delete";
       switch (deleteType)
       {
         case "logical":
@@ -55,10 +62,12 @@ namespace SSMS
           else if (res == -2)
             return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
           _SetDeleteResult(entity, res, "logical");
+          await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, _deleteResult);
           return Ok(_deleteResult);
         case "physical":
           res = _service.Delete(entity);
           _SetDeleteResult(entity, res, "physical");
+          await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, _deleteResult);
           return Ok(_deleteResult);
         default:
           return BadRequest(new Error() { Message = "Unknow Delete Type" });
@@ -103,12 +112,13 @@ namespace SSMS
     // receive the service (to deal with db)
     // and the table name of the entity (from entity Controller) and the PK field name
     // and the ado from DI
-    public BaseController(BaseService service, IMapper mapper, string tableName, string keyName)
+    public BaseController(BaseService service, IMapper mapper, IHubContext<DbHub> hubContext, string tableName, string keyName)
     {
-      _tableName = tableName;
-      _keyName = keyName;
       _service = service;
       _mapper = mapper;
+      _hubContext = hubContext;
+      _tableName = tableName;
+      _keyName = keyName;
     }
     //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table besed on route param-
     //we send the list type as Route parameter ("all OR "deleted" OR "Existing")
@@ -210,9 +220,9 @@ namespace SSMS
       return _GetEntityResult(entity);
     }
     [HttpPost("add")]
-    public IActionResult Add([FromBody] TEntity entity)
+    public async Task<IActionResult> Add([FromBody] TEntity entity)
     {
-      if( _BlockedFromAdd.Any(eName => eName == typeof(TEntity).Name) )
+      if (_BlockedFromAdd.Any(eName => eName == typeof(TEntity).Name))
         return BadRequest(new Error() { Message = "Oops! this action is not available for this entity !!" });
       // throw new Exception("something went wrong!!");
       // if autoId has value [ok] then generate newId and set keyName of this entity
@@ -248,18 +258,22 @@ namespace SSMS
         // add entity and saveChanges
         _service.Add(entity);
       }
+      _changeType = "Insert";
+      await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
       return _GetEntityResult(entity);
     }
     //Update all parent Data -- used either by Parent or Admin
     [HttpPut("update")]
-    public IActionResult Update([FromBody]TEntity entity)
+    public async Task<IActionResult> Update([FromBody]TEntity entity)
     {
       _service.Update<TEntity>(entity);
+      _changeType = "Update";
+      await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
       return _GetEntityResult(entity);
     }
     // update Only ParentId --Used by Admins Only
     [HttpPut("update-Key")]
-    public IActionResult UpdateKey([FromQuery] TKey newKey, TKey oldKey)
+    public async Task<IActionResult> UpdateKey([FromQuery] TKey newKey, TKey oldKey)
     {
       if (newKey == null || oldKey == null)
         return BadRequest(new Error() { Message = "Must supply both newKey and oldKey ..." });
@@ -269,25 +283,27 @@ namespace SSMS
       //Get Property (binding Flags: ignore case sensitive, instance (not static), public) ,
       //Get Value
       TEntity entity = _service.GetOne<TEntity>(item => item.GetValue(_keyName).Equals(newKey));
+      _changeType = "Update";
+      await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
       return _GetEntityResult(entity);
     }
     //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
     // Then call the appropriate function from the BaseService class to execute operation
     // the param (deleteType) will come from queryString
     [HttpPost("delete")]
-    public IActionResult Delete([FromQuery] string deleteType, [FromBody] TEntity entity)
+    public async Task<IActionResult> Delete([FromQuery] string deleteType, [FromBody] TEntity entity)
     {
-      return _DoDelete(deleteType, entity);
+      return await _DoDelete(deleteType, entity);
     }
     //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
     // Then call the appropriate function from the BaseService class to execute operation
     // the param (deleteType) will come from queryString
     [HttpDelete("delete-by-id")]
-    public IActionResult Delete([FromQuery] string deleteType, [FromQuery] TKey key)
+    public async Task<IActionResult> Delete([FromQuery] string deleteType, [FromQuery] TKey key)
     {
       // First get the entity using its key to send it to delete method
       TEntity entity = _service.Find<TEntity, TKey>(key);
-      return _DoDelete(deleteType, entity);
+      return await _DoDelete(deleteType, entity);
     }
     /********************************************************** */
     #region assistant Actions
@@ -306,9 +322,9 @@ namespace SSMS
     [HttpGet("sql-update")]
     public IActionResult SqlUpdate([FromQuery] string setters, [FromQuery] string filters)
     {
-      if(setters == null && filters == null)
+      if (setters == null && filters == null)
         return BadRequest(new Error() { Message = "must supply both setters and filters query string" });
-      int rows = _service.SqlUpdate<TEntity>(_tableName,setters,filters);
+      int rows = _service.SqlUpdate<TEntity>(_tableName, setters, filters);
       return Ok($"{rows} row(s) affected ...");
     }
     // [controller]/sql-where?filters=
