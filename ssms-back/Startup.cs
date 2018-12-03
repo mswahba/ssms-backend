@@ -141,6 +141,7 @@ namespace SSMS
       // use SignalR and define client-side connection routes [url]
       app.UseSignalR(routes =>
       {
+        routes.MapHub<DbHub>("/db-hub");
         routes.MapHub<UsersHub>("/users-hub");
         routes.MapHub<ParentsHub>("/parents-hub");
         routes.MapHub<StudentsHub>("/students-hub");
