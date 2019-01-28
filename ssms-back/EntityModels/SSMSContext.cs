@@ -34,6 +34,9 @@ namespace SSMS.EntityModels
     public virtual DbSet<Lesson> Lessons { get; set; }
     public virtual DbSet<LessonFile> LessonsFiles { get; set; }
     public virtual DbSet<Major> Majors { get; set; }
+    public virtual DbSet<Notification> Notifications { get; set; }
+    public virtual DbSet<NotificationType> NotificationTypes { get; set; }
+    public virtual DbSet<NotificationTypeUser> NotificationTypesUsers { get; set; }
     public virtual DbSet<Parent> Parents { get; set; }
     public virtual DbSet<Period> Periods { get; set; }
     public virtual DbSet<PeriodDetails> PeriodsDetails { get; set; }
@@ -69,7 +72,7 @@ namespace SSMS.EntityModels
     public DbQuery<VEmpAction> VEmpActions{get;set;}
     public DbQuery<VEmployeeFullNameAr> VEmployeesFullNameAr{get;set;}
     public DbQuery<VEmployeeFullNameEn> VEmployeesFullNameEn{get;set;}
-    public DbQuery<VEmpoyeeJobsData> VEmpoyeesJobsData{get;set;}
+    public DbQuery<VEmployeeJobsData> VEmployeesJobsData{get;set;}
     public DbQuery<VProcedureOnStudentData> VProceduresOnStudentsData{get;set;}
     public DbQuery<VStudentEduData> VStudentsEduData{get;set;}
     public DbQuery<VStudentFullNameAr> VStudentsFullNameAr{get;set;}
@@ -962,6 +965,78 @@ namespace SSMS.EntityModels
 
       });
 
+      modelBuilder.Entity<Notification>(entity =>
+      {
+        entity.HasKey(e => e.NotificationId);
+
+        entity.ToTable("notifications");
+
+        entity.Property(e => e.NotificationId).HasColumnName("notificationId");
+
+        entity.Property(e => e.NotificationTypeId).HasColumnName("notificationTypeId");
+
+        entity.Property(e => e.CreatedAt).HasColumnName("createdAt");
+
+        entity.Property(e => e.UserId).HasColumnName("userId").HasMaxLength(10);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+        entity.HasOne(n => n.NotificationType)
+                  .WithMany(nType => nType.Notifications)
+                  .HasForeignKey(n => n.NotificationTypeId)
+                  .HasConstraintName("FK_notificationTypes_notifications");
+
+        entity.HasOne(n => n.User)
+                  .WithMany(u => u.Notifications)
+                  .HasForeignKey(n => n.UserId)
+                  .HasConstraintName("FK_users_notifications");
+
+      });
+
+      modelBuilder.Entity<NotificationType>(entity =>
+      {
+        entity.HasKey(e => e.NotificationTypeId);
+
+        entity.ToTable("notificationTypes");
+
+        entity.Property(e => e.NotificationTypeId).HasColumnName("notificationTypeId");
+
+        entity.Property(e => e.NotificationTypeName).HasColumnName("notificationTypeName");
+
+        entity.Property(e => e.MessageAr).HasColumnName("messageAr");
+
+        entity.Property(e => e.MessageEn).HasColumnName("messageEn");
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+      });
+
+      modelBuilder.Entity<NotificationTypeUser>(entity =>
+      {
+        entity.HasKey(e => e.NotificationTypeUserId);
+
+        entity.ToTable("notificationTypesUsers");
+
+        entity.Property(e => e.NotificationTypeUserId).HasColumnName("notificationTypeUserId");
+
+        entity.Property(e => e.NotificationTypeId).HasColumnName("notificationTypeId");
+
+        entity.Property(e => e.UserId).HasColumnName("userId").HasMaxLength(10);
+
+        entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+        entity.HasOne(n => n.NotificationType)
+                  .WithMany(nType => nType.NotificationTypesUsers)
+                  .HasForeignKey(n => n.NotificationTypeId)
+                  .HasConstraintName("FK_notificationTypes_notificationTypesUsers");
+
+        entity.HasOne(n => n.User)
+                  .WithMany(u => u.NotificationTypesUsers)
+                  .HasForeignKey(n => n.UserId)
+                  .HasConstraintName("FK_users_notificationTypesUsers");
+
+      });
+
       modelBuilder.Entity<Parent>(entity =>
       {
         entity.HasKey(e => e.ParentId);
@@ -1683,7 +1758,7 @@ namespace SSMS.EntityModels
         entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
         entity.HasOne(u => u.UserType)
-                  .WithMany(utype => utype.Users)
+                  .WithMany(uType => uType.Users)
                   .HasForeignKey(u => u.UserTypeId)
                   .HasConstraintName("FK_users_userTypes");
 
@@ -1895,13 +1970,14 @@ namespace SSMS.EntityModels
       #endregion
 
       #region Query [Views]  Mapping
+
       modelBuilder.Query<VAcademicCalender>().ToView("v_AcademicCalenders");
       modelBuilder.Query<VBaseEduData>().ToView("v_BaseEduData");
       modelBuilder.Query<VClassroomData>().ToView("v_ClassroomsData");
       modelBuilder.Query<VEmpAction>().ToView("v_EmployeesActions");
       modelBuilder.Query<VEmployeeFullNameAr>().ToView("v_EmployeesFullNameAr");
       modelBuilder.Query<VEmployeeFullNameEn>().ToView("v_EmployeesFullNameEn");
-      modelBuilder.Query<VEmpoyeeJobsData>().ToView("v_EmpoyeesJobsData");
+      modelBuilder.Query<VEmployeeJobsData>().ToView("v_EmpoyeesJobsData");
       modelBuilder.Query<VParentFullNameAr>().ToView("v_ParentsFullNameAr");
       modelBuilder.Query<VParentFullNameEn>().ToView("v_ParentsFullNameEn");
       modelBuilder.Query<VProcedureOnStudentData>().ToView("v_ProceduresOnStudentsData");

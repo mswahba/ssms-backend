@@ -10,6 +10,8 @@ namespace SSMS.EntityModels
             UsersDocs = new HashSet<UsersDocs>();
             VerificationCodes = new HashSet<VerificationCode>();
             RefreshTokens = new HashSet<RefreshToken>();
+            Notifications = new HashSet<Notification>();
+            NotificationTypesUsers = new HashSet<NotificationTypeUser>();
             SubscribeDate = DateTime.UtcNow.AddHours(3);
             LastActive = DateTime.UtcNow.AddHours(3);
             AccountStatusId = 1;
@@ -33,6 +35,8 @@ namespace SSMS.EntityModels
         public ICollection<UsersDocs> UsersDocs { get; set; }
         public ICollection<VerificationCode> VerificationCodes { get; set; }
         public ICollection<RefreshToken> RefreshTokens { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+        public ICollection<NotificationTypeUser> NotificationTypesUsers { get; set; }
 
     }
 }

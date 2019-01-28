@@ -2,7 +2,7 @@ using System;
 
 namespace SSMS.ViewModels
 {
-public class VEmpoyeeJobsData
+public class VEmployeeJobsData
 {
     public int EmpJobId { get; set; }
     public bool? Gender { get; set; }
