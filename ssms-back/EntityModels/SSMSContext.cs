@@ -53,7 +53,7 @@ namespace SSMS.EntityModels
     public virtual DbSet<TeacherQuorum> TeachersQuorums { get; set; }
     public virtual DbSet<TimeTable> TimeTables { get; set; }
     public virtual DbSet<User> Users { get; set; }
-    public virtual DbSet<UsersDocs> UsersDocs { get; set; }
+    public virtual DbSet<UserDoc> UsersDocs { get; set; }
     public virtual DbSet<UserType> UserTypes { get; set; }
     public virtual DbSet<AccountStatus> AccountStatuses { get; set; }
     public virtual DbSet<VerificationCodeType> VerificationCodeTypes {get; set;}
@@ -503,12 +503,12 @@ namespace SSMS.EntityModels
                   .HasColumnName("mobile2")
                   .HasMaxLength(15);
 
-        entity.Property(e => e.PasspoerExpireDateG)
-                  .HasColumnName("passpoerExpireDateG")
+        entity.Property(e => e.PassportExpireDateG)
+                  .HasColumnName("passportExpireDateG")
                   .HasColumnType("date");
 
-        entity.Property(e => e.PasspoerExpireDateH)
-                  .HasColumnName("passpoerExpireDateH")
+        entity.Property(e => e.PassportExpireDateH)
+                  .HasColumnName("passportExpireDateH")
                   .HasColumnType("nchar(10)");
 
         entity.Property(e => e.PassportNum)
@@ -546,17 +546,23 @@ namespace SSMS.EntityModels
                   .HasMaxLength(15);
 
         entity.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
+        entity.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+        entity.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+        entity.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
+
+        entity.HasOne(e => e._User)
+                  .WithMany(u => u.Employees)
+                  .HasForeignKey(e => e.IssuerId)
+                  .HasConstraintName("FK_users_employees");
 
         entity.HasOne(e => e.Emp)
                   .WithOne(u => u._Employee)
                   .HasForeignKey<Employee>(e => e.EmpId)
-                  .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FK_employees_users");
 
         entity.HasOne(e => e.Country)
                   .WithMany(c => c.Employees)
                   .HasForeignKey(e => e.CountryId)
-                  .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FK_employees_countries");
       });
 
@@ -600,8 +606,8 @@ namespace SSMS.EntityModels
                   .HasColumnName("bankAccount")
                   .HasMaxLength(50);
 
-        entity.Property(e => e.BankIban)
-                  .HasColumnName("bankIban")
+        entity.Property(e => e.BankIBAN)
+                  .HasColumnName("bankIBAN")
                   .HasMaxLength(50);
 
         entity.Property(e => e.BankName)
@@ -640,13 +646,20 @@ namespace SSMS.EntityModels
                   .HasColumnName("transportAllowance")
                   .HasColumnType("smallmoney");
 
+        entity.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+        entity.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+        entity.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
         entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
+        entity.HasOne(e => e._User)
+              .WithMany(u => u.EmployeesFinances)
+              .HasForeignKey(e => e.IssuerId)
+              .HasConstraintName("FK_users_employeesFinance");
+
         entity.HasOne(d => d.Emp)
-                  .WithOne(p => p.EmployeesFinance)
-                  .HasForeignKey<EmployeeFinance>(d => d.EmpId)
-                  .OnDelete(DeleteBehavior.ClientSetNull)
-                  .HasConstraintName("FK_employeesFinance_employees");
+              .WithOne(p => p.EmployeesFinance)
+              .HasForeignKey<EmployeeFinance>(d => d.EmpId)
+              .HasConstraintName("FK_employeesFinance_employees");
       });
 
       modelBuilder.Entity<EmployeeHr>(entity =>
@@ -1754,8 +1767,15 @@ namespace SSMS.EntityModels
                   .HasMaxLength(50);
 
         entity.Property(e => e.UserTypeId).HasColumnName("userTypeId");
-
+        entity.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+        entity.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+        entity.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
         entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+        entity.HasOne(u => u._User)
+                  .WithMany(u => u.Users)
+                  .HasForeignKey(u => u.IssuerId)
+                  .HasConstraintName("FK_usersA_usersB");
 
         entity.HasOne(u => u.UserType)
                   .WithMany(uType => uType.Users)
@@ -1768,7 +1788,7 @@ namespace SSMS.EntityModels
                   .HasConstraintName("FK_users_accountStatus");
       });
 
-      modelBuilder.Entity<UsersDocs>(entity =>
+      modelBuilder.Entity<UserDoc>(entity =>
       {
         entity.HasKey(e => e.UserDocId);
 

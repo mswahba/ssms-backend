@@ -36,8 +36,8 @@ namespace SSMS.EntityModels
         public string MaritalStatus { get; set; }
         public string Religion { get; set; }
         public string PassportNum { get; set; }
-        public DateTime? PasspoerExpireDateG { get; set; }
-        public string PasspoerExpireDateH { get; set; }
+        public DateTime? PassportExpireDateG { get; set; }
+        public string PassportExpireDateH { get; set; }
         public string AddressKsa { get; set; }
         public string AddressHome { get; set; }
         public byte? CertificateDegree { get; set; }
@@ -54,8 +54,12 @@ namespace SSMS.EntityModels
         public bool? HasDrivingLicense { get; set; }
         public bool? IsHandicapped { get; set; }
         public string SpecialNeeds { get; set; }
+        public string IssuerId { get; set; }
+        public DateTime SysStartTime { get; set; }
+        public DateTime SysEndTime { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public User _User { get; set; }
         public User Emp { get; set; }
         public EmployeeFinance EmployeesFinance { get; set; }
         public EmployeeHr EmployeesHr { get; set; }

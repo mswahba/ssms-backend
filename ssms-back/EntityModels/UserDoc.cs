@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SSMS.EntityModels
 {
-    public partial class UsersDocs
+    public partial class UserDoc
     {
-        public UsersDocs()
+        public UserDoc()
         {
             IsDeleted = false;
         }

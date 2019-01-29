@@ -9,7 +9,7 @@ namespace SSMS.EntityModels
         {
             LessonsFiles = new HashSet<LessonFile>();
             PeriodsFiles = new HashSet<PeriodFile>();
-            UsersDocs = new HashSet<UsersDocs>();
+            UsersDocs = new HashSet<UserDoc>();
             IsDeleted = false;
         }
 
@@ -20,6 +20,6 @@ namespace SSMS.EntityModels
 
         public ICollection<LessonFile> LessonsFiles { get; set; }
         public ICollection<PeriodFile> PeriodsFiles { get; set; }
-        public ICollection<UsersDocs> UsersDocs { get; set; }
+        public ICollection<UserDoc> UsersDocs { get; set; }
     }
 }
