@@ -8,7 +8,7 @@ namespace SSMS.EntityModels
         public Grade()
         {
             Classrooms = new HashSet<Classrooms>();
-            GradesSubjects = new HashSet<GradesSubjects>();
+            GradesSubjects = new HashSet<GradeSubject>();
             IsDeleted = false;
         }
 
@@ -20,6 +20,6 @@ namespace SSMS.EntityModels
 
         public Stage Stage { get; set; }
         public ICollection<Classrooms> Classrooms { get; set; }
-        public ICollection<GradesSubjects> GradesSubjects { get; set; }
+        public ICollection<GradeSubject> GradesSubjects { get; set; }
     }
 }

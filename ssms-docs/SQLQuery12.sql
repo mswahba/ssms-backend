@@ -35,3 +35,14 @@ REFERENCES [dbo].[notificationTypes] (notificationTypeId)
 ON UPDATE CASCADE
 ON DELETE SET NULL
 GO
+
+-- Renaming spell-error columns
+-------------------------------
+/*
+sp_rename 'dbo.EmployeesHr.WorkStartDateG', 'workStartDateG', 'COLUMN';
+select * from dbo.EmployeesHr;
+*/
+/*
+sp_rename 'dbo.EmployeesHr', 'EmployeesHR';
+select * from dbo.EmployeesHR;
+*/

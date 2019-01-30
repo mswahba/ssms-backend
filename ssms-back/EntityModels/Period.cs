@@ -24,7 +24,7 @@ namespace SSMS.EntityModels
 
         public Classrooms Classeroom { get; set; }
         public EmployeeJob EmpJob { get; set; }
-        public GradesSubjects GradeSubject { get; set; }
+        public GradeSubject GradeSubject { get; set; }
         public SchoolDayEvent SchoolDayEvent { get; set; }
         public AcademicSemester Semester { get; set; }
         public ICollection<PeriodDetails> PeriodsDetails { get; set; }

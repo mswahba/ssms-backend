@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SSMS.EntityModels
 {
-    public partial class EmployeeHr
+    public partial class EmployeeHR
     {
-        public EmployeeHr()
+        public EmployeeHR()
         {
             IsDeleted = false;
         }
@@ -18,7 +18,7 @@ namespace SSMS.EntityModels
         public int? SalahiaNum { get; set; }
         public DateTime? SalahiaDateG { get; set; }
         public string SalahiaDateH { get; set; }
-        public DateTime? WrokStartDateG { get; set; }
+        public DateTime? WorkStartDateG { get; set; }
         public string WorkStartDateH { get; set; }
         public bool? NoorRegistered { get; set; }
         public byte? WorkStatus { get; set; }

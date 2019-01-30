@@ -11,7 +11,7 @@ namespace SSMS.EntityModels
       Departments = new HashSet<Department>();
       EmployeesActions = new HashSet<EmployeeAction>();
       EmployeesFinances = new HashSet<EmployeeFinance>();
-      EmployeesHrs = new HashSet<EmployeeHr>();
+      EmployeesHrs = new HashSet<EmployeeHR>();
       EmployeesJobs = new HashSet<EmployeeJob>();
       Lessons = new HashSet<Lesson>();
       LessonsFiles = new HashSet<LessonFile>();
@@ -59,7 +59,7 @@ namespace SSMS.EntityModels
     public ICollection<Employee> Employees { get; set; }
     public ICollection<EmployeeAction> EmployeesActions { get; set; }
     public ICollection<EmployeeFinance> EmployeesFinances { get; set; }
-    public ICollection<EmployeeHr> EmployeesHrs { get; set; }
+    public ICollection<EmployeeHR> EmployeesHrs { get; set; }
     public ICollection<EmployeeJob> EmployeesJobs { get; set; }
     public ICollection<Lesson> Lessons { get; set; }
     public ICollection<LessonFile> LessonsFiles { get; set; }
