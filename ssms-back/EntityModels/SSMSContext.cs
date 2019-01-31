@@ -18,13 +18,13 @@ namespace SSMS.EntityModels
     public virtual DbSet<BehavioralViolation> BehavioralViolations { get; set; }
     public virtual DbSet<Branch> Branches { get; set; }
     public virtual DbSet<ClassStudent> ClassesStudents { get; set; }
-    public virtual DbSet<Classrooms> Classrooms { get; set; }
+    public virtual DbSet<Classroom> Classrooms { get; set; }
     public virtual DbSet<Department> Departments { get; set; }
     public virtual DbSet<DocType> DocTypes { get; set; }
     public virtual DbSet<Employee> Employees { get; set; }
     public virtual DbSet<EmployeeAction> EmployeesActions { get; set; }
     public virtual DbSet<EmployeeFinance> EmployeesFinance { get; set; }
-    public virtual DbSet<EmployeeHR> EmployeesHr { get; set; }
+    public virtual DbSet<EmployeeHR> EmployeesHRs { get; set; }
     public virtual DbSet<EmployeeJob> EmployeesJobs { get; set; }
     public virtual DbSet<Grade> Grades { get; set; }
     public virtual DbSet<GradeSubject> GradesSubjects { get; set; }
@@ -83,12 +83,14 @@ namespace SSMS.EntityModels
     public DbQuery<VWeekPlan> VWeeksPlans{get;set;}
 
     #endregion
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       string key = "ConnectionStrings:server:assadara_ssms";
       if (!optionsBuilder.IsConfigured)
         optionsBuilder.UseSqlServer( Helpers.GetService<IConfiguration>().GetValue<string>(key));
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       #region Entity [Tables] Mapping
@@ -99,7 +101,7 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new BehavioralViolationConfig());
       modelBuilder.ApplyConfiguration(new BranchConfig());
       modelBuilder.ApplyConfiguration(new ClassStudentConfig());
-      modelBuilder.ApplyConfiguration(new ClassroomsConfig());
+      modelBuilder.ApplyConfiguration(new ClassroomConfig());
       modelBuilder.ApplyConfiguration(new DepartmentConfig());
       modelBuilder.ApplyConfiguration(new DocTypeConfig());
       modelBuilder.ApplyConfiguration(new EmployeeConfig());
@@ -145,7 +147,6 @@ namespace SSMS.EntityModels
       #endregion
 
       #region Query [Views]  Mapping
-
       modelBuilder.Query<VAcademicCalender>().ToView("v_AcademicCalenders");
       modelBuilder.Query<VBaseEduData>().ToView("v_BaseEduData");
       modelBuilder.Query<VClassroomData>().ToView("v_ClassroomsData");

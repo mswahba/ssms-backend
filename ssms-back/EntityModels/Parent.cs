@@ -41,8 +41,12 @@ namespace SSMS.EntityModels
         public string RelativePhone { get; set; }
         public string RelativeAddress { get; set; }
         public string RelativeRelation { get; set; }
+        public string IssuerId { get; set; }
+        public DateTime SysStartTime { get; set; }
+        public DateTime SysEndTime { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public User _User { get; set; }
         public User _Parent { get; set; }
         public Country Country { get; set; }
         public ICollection<Student> Students { get; set; }

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace SSMS.EntityModels
 {
-  public class ClassroomsConfig : IEntityTypeConfiguration<Classrooms>
+  public class ClassroomConfig : IEntityTypeConfiguration<Classroom>
   {
-    public void Configure(EntityTypeBuilder<Classrooms> builder)
+    public void Configure(EntityTypeBuilder<Classroom> builder)
     {
       builder.HasKey(e => e.ClassroomId);
 

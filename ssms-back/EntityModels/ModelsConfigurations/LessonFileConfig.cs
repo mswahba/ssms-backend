@@ -29,7 +29,16 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.LessonId).HasColumnName("lessonId");
 
+      builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+      builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+      builder.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
+
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+      builder.HasOne(e => e._User)
+            .WithMany(u => u.LessonsFiles)
+            .HasForeignKey(e => e.IssuerId)
+            .HasConstraintName("FK_users_lessonsFiles");
 
       builder.HasOne(d => d.DocType)
                 .WithMany(p => p.LessonsFiles)

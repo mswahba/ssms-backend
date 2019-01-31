@@ -15,7 +15,7 @@ namespace SSMS.EntityModels
                 .HasColumnName("periodId")
                 .ValueGeneratedNever();
 
-      builder.Property(e => e.ClasseroomId).HasColumnName("classeroomId");
+      builder.Property(e => e.ClassroomId).HasColumnName("classroomId");
 
       builder.Property(e => e.EmpJobId).HasColumnName("empJobId");
 
@@ -23,9 +23,7 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.GradeSubjectId).HasColumnName("gradeSubjectId");
 
-      builder.Property(e => e.PeriodDate)
-                .HasColumnName("periodDate")
-                .HasColumnType("date");
+      builder.Property(e => e.PeriodDate).HasColumnName("periodDate").HasColumnType("date");
 
       builder.Property(e => e.SchoolDayEventId).HasColumnName("schoolDayEventId");
 
@@ -33,11 +31,20 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.StartTime).HasColumnName("startTime");
 
+      builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+      builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+      builder.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
+
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
-      builder.HasOne(d => d.Classeroom)
+      builder.HasOne(e => e._User)
+            .WithMany(u => u.Periods)
+            .HasForeignKey(e => e.IssuerId)
+            .HasConstraintName("FK_users_periods");
+
+      builder.HasOne(d => d._Classroom)
                 .WithMany(p => p.Periods)
-                .HasForeignKey(d => d.ClasseroomId)
+                .HasForeignKey(d => d.ClassroomId)
                 .HasConstraintName("FK_periods_classrooms");
 
       builder.HasOne(d => d.EmpJob)

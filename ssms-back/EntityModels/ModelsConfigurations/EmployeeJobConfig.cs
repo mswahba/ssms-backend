@@ -33,8 +33,15 @@ namespace SSMS.EntityModels
       builder.Property(e => e.StartDate)
                 .HasColumnName("startDate")
                 .HasColumnType("date");
-
+      builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+      builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+      builder.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+      builder.HasOne(e => e._User)
+            .WithMany(u => u.EmployeesJobs)
+            .HasForeignKey(e => e.IssuerId)
+            .HasConstraintName("FK_users_employeesJobs");
 
       builder.HasOne(d => d.Department)
                 .WithMany(p => p.EmployeesJobs)
@@ -44,13 +51,11 @@ namespace SSMS.EntityModels
       builder.HasOne(d => d.Emp)
                 .WithMany(p => p.EmployeesJobs)
                 .HasForeignKey(d => d.EmpId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_employeesJobs_employees");
 
       builder.HasOne(d => d.Job)
                 .WithMany(p => p.EmployeesJobs)
                 .HasForeignKey(d => d.JobId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_employeesJobs_jobs");
     }
   }

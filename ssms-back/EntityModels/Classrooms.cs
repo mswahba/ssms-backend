@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SSMS.EntityModels
 {
-    public partial class Classrooms
+    public partial class Classroom
     {
-        public Classrooms()
+        public Classroom()
         {
             ClassesStudents = new HashSet<ClassStudent>();
             Periods = new HashSet<Period>();

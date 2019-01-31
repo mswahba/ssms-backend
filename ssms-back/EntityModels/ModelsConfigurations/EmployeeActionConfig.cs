@@ -15,18 +15,25 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.ActionId).HasColumnName("actionId");
 
+      builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+      builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+      builder.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
+
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+      builder.HasOne(e => e._User)
+            .WithMany(u => u.EmployeesActions)
+            .HasForeignKey(e => e.IssuerId)
+            .HasConstraintName("FK_users_employeesActions");
 
       builder.HasOne(d => d.Action)
                 .WithMany(p => p.EmployeesActions)
                 .HasForeignKey(d => d.ActionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_employeesActions_actions");
 
       builder.HasOne(d => d.EmpJob)
                 .WithMany(p => p.EmployeesActions)
                 .HasForeignKey(d => d.EmpJobId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_employeesActions_employeesJobs");
 
     }

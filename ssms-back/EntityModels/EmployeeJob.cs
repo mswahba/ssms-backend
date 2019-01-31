@@ -24,8 +24,12 @@ namespace SSMS.EntityModels
         public byte? DepartmentId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string IssuerId { get; set; }
+        public DateTime SysStartTime { get; set; }
+        public DateTime SysEndTime { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public User _User { get; set; }
         public Department Department { get; set; }
         public Employee Emp { get; set; }
         public Job Job { get; set; }

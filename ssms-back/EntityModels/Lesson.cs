@@ -17,8 +17,12 @@ namespace SSMS.EntityModels
         public byte? SemesterId { get; set; }
         public string LessonTitle { get; set; }
         public string LessonObjectives { get; set; }
+        public string IssuerId { get; set; }
+        public DateTime SysStartTime { get; set; }
+        public DateTime SysEndTime { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public User _User { get; set; }
         public ICollection<LessonFile> LessonsFiles { get; set; }
         public ICollection<WeekPlan> WeeksPlans { get; set; }
     }

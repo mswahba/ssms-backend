@@ -17,7 +17,7 @@ namespace SSMS.EntityModels
         public DateTime? EndDate { get; set; }
         public bool? IsDeleted { get; set; }
 
-        public Classrooms Classroom { get; set; }
+        public Classroom Classroom { get; set; }
         public Student Student { get; set; }
         public AcademicYear Year { get; set; }
     }

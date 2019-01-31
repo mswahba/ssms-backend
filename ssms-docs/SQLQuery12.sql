@@ -46,3 +46,7 @@ select * from dbo.EmployeesHr;
 sp_rename 'dbo.EmployeesHr', 'EmployeesHR';
 select * from dbo.EmployeesHR;
 */
+/*
+sp_rename 'dbo.periods.classeroomId', 'classroomId', 'COLUMN';
+select * from dbo.periods;
+*/
