@@ -29,7 +29,16 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.WeekPlanId).HasColumnName("weekPlanId");
 
+      builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+      builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+      builder.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
+
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+      builder.HasOne(e => e._User)
+            .WithMany(u => u.PeriodsFiles)
+            .HasForeignKey(e => e.IssuerId)
+            .HasConstraintName("FK_users_periodsFiles");
 
       builder.HasOne(d => d.DocType)
                 .WithMany(p => p.PeriodsFiles)
@@ -40,7 +49,6 @@ namespace SSMS.EntityModels
                 .WithMany(p => p.PeriodsFiles)
                 .HasForeignKey(d => d.WeekPlanId)
                 .HasConstraintName("FK_periodsFiles_weeksPlans");
-
     }
   }
 }

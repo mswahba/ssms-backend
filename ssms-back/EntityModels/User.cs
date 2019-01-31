@@ -11,7 +11,7 @@ namespace SSMS.EntityModels
       Departments = new HashSet<Department>();
       EmployeesActions = new HashSet<EmployeeAction>();
       EmployeesFinances = new HashSet<EmployeeFinance>();
-      EmployeesHRs = new HashSet<EmployeeHR>();
+      EmployeesHR = new HashSet<EmployeeHR>();
       EmployeesJobs = new HashSet<EmployeeJob>();
       Lessons = new HashSet<Lesson>();
       LessonsFiles = new HashSet<LessonFile>();
@@ -24,7 +24,7 @@ namespace SSMS.EntityModels
       RefreshTokens = new HashSet<RefreshToken>();
       Students = new HashSet<Student>();
       Subjects = new HashSet<Subject>();
-      TeachersEdus = new HashSet<TeacherEdu>();
+      TeachersEdu = new HashSet<TeacherEdu>();
       TeachersQuorums = new HashSet<TeacherQuorum>();
       TimeTables = new HashSet<TimeTable>();
       UsersDocs = new HashSet<UserDoc>();
@@ -61,7 +61,7 @@ namespace SSMS.EntityModels
     public ICollection<Employee> Employees { get; set; }
     public ICollection<EmployeeAction> EmployeesActions { get; set; }
     public ICollection<EmployeeFinance> EmployeesFinances { get; set; }
-    public ICollection<EmployeeHR> EmployeesHRs { get; set; }
+    public ICollection<EmployeeHR> EmployeesHR { get; set; }
     public ICollection<EmployeeJob> EmployeesJobs { get; set; }
     public ICollection<Lesson> Lessons { get; set; }
     public ICollection<LessonFile> LessonsFiles { get; set; }
@@ -71,7 +71,7 @@ namespace SSMS.EntityModels
     public ICollection<PeriodFile> PeriodsFiles { get; set; }
     public ICollection<Student> Students { get; set; }
     public ICollection<Subject> Subjects { get; set; }
-    public ICollection<TeacherEdu> TeachersEdus { get; set; }
+    public ICollection<TeacherEdu> TeachersEdu { get; set; }
     public ICollection<TeacherQuorum> TeachersQuorums { get; set; }
     public ICollection<TimeTable> TimeTables { get; set; }
     public ICollection<UserDoc> UsersDocs { get; set; }

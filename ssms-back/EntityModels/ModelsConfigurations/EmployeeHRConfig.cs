@@ -47,7 +47,7 @@ namespace SSMS.EntityModels
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
       builder.HasOne(e => e._User)
-            .WithMany(u => u.EmployeesHRs)
+            .WithMany(u => u.EmployeesHR)
             .HasForeignKey(e => e.IssuerId)
             .HasConstraintName("FK_users_employeesHR");
 

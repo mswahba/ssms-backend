@@ -17,8 +17,12 @@ namespace SSMS.EntityModels
         public string SubjectNameEn { get; set; }
         public string ShortNameAr { get; set; }
         public string ShortNameEn { get; set; }
+        public string IssuerId { get; set; }
+        public DateTime SysStartTime { get; set; }
+        public DateTime SysEndTime { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public User _User { get; set; }
         public Major Major { get; set; }
         public ICollection<GradeSubject> GradesSubjects { get; set; }
     }

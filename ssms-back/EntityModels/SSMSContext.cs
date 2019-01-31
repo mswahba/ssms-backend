@@ -24,7 +24,7 @@ namespace SSMS.EntityModels
     public virtual DbSet<Employee> Employees { get; set; }
     public virtual DbSet<EmployeeAction> EmployeesActions { get; set; }
     public virtual DbSet<EmployeeFinance> EmployeesFinance { get; set; }
-    public virtual DbSet<EmployeeHR> EmployeesHRs { get; set; }
+    public virtual DbSet<EmployeeHR> EmployeesHR { get; set; }
     public virtual DbSet<EmployeeJob> EmployeesJobs { get; set; }
     public virtual DbSet<Grade> Grades { get; set; }
     public virtual DbSet<GradeSubject> GradesSubjects { get; set; }

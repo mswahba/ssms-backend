@@ -19,8 +19,12 @@ namespace SSMS.EntityModels
         public byte? ParticipationsCount { get; set; }
         public byte? ParticipationsQuality { get; set; }
         public string Notes { get; set; }
+        public string IssuerId { get; set; }
+        public DateTime SysStartTime { get; set; }
+        public DateTime SysEndTime { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public User _User { get; set; }
         public Period Period { get; set; }
         public Student Student { get; set; }
     }

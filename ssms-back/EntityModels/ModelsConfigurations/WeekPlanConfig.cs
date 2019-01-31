@@ -15,9 +15,7 @@ namespace SSMS.EntityModels
                 .HasColumnName("weekPlanId")
                 .ValueGeneratedNever();
 
-      builder.Property(e => e.Date)
-                .HasColumnName("date")
-                .HasColumnType("date");
+      builder.Property(e => e.Date).HasColumnName("date").HasColumnType("date");
 
       builder.Property(e => e.Homework).HasColumnName("homework");
 
@@ -29,7 +27,16 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.WeekId).HasColumnName("weekId");
 
+      builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+      builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+      builder.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
+
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+      builder.HasOne(e => e._User)
+            .WithMany(u => u.WeeksPlans)
+            .HasForeignKey(e => e.IssuerId)
+            .HasConstraintName("FK_users_weeksPlans");
 
       builder.HasOne(d => d.Lesson)
                 .WithMany(p => p.WeeksPlans)

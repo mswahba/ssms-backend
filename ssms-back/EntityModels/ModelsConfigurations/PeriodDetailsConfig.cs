@@ -31,11 +31,18 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.PeriodId).HasColumnName("periodId");
 
-      builder.Property(e => e.StudentId)
-                .HasColumnName("studentId")
-                .HasColumnType("char(10)");
+      builder.Property(e => e.StudentId).HasColumnName("studentId").HasColumnType("char(10)");
+
+      builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+      builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+      builder.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
 
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+
+      builder.HasOne(e => e._User)
+            .WithMany(u => u.PeriodsDetails)
+            .HasForeignKey(e => e.IssuerId)
+            .HasConstraintName("FK_users_periodsDetails");
 
       builder.HasOne(d => d.Period)
                 .WithMany(p => p.PeriodsDetails)
