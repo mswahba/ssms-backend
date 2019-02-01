@@ -52,25 +52,25 @@ namespace SSMS
         return BadRequest(new Error() { Message = "Item doesn't exist" });
       // switch on the [deleteType] and perform the appropriate action
       int res;
-      _changeType = "Delete";
+      // _changeType = "Delete";
       switch (deleteType)
       {
         case "logical":
-          res = _service.DeleteLogical(entity);
+          res = await Task.Run(() => _service.DeleteLogical(entity));
           if (res == -1)
             return BadRequest(new Error() { Message = "Can't delete this Item Logically" });
           else if (res == -2)
             return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
           _SetDeleteResult(entity, res, "logical");
-          await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, _deleteResult);
+          // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, _deleteResult);
           return Ok(_deleteResult);
         case "physical":
-          res = _service.Delete(entity);
+          res = await Task.Run(() => _service.Delete(entity));
           _SetDeleteResult(entity, res, "physical");
-          await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, _deleteResult);
+          // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, _deleteResult);
           return Ok(_deleteResult);
         default:
-          return BadRequest(new Error() { Message = "Unknow Delete Type" });
+          return BadRequest(new Error() { Message = "Unknown Delete Type" });
       }
     }
     // map the page result
@@ -166,10 +166,10 @@ namespace SSMS
     }
 
     /// <summary>
-    ///Make it as default action for the controller
-    ///    [controller]?filters=.....&fileds=.....&orderby=....
-    ///    [controller]?fileds=.....&orderby=....
-    ///    [controller]?orderby=....
+    /// Make it as default action for the controller
+    ///  [controller]?filters=.....&fields=.....&orderby=....
+    ///  [controller]?fields=.....&orderby=....
+    ///  [controller]?orderby=....
     /// </summary>
     /// <param name="filters">one filter is like this [field|operator|value] </param>
     /// <param name="fields">a comma separated string of entity fields we want to select </param>
@@ -256,19 +256,19 @@ namespace SSMS
       else
       {
         // add entity and saveChanges
-        _service.Add(entity);
+        await Task.Run(() => _service.Add(entity));
       }
-      _changeType = "Insert";
-      await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
+      // _changeType = "Insert";
+      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
       return _GetEntityResult(entity);
     }
     //Update all parent Data -- used either by Parent or Admin
     [HttpPut("update")]
     public async Task<IActionResult> Update([FromBody]TEntity entity)
     {
-      _service.Update<TEntity>(entity);
-      _changeType = "Update";
-      await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
+      await Task.Run(() => _service.Update<TEntity>(entity));
+      // _changeType = "Update";
+      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
       return _GetEntityResult(entity);
     }
     // update Only ParentId --Used by Admins Only
@@ -277,14 +277,14 @@ namespace SSMS
     {
       if (newKey == null || oldKey == null)
         return BadRequest(new Error() { Message = "Must supply both newKey and oldKey ..." });
-      _service.UpdateKey(_tableName, _keyName, newKey, oldKey);
+      await Task.Run(() => _service.UpdateKey(_tableName, _keyName, newKey, oldKey));
       //Use Reflection : When we have a string OF a property and want to access a property value in runtime
       //Get type,
       //Get Property (binding Flags: ignore case sensitive, instance (not static), public) ,
       //Get Value
       TEntity entity = _service.GetOne<TEntity>(item => item.GetValue(_keyName).Equals(newKey));
-      _changeType = "Update";
-      await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
+      // _changeType = "Update";
+      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
       return _GetEntityResult(entity);
     }
     //An action to receive type of Delete operation (logical or physical) and the entity to be deleted
@@ -337,7 +337,7 @@ namespace SSMS
     }
     // 'fields' is a comma separated string of entity fields we want to select
     // return entity that contains only these fields
-    // [controller]/Select?fileds=empId, empName
+    // [controller]/Select?fields=empId, empName
     [HttpGet("select")]
     public IActionResult Select([FromQuery] string fields)
     {
@@ -371,7 +371,7 @@ namespace SSMS
     }
     // Dynamic Select using System.Linq.Dynamic.core
     // Select() takes a comma separated list of fields,
-    // and generates the select statement which will be exectued in SQL and return the result
+    // and generates the select statement which will be executed in SQL and return the result
     [HttpGet("select-Dynamic")]
     public IActionResult SelectDynamic([FromQuery] string fields)
     {

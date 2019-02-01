@@ -50,3 +50,7 @@ select * from dbo.EmployeesHR;
 sp_rename 'dbo.periods.classeroomId', 'classroomId', 'COLUMN';
 select * from dbo.periods;
 */
+/*
+update users set accountStatusId = 2 where userId = '1133557799'
+select * from users
+*/

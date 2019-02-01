@@ -6,7 +6,9 @@ using TableDependency.SqlClient.Base.Enums;
 using TableDependency.SqlClient.Base.EventArgs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using SSMS.EntityModels;
+using SSMS.Hubs;
 
 namespace SSMS
 {
@@ -14,6 +16,8 @@ namespace SSMS
   {
     // hold the db connection string key
     private static string key = "ConnectionStrings:server:assadara_ssms";
+    // hold the signalR clientMethod name
+    private static readonly string _clientMethod = "onChange";
     // hold all SqlTablesWatchers
     private static Dictionary<string,dynamic> tablesWatchers = new Dictionary<string,dynamic>();
     // hold the types list
@@ -22,6 +26,8 @@ namespace SSMS
     private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>(key);
     // get the ef db context from the DI
     private static SSMSContext _db = Helpers.GetService<SSMSContext>();
+    // get the DbHub Context from the DI
+    private static IHubContext<DbHub> _dbHub = Helpers.GetService<IHubContext<DbHub>>();
     // fill the types List to be used in both [WatchAll - StopAll] Methods
     private static void GetTypes(string[] typeNames)
     {
@@ -37,19 +43,22 @@ namespace SSMS
                   .ToList();
     }
     // do the needed action on every [Insert - Update - Delete] operation
-    private static void OnChange<T>(object sender, RecordChangedEventArgs<T> e)
+    private async static void OnChange<T>(object sender, RecordChangedEventArgs<T> e)
       where T : class, new()
     {
       switch (e.ChangeType)
       {
         case ChangeType.Insert:
           Console.WriteLine($"{e.Entity} has been inserted");
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, "Insert", e.Entity);
           break;
         case ChangeType.Update:
           Console.WriteLine($"{e.Entity} has been updated");
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, "Update", e.Entity);
           break;
         case ChangeType.Delete:
           Console.WriteLine($"{e.Entity} has been deleted");
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, "Delete", e.Entity);
           break;
       }
     }
@@ -60,7 +69,7 @@ namespace SSMS
     }
     // get the tableDependency for a the given SQL Table
     // and Add event Handler [Method] to [OnChanged - OnError] to handle
-    // finally start the table listners
+    // finally start the table listeners
     // [new()] in Type Constrain means it must be a non abstract class with parameterless constructor
     public static void Watch<T>(string tableName)
       where T : class, new()
@@ -85,7 +94,7 @@ namespace SSMS
       Console.WriteLine($"SqlTableWatcher Stopped on: {tableName} table.");
     }
     // loop through Entities [all - given types] and register [start] SqlTableWatcher
-    public static void WatchAll(string[] typeNames)
+    public static void WatchAll(string[] typeNames = null)
     {
       // fill the TypeList [types]
       GetTypes(typeNames);

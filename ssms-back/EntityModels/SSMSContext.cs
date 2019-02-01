@@ -60,7 +60,6 @@ namespace SSMS.EntityModels
     public virtual DbSet<VerificationCode> VerificationCodes {get; set;}
     public virtual DbSet<RefreshToken> RefreshTokens {get; set;}
     public virtual DbSet<WeekPlan> WeeksPlans { get; set; }
-
     #endregion
 
     #region DbQuery
@@ -81,7 +80,6 @@ namespace SSMS.EntityModels
     public DbQuery<VTeacherEduData> VTeachersEduData{get;set;}
     public DbQuery<VTimeTable> VTimeTables{get;set;}
     public DbQuery<VWeekPlan> VWeeksPlans{get;set;}
-
     #endregion
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
