@@ -7,6 +7,7 @@ namespace SSMS.Hubs
 {
   public class DbHub : Hub
   {
+    public async Task Send(string message) => await Clients.All.SendAsync("getMessage", message);
     public async Task JoinGroups(string[] groups)
     {
       foreach (var group in groups)

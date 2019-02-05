@@ -22,6 +22,7 @@ using SSMS.Hubs;
 using SSMS.EntityModels;
 using SSMS.Users;
 using SSMS.Shared;
+using Microsoft.AspNetCore.SignalR;
 
 namespace SSMS
 {
@@ -40,7 +41,7 @@ namespace SSMS
     {
       // get the DI
       Helpers.DI = services;
-      // AddScoped configues settings to create new instance of this type per http request
+      // AddScoped configures settings to create new instance of this type per http request
       services.AddScoped<BaseService>();
       // Add automapper
       services.AddAutoMapper();
@@ -89,7 +90,7 @@ namespace SSMS
       services.AddSignalR(hubOptions =>
         {
           hubOptions.EnableDetailedErrors = true;
-          hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
+          hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(3);
         })
         .AddJsonProtocol(options =>
         {
@@ -110,7 +111,7 @@ namespace SSMS
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env, IHubContext<DbHub>  dbHub)
     {
       // Exception Page [Error Page]
       if (env.IsDevelopment())
@@ -118,10 +119,7 @@ namespace SSMS
       // Enable middleware to serve generated Swagger as a JSON endpoint.
       app.UseSwagger();
       // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-      app.UseSwaggerUI(c =>
-      {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-      });
+      app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1") );
       // Shows UseCors with CorsPolicyBuilder.
       app.UseCors("CorsPolicy");
       // using JWT Authentication
@@ -157,6 +155,8 @@ namespace SSMS
                   name: "default",
                   template: "{controller=Home}/{action=Index}/{id?}");
       });
+      // run Test.onConfigure
+      Test.onConfigure(dbHub);
     }
   }
 }

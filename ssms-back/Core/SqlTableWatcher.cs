@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using SSMS.EntityModels;
 using SSMS.Hubs;
+using AutoMapper;
 
 namespace SSMS
 {
@@ -26,8 +27,10 @@ namespace SSMS
     private static string conStr = Helpers.GetService<IConfiguration>().GetValue<string>(key);
     // get the ef db context from the DI
     private static SSMSContext _db = Helpers.GetService<SSMSContext>();
+    // get the IMapper from the DI
+    private static IMapper _mapper = Helpers.GetService<IMapper>();
     // get the DbHub Context from the DI
-    private static IHubContext<DbHub> _dbHub = Helpers.GetService<IHubContext<DbHub>>();
+    public static IHubContext<DbHub> _dbHub;
     // fill the types List to be used in both [WatchAll - StopAll] Methods
     private static void GetTypes(string[] typeNames)
     {
@@ -50,15 +53,18 @@ namespace SSMS
       {
         case ChangeType.Insert:
           Console.WriteLine($"{e.Entity} has been inserted");
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, "Insert", e.Entity);
+          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Insert", Record = e.Entity });
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Insert", Record = e.Entity });
           break;
         case ChangeType.Update:
           Console.WriteLine($"{e.Entity} has been updated");
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, "Update", e.Entity);
+          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Update", Record = e.Entity });
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Update", Record = e.Entity });
           break;
         case ChangeType.Delete:
           Console.WriteLine($"{e.Entity} has been deleted");
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, "Delete", e.Entity);
+          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Delete", Record = e.Entity });
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Delete", Record = e.Entity });
           break;
       }
     }

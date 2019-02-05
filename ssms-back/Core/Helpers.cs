@@ -119,10 +119,7 @@ namespace SSMS
               : types;
     }
     // Get DI Services
-    public static T GetService<T>() where T : class
-    {
-      return DI.BuildServiceProvider().GetService<T>();
-    }
+    public static T GetService<T>() => DI.BuildServiceProvider().GetService<T>();
 
   }
 }

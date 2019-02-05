@@ -52,7 +52,6 @@ namespace SSMS
         return BadRequest(new Error() { Message = "Item doesn't exist" });
       // switch on the [deleteType] and perform the appropriate action
       int res;
-      // _changeType = "Delete";
       switch (deleteType)
       {
         case "logical":
@@ -62,12 +61,12 @@ namespace SSMS
           else if (res == -2)
             return BadRequest(new Error() { Message = "Item has already been Logically deleted before" });
           _SetDeleteResult(entity, res, "logical");
-          // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, _deleteResult);
+          // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, "Delete", _deleteResult);
           return Ok(_deleteResult);
         case "physical":
           res = await Task.Run(() => _service.Delete(entity));
           _SetDeleteResult(entity, res, "physical");
-          // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, _deleteResult);
+          // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, "Delete", _deleteResult);
           return Ok(_deleteResult);
         default:
           return BadRequest(new Error() { Message = "Unknown Delete Type" });
@@ -135,7 +134,7 @@ namespace SSMS
       if (listType.ToLower() != "existing" &&
           listType.ToLower() != "deleted" &&
           listType.ToLower() != "all")
-        return BadRequest(new Error() { Message = "Unknow List Type.[all] OR [deleted] OR [existing] only acceptable" });
+        return BadRequest(new Error() { Message = "Unknown List Type.[all] OR [deleted] OR [existing] only acceptable" });
       //If page size & number aren't provided from the query string
       //then return regular result based on list type.
       IQueryable<TEntity> query;
@@ -258,8 +257,7 @@ namespace SSMS
         // add entity and saveChanges
         await Task.Run(() => _service.Add(entity));
       }
-      // _changeType = "Insert";
-      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
+      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, "Insert", entity);
       return _GetEntityResult(entity);
     }
     //Update all parent Data -- used either by Parent or Admin
@@ -267,8 +265,7 @@ namespace SSMS
     public async Task<IActionResult> Update([FromBody]TEntity entity)
     {
       await Task.Run(() => _service.Update<TEntity>(entity));
-      // _changeType = "Update";
-      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
+      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, new { Action = "Update", Record = entity });
       return _GetEntityResult(entity);
     }
     // update Only ParentId --Used by Admins Only
@@ -283,8 +280,7 @@ namespace SSMS
       //Get Property (binding Flags: ignore case sensitive, instance (not static), public) ,
       //Get Value
       TEntity entity = _service.GetOne<TEntity>(item => item.GetValue(_keyName).Equals(newKey));
-      // _changeType = "Update";
-      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, _changeType, entity);
+      // await _hubContext.Clients.Group(_tableName).SendAsync(_clientMethod, "Update", entity);
       return _GetEntityResult(entity);
     }
     //An action to receive type of Delete operation (logical or physical) and the entity to be deleted

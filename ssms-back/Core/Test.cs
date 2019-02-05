@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AutoMapper;
 using SSMS.EntityModels;
 using SSMS.ViewModels;
+using Microsoft.AspNetCore.SignalR;
+using SSMS.Hubs;
 
 namespace SSMS
 {
@@ -71,10 +73,14 @@ namespace SSMS
       // var config = Helpers.GetService<IConfiguration>();
       // Console.WriteLine(config.GetValue<bool>("Logging:IncludeScopes"));
 
+    }
+    public static void onConfigure(IHubContext<DbHub> dbHub)
+    {
+      SqlTableWatcher._dbHub = dbHub;
+      SqlTableWatcher.WatchAll(new string[] { "User", "School", "Country", "Action" });
       // SqlTableWatcher.Watch<User>("users");
       // SqlTableWatcher.Stop("users");
       // SqlTableWatcher.WatchAll();
-      SqlTableWatcher.WatchAll(new string[] { "User", "School", "Country", "Action" });
       // SqlTableWatcher.StopAll(new string[] { "User", "School", "Country", "Action" });
     }
   }

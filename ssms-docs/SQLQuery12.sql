@@ -54,3 +54,11 @@ select * from dbo.periods;
 update users set accountStatusId = 2 where userId = '1133557799'
 select * from users
 */
+/*
+update docTypes set isDeleted = 0
+select * from docTypes
+*/
+/*
+update countries set isDeleted = 0
+select * from countries
+*/
