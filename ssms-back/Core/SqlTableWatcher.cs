@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Collections.Generic;
 using TableDependency.SqlClient;
 using TableDependency.SqlClient.Base.Enums;
@@ -7,9 +8,10 @@ using TableDependency.SqlClient.Base.EventArgs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
-using SSMS.EntityModels;
-using SSMS.Hubs;
 using AutoMapper;
+using SSMS.Hubs;
+using SSMS.EntityModels;
+using SSMS.ViewModels;
 
 namespace SSMS
 {
@@ -28,7 +30,7 @@ namespace SSMS
     // get the ef db context from the DI
     private static SSMSContext _db = Helpers.GetService<SSMSContext>();
     // get the IMapper from the DI
-    private static IMapper _mapper = Helpers.GetService<IMapper>();
+    public static IMapper _mapper = Helpers.GetService<IMapper>();
     // get the DbHub Context from the DI
     public static IHubContext<DbHub> _dbHub;
     // fill the types List to be used in both [WatchAll - StopAll] Methods
@@ -45,7 +47,32 @@ namespace SSMS
                   .Select(tName => Type.GetType($"SSMS.EntityModels.{tName}"))
                   .ToList();
     }
-    // do the needed action on every [Insert - Update - Delete] operation
+    // map the changed entity to the corresponding view entity
+    private static dynamic DoMap<T>(T entity)
+    {
+      // getting the view model name from the entity name
+      string vEName = $"SSMS.ViewModels._V{entity.GetType().Name}";
+      // get the view model type from the view model name
+      Type vEType = Type.GetType(vEName);
+      // must Initialize the Mapper with mapping profile before using _mapper object
+      // when using _mapper in a time earlier than its AutoInitialize operation
+      Mapper.Initialize(x => x.AddProfile<Mappings>());
+      // dynamically call _mapper.map generic method to map entity to view model
+      // get all methods then get all map generic methods finally get the first one
+      // [because _mapper has many overloaded map methods]
+      // finally return the resulted mapped view entity
+      return _mapper.GetType()
+        .GetMethods()
+        .Where(m => m.IsGenericMethod && m.Name == "Map" )
+        .ToArray()[0]
+        .MakeGenericMethod(vEType)
+        .Invoke(_mapper, new object[] { entity });
+    }
+    // perform realtime db changes: on every [Insert - Update - Delete] db operation
+    // SqlTableDependency will send [actionType (insert-update-delete) - entity]
+    // then we deliver them to DbHub clients
+    // which in turn send them to clients who have joined the group
+    // whose name is the same as the (affected) table name
     private async static void OnChange<T>(object sender, RecordChangedEventArgs<T> e)
       where T : class, new()
     {
@@ -54,17 +81,17 @@ namespace SSMS
         case ChangeType.Insert:
           Console.WriteLine($"{e.Entity} has been inserted");
           // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Insert", Record = e.Entity });
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Insert", Record = e.Entity });
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Insert", Record = DoMap<T>(e.Entity) });
           break;
         case ChangeType.Update:
           Console.WriteLine($"{e.Entity} has been updated");
           // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Update", Record = e.Entity });
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Update", Record = e.Entity });
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Update", Record = DoMap<T>(e.Entity) });
           break;
         case ChangeType.Delete:
           Console.WriteLine($"{e.Entity} has been deleted");
           // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Delete", Record = e.Entity });
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Delete", Record = e.Entity });
+          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Delete", Record = DoMap<T>(e.Entity) });
           break;
       }
     }

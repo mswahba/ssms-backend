@@ -14,7 +14,7 @@ using SSMS.ViewModels;
 namespace SSMS.Users
 {
   //Inherit from BaseCOntroller to get all the actions inside it in the derived controller
-  public class UsersTestController : BaseController<User, String, VUser>
+  public class UsersTestController : BaseController<User, String, _VUser>
   {
     //Store the usersService object that comes
     //from DependencyInjection DI which injects it in the constructor

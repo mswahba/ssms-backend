@@ -2,7 +2,7 @@ using System;
 
 namespace SSMS.ViewModels
 {
-    public class VSchool
+    public class _VSchool
     {
         public byte SchoolId { get; set; }
         public string SchoolNameAr { get; set; }

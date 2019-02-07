@@ -29,7 +29,7 @@ namespace SSMS
       return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
     }
     // Generate JWT [JSON Web Token]
-    public static string GetToken(VUser user)
+    public static string GetToken(_VUser user)
     {
       var config = GetService<IConfiguration>();
       // get the secret string

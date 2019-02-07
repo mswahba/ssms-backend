@@ -9,7 +9,8 @@ namespace SSMS
   {
     public Mappings()
     {
-      CreateMap<User, VUser>().ReverseMap();
+      CreateMap<User, _VUser>().ReverseMap();
+      CreateMap<School, _VSchool>().ReverseMap();
     }
   }
 }

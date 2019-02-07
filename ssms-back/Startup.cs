@@ -44,7 +44,7 @@ namespace SSMS
       // AddScoped configures settings to create new instance of this type per http request
       services.AddScoped<BaseService>();
       // Add automapper
-      services.AddAutoMapper();
+      services.AddAutoMapper(typeof(Startup).Assembly);
       // Add SMTP Mail Service
       services.AddScoped<SmtpClient>((serviceProvider) =>
       {
@@ -111,7 +111,9 @@ namespace SSMS
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, IHubContext<DbHub>  dbHub)
+    public void Configure(IApplicationBuilder app,
+                          IHostingEnvironment env,
+                          IHubContext<DbHub>  dbHub)
     {
       // Exception Page [Error Page]
       if (env.IsDevelopment())

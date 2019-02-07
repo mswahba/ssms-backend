@@ -12,7 +12,7 @@ using SSMS.ViewModels;
 
 namespace SSMS.Shared
 {
-  public class SchoolsController : BaseController<School, Byte, VSchool>
+  public class SchoolsController : BaseController<School, Byte, _VSchool>
   {
     private readonly BaseService _service;
     private readonly IMapper _mapper;

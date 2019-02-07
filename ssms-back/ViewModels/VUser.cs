@@ -2,7 +2,7 @@ using System;
 
 namespace SSMS.ViewModels
 {
-  public class VUser
+  public class _VUser
   {
     public string UserId { get; set; }
     public byte? UserTypeId { get; set; }

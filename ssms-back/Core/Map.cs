@@ -71,9 +71,9 @@ namespace SSMS
       }
     }
     // Mapping from user [Entity Model] to vUser [View Model]
-    public static VUser ToVUser(User user)
+    public static _VUser ToVUser(User user)
     {
-      return new VUser()
+      return new _VUser()
       {
         UserId = user.UserId,
         UserTypeId = user.UserTypeId,
@@ -84,11 +84,11 @@ namespace SSMS
       };
     }
     // Read accessToken Claims and convert it to its Type [VUser]
-    public static VUser ToVUser(string accessToken)
+    public static _VUser ToVUser(string accessToken)
     {
       // get claims from the access token string
       IEnumerable<Claim> claims = new JwtSecurityTokenHandler().ReadJwtToken(accessToken).Claims;
-      VUser vUser = new VUser();
+      _VUser vUser = new _VUser();
       // get all vUser Propperties
       var props = vUser.GetProperties();
       // loop through vUser props and set each prop value with the corresponding claim value

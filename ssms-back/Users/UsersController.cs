@@ -18,7 +18,7 @@ namespace SSMS.Users
 {
   // Inherit from BaseCOntroller to get all the actions inside it in the derived controller
   // [Authorize]
-  public class UsersController : BaseController<User, String, VUser>
+  public class UsersController : BaseController<User, String, _VUser>
   {
     // Store the BaseService object that comes from [DI] which injects it in the constructor
     private readonly BaseService _service;
@@ -29,7 +29,7 @@ namespace SSMS.Users
     private readonly IHubContext<DbHub> _hubContext;
     private static string _tableName = "users";
     private User user;
-    private VUser vUser;
+    private _VUser vUser;
     // do Update The user Refresh Token [used in RefreshToken Action]
     private int _UpdateRefreshToken(User user, string refreshToken, string deviceInfo)
     {

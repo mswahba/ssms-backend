@@ -43,7 +43,7 @@ sp_rename 'dbo.EmployeesHr.WorkStartDateG', 'workStartDateG', 'COLUMN';
 select * from dbo.EmployeesHr;
 */
 /*
-sp_rename 'dbo.EmployeesHr', 'EmployeesHR';
+sp_rename 'dbo.EmployeesHR', 'employeesHR';
 select * from dbo.EmployeesHR;
 */
 /*
@@ -61,4 +61,10 @@ select * from docTypes
 /*
 update countries set isDeleted = 0
 select * from countries
+*/
+/*
+select [name], [temporal_type_desc]
+from sys.tables
+order by [name]
+select [name] from sys.views order by [name]
 */
