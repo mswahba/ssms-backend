@@ -24,7 +24,7 @@ export const initDatePicker = ({ format, yearRange, defaultDate, onSelect }) => 
   }
   M.Datepicker.init(picker, options);
 }
-// initailize AutoComplete [elements] with the given options
+// initialize AutoComplete [elements] with the given options
 // options is an Object where each key represents elementId
 // and the value hold the element Autocomplete options
 export const initAutoComplete = (options) => {
@@ -33,14 +33,14 @@ export const initAutoComplete = (options) => {
     M.Autocomplete.init(autoCompleteLists, options[elem.id]);
   });
 }
-// initailize a Select [elements] with empty options
+// initialize a Select [elements] with empty options
 export const initSelect = () => {
   const selectLists = document.querySelectorAll('select');
   M.FormSelect.init(selectLists, {});
 }
 // hold tooltips Instances
 let tooltipsIns = [];
-// initailize a Tooltip [elements] with fixed options
+// initialize a Tooltip [elements] with fixed options
 // and store all Tooltips Instances in [tooltipsIns]
 export const initTooltips = () => {
   const elems = document.querySelectorAll('.tooltipped');

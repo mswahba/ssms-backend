@@ -16,7 +16,7 @@ class SchoolsTable extends Component {
     // define table columns values and header
     this.columns = [
       { field: "schoolId",      header: trans("schools.fields.schoolId") },
-      { field: "schoolName",    header: trans("schools.fields.schoolNameAr") },
+      { field: "schoolNameAr",  header: trans("schools.fields.schoolNameAr") },
       { field: "schoolNameEn",  header: trans("schools.fields.schoolNameEn") },
       { field: "startDate",     header: trans("schools.fields.startDate") },
       { field: "address",       header: trans("schools.fields.address") }
@@ -83,7 +83,7 @@ class SchoolsTable extends Component {
   }
 
   componentDidMount() {
-    setTimeout(initTooltips, 100);
+    setTimeout(initTooltips, 300);
   }
 
   componentWillUnmount() {

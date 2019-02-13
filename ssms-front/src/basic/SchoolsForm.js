@@ -15,7 +15,7 @@ class _SchoolsReduxForm extends Component {
 
   constructor(props) {
     super(props);
-    // setting the detfault date
+    // setting the default date
     this.defaultDate = new Date();
     // setting the formCase [new - edit - details]
     this.formCase = (props.match.url.includes('new'))
@@ -154,9 +154,12 @@ class _SchoolsReduxForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+		console.log('TCL: -----------------------------------------------------')
+		console.log('TCL: componentWillReceiveProps -> nextProps', nextProps)
+		console.log('TCL: -----------------------------------------------------')
     // when the Form in new state then set form initialValues
     if ( !nextProps.match.params.id ) {
-      // dispatch set lookup entity to fill it with form defaut values
+      // dispatch set lookup entity to fill it with form default values
       lookupActions.setLookupEntity({
         'schoolId': 0,
         'schoolName': '',
@@ -182,7 +185,7 @@ class _SchoolsReduxForm extends Component {
 
   doSubmit = (values) => {
     const { reset, history, trans } = this.props;
-    // reformate the date string to be suitable to SQL Server [month/day/year]
+    // reformat the date string to be suitable to SQL Server [month/day/year]
     values = { ...values, startDate: values.startDate.reverseDate() };
     if (this.formCase === 'new') {
       lookupActions.addLookupEntity( {
@@ -334,8 +337,8 @@ const validate = ({ schoolName, schoolNameEn, startDate, address, comNum }) => {
     errors.schoolNameEn = trans("schools.validations.schoolNameEn.alpha");
   else if (!isLength(schoolNameEn, { min:3, max: 150 }))
     errors.schoolNameEn = trans("schools.validations.schoolNameEn.length");
-  // startDate with reformate the date string to be suitable to date Validation [month/day/year]
-  const dateValue = startDate.reverseDate();
+  // startDate with reformat the date string to be suitable to date Validation [month/day/year]
+  const dateValue = startDate && startDate.reverseDate();
   const tomorrow = (new Date()).add().toLocaleDateString();
   if( startDate && !isBefore(dateValue, tomorrow) )
     errors.startDate = trans("schools.validations.startDate.before");

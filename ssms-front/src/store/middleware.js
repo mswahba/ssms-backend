@@ -14,7 +14,7 @@ const ajax = ({ dispatch }) => next => action => {
     request = null;
   if (action.payload && Array.isArray(action.payload.req)) {
     request = action.payload.req;
-    // build the ajax requset promise
+    // build the ajax request promise
     if ( Array.isArray(request) && Array.isArray(request[0]) ) {
       allPromises = request.map(request => {
         const [ method, url, body = null ] = request;
@@ -59,4 +59,4 @@ const ajax = ({ dispatch }) => next => action => {
   next(action);
 };
 
-export const middlewares = [logger, ajax];
+export const middleware = [logger, ajax];

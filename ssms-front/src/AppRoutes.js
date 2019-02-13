@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import UsersList from './users/UsersList';
 import SignIn from './users/SignIn';
@@ -11,7 +11,7 @@ import '../node_modules/react-toastify/dist/ReactToastify.min.css';
 export default class AppRoutes extends Component {
   render() {
     return (
-      <Fragment>
+      <>
         <Switch>
           <Route path='/hijri' component={Hijri} />
           <Route path='/hg-datepicker' component={ () => (
@@ -35,7 +35,7 @@ export default class AppRoutes extends Component {
           <Route path='/' component={() => <h2> 404 Page not Found ...</h2> } />
         </Switch>
         <ToastContainer autoClose={5000} pauseOnFocusLoss={true} />
-      </Fragment>
+      </>
     );
   }
 }

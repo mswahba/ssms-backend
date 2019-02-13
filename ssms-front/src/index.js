@@ -12,8 +12,8 @@ import "primereact/resources/themes/omega/theme.css";
 // app styles
 import "./app.css";
 // test signalR
-import schoolsHub from './schoolsHubTest'
-schoolsHub();
+import dbHubTest from './dbHubTest'
+dbHubTest();
 // test signalR
 // AutoInit the Materialize component [which needs AutoInit]
 M.AutoInit();

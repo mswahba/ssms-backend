@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { BrowserRouter } from 'react-router-dom'
 import { withLocalize, getActiveLanguage } from 'react-localize-redux'
@@ -33,11 +33,11 @@ class AppLocalize extends Component {
     const styleLinks = (lang === 'en')
       ? <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css' />
       : [
-          <link key={1} rel="stylesheet" href='/materialize.rtl.min.css' />,
+          <link key={1} rel="stylesheet" href='https://gitcdn.xyz/cdn/MahdiMajidzadeh/materialize-rtl/b305c8ad018eb8198854e6dc4c43eab592e89eb1/dist/css/materialize-rtl.min.css' />,
           <link key={2} rel="stylesheet" href='/rtl-styles.css' />
         ]
     return (
-      <Fragment>
+      <>
         {styleLinks}
         <BrowserRouter>
           {/* header */}
@@ -45,7 +45,7 @@ class AppLocalize extends Component {
           <AppRoutes />
           {/* footer */}
         </BrowserRouter>
-      </Fragment>
+      </>
     )
   }
 }
