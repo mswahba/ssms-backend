@@ -21,6 +21,8 @@ namespace SSMS
     private static string key = "ConnectionStrings:server:assadara_ssms";
     // hold the signalR clientMethod name
     private static readonly string _clientMethod = "onChange";
+    // hold the tableName string
+    private static string _tableName;
     // hold all SqlTablesWatchers
     private static Dictionary<string,dynamic> tablesWatchers = new Dictionary<string,dynamic>();
     // hold the types list
@@ -30,7 +32,7 @@ namespace SSMS
     // get the ef db context from the DI
     private static SSMSContext _db = Helpers.GetService<SSMSContext>();
     // get the IMapper from the DI
-    public static IMapper _mapper = Helpers.GetService<IMapper>();
+    private static IMapper _mapper = Helpers.GetService<IMapper>();
     // get the DbHub Context from the DI
     public static IHubContext<DbHub> _dbHub;
     // fill the types List to be used in both [WatchAll - StopAll] Methods
@@ -76,22 +78,23 @@ namespace SSMS
     private async static void OnChange<T>(object sender, RecordChangedEventArgs<T> e)
       where T : class, new()
     {
+      _tableName = _db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName;
       switch (e.ChangeType)
       {
         case ChangeType.Insert:
           Console.WriteLine($"{e.Entity} has been inserted");
-          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Insert", Record = e.Entity });
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Insert", Record = DoMap<T>(e.Entity) });
+          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Table = _tableName, Action = "Insert", Entity = e.Entity });
+          await _dbHub.Clients.Group(_tableName).SendAsync(_clientMethod, new { Table = _tableName, Action = "Insert", Entity = DoMap<T>(e.Entity) });
           break;
         case ChangeType.Update:
           Console.WriteLine($"{e.Entity} has been updated");
-          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Update", Record = e.Entity });
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Update", Record = DoMap<T>(e.Entity) });
+          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Table = _tableName, Action = "Update", Entity = e.Entity });
+          await _dbHub.Clients.Group(_tableName).SendAsync(_clientMethod, new { Table = _tableName, Action = "Update", Entity = DoMap<T>(e.Entity) });
           break;
         case ChangeType.Delete:
           Console.WriteLine($"{e.Entity} has been deleted");
-          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Action = "Delete", Record = e.Entity });
-          await _dbHub.Clients.Group(_db.Model.FindEntityType(e.Entity.GetType()).Relational().TableName).SendAsync(_clientMethod, new { Action = "Delete", Record = DoMap<T>(e.Entity) });
+          // await _dbHub.Clients.All.SendAsync(_clientMethod, new { Table = _tableName, Action = "Delete", Entity = e.Entity });
+          await _dbHub.Clients.Group(_tableName).SendAsync(_clientMethod, new { Table = _tableName, Action = "Delete", Entity = DoMap<T>(e.Entity) });
           break;
       }
     }
