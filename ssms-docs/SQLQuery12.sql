@@ -68,3 +68,10 @@ from sys.tables
 order by [name]
 select [name] from sys.views order by [name]
 */
+/*
+-- List Tables with its Columns
+select TABLE_NAME, ORDINAL_POSITION, COLUMN_NAME, IS_NULLABLE, DATA_TYPE
+from assadara_ssms.information_schema.columns
+where TABLE_NAME not like '%History%' and TABLE_NAME not like 'v_%'
+order by TABLE_NAME, ORDINAL_POSITION
+*/
