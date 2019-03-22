@@ -30,7 +30,7 @@ export default class AppRoutes extends Component {
           />
           <Route path='/schools' component={Schools} />
           <Route path='/signUpParent' component={SignUpParent} />
-          <Route path='/signIn' component={SignIn} />
+          <Route path='/sign-in' component={SignIn} />
           <Route path='/usersList' component={UsersList} />
           <Route path='/' component={() => <h2> 404 Page not Found ...</h2> } />
         </Switch>

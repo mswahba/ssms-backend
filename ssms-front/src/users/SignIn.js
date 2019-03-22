@@ -11,9 +11,10 @@ import isLength from 'validator/lib/isLength'
 let SignIn = (props) => {
   const { trans, handleSubmit, pristine, submitting } = props;
   const doSignIn = (values) => userActions.signIn({
-    req: ["post", "/Users/SignIn", values],
+    req: ["post", "/Users/sign-in", values],
     fulfilledToast: ["success", trans('users.signIn.success')],
-    errorToast: ["error", trans('users.signIn.error')]
+    errorToast: ["error", trans('users.signIn.error')],
+    localStorage: 'loggedUser'
   });
   return (
     <form className="rtl" onSubmit={handleSubmit(doSignIn)}>
@@ -49,7 +50,7 @@ const validateUserId = (trans, userId, errors) => {
     errors.userId = trans("users.signIn.validations.userId.length");
 }
 // userPassword validation
-const validateuserPassword = (trans, userPassword, errors) => {
+const validateUserPassword = (trans, userPassword, errors) => {
   if (!userPassword)
     errors.userPassword = trans("users.signIn.validations.userPassword.required");
   else if ( !isLength(userPassword, { min: 6, max: 25 }) )
@@ -63,7 +64,7 @@ const validate = ({ userId, userPassword }) => {
   // userId
   validateUserId(trans, userId, errors);
   // userPassword
-  validateuserPassword(trans, userPassword, errors);
+  validateUserPassword(trans, userPassword, errors);
   return errors;
 }
 // define the redux form

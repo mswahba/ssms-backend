@@ -107,13 +107,13 @@ namespace SSMS.Users
       );
     }
     [AllowAnonymous]
-    [HttpPost("signin")]
-    public IActionResult SignIn(SignIn signin)
+    [HttpPost("sign-in")]
+    public IActionResult SignIn(SignIn signIn)
     {
       // (1) Get User by his Credentials [userId - userPassword]
       // and validate the userPassword against Passwordhash
       // and if exists, include all user RefreshTokens
-      user = _service.GetOne<User>(new List<string>() { "RefreshTokens" }, u => u.UserId == signin.UserId && Helpers.ValidateHash(signin.UserPassword, u.PasswordSalt, u.PasswordHash));
+      user = _service.GetOne<User>(new List<string>() { "RefreshTokens" }, u => u.UserId == signIn.UserId && Helpers.ValidateHash(signIn.UserPassword, u.PasswordSalt, u.PasswordHash));
       // (2) if User doesn't exist return badRequest
       if (user == null)
         return BadRequest(new Error() { Message = "Invalid User." });

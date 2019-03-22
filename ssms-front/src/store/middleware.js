@@ -2,6 +2,7 @@ import logger from "redux-logger";
 import axios from "axios";
 import axiosCancel from "axios-cancel";
 import { toast } from 'react-toastify';
+import LS from '../shared/localStorage';
 
 // set axios baseURL to server API URL
 axios.defaults.baseURL = "http://localhost:5000";
@@ -30,8 +31,11 @@ const ajax = ({ dispatch }) => next => action => {
     // dispatch({type: action.type + '_PENDING'});
     requestPromise
       .then(res => {
-        // dispatch action only when res in not null or undefined
         if(res) {
+          // if localStorage key exists then save res.data to LS with that key
+          if(action.payload.localStorage)
+            LS.set(action.payload.localStorage, res.data);
+          // dispatch action only when res in not null or undefined
           dispatch({ type: action.type.replace('_PENDING', '_FULFILLED') , payload: res });
           if(action.payload.fulfilledToast && action.payload.fulfilledToast.length)
             toast[action.payload.fulfilledToast[0]](action.payload.fulfilledToast[1]);
