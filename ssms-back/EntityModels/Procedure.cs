@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SSMS.EntityModels
 {
-    public partial class RemedialProcedure
+    public partial class Procedure
     {
-        public RemedialProcedure()
+        public Procedure()
         {
             StudentsProcedures = new HashSet<StudentProcedure>();
             IsDeleted = false;

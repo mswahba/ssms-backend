@@ -8,7 +8,7 @@ namespace SSMS.EntityModels
         public AcademicYear()
         {
             AcademicSemesters = new HashSet<AcademicSemester>();
-            ClassesStudents = new HashSet<ClassStudent>();
+            StudentsClasses = new HashSet<StudentClass>();
             IsDeleted = false;
         }
 
@@ -22,6 +22,6 @@ namespace SSMS.EntityModels
         public bool? IsDeleted { get; set; }
 
         public ICollection<AcademicSemester> AcademicSemesters { get; set; }
-        public ICollection<ClassStudent> ClassesStudents { get; set; }
+        public ICollection<StudentClass> StudentsClasses { get; set; }
     }
 }

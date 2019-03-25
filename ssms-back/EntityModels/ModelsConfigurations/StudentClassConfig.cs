@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace SSMS.EntityModels
 {
-  public class ClassStudentConfig : IEntityTypeConfiguration<ClassStudent>
+  public class StudentClassConfig : IEntityTypeConfiguration<StudentClass>
   {
-    public void Configure(EntityTypeBuilder<ClassStudent> builder)
+    public void Configure(EntityTypeBuilder<StudentClass> builder)
     {
       builder.HasKey(e => e.ClassStudentId);
 
@@ -35,18 +35,18 @@ namespace SSMS.EntityModels
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
       builder.HasOne(d => d.Classroom)
-                .WithMany(p => p.ClassesStudents)
+                .WithMany(p => p.StudentsClasses)
                 .HasForeignKey(d => d.ClassroomId)
                 .HasConstraintName("FK_classesStudents_classrooms");
 
       builder.HasOne(d => d.Student)
-                .WithMany(p => p.ClassesStudents)
+                .WithMany(p => p.StudentsClasses)
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_classesStudents_students");
 
       builder.HasOne(d => d.Year)
-                .WithMany(p => p.ClassesStudents)
+                .WithMany(p => p.StudentsClasses)
                 .HasForeignKey(d => d.YearId)
                 .HasConstraintName("FK_classesStudents_academicYears");
 

@@ -20,7 +20,7 @@ namespace SSMS.EntityModels
 
         public EmployeeJob EmpJob { get; set; }
         public Student Student { get; set; }
-        public BehavioralViolation Violation { get; set; }
+        public Violation Violation { get; set; }
         public ICollection<StudentProcedure> StudentsProcedures { get; set; }
     }
 }

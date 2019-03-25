@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SSMS.EntityModels
 {
-    public partial class ClassStudent
+    public partial class StudentClass
     {
-        public ClassStudent()
+        public StudentClass()
         {
             IsDeleted = false;
         }

@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace SSMS.EntityModels
 {
-  public class RemedialProcedureConfig : IEntityTypeConfiguration<RemedialProcedure>
+  public class ProcedureConfig : IEntityTypeConfiguration<Procedure>
   {
-    public void Configure(EntityTypeBuilder<RemedialProcedure> builder)
+    public void Configure(EntityTypeBuilder<Procedure> builder)
     {
       builder.HasKey(e => e.ProcedureId);
 
-      builder.ToTable("remedialProcedures");
+      builder.ToTable("procedures");
 
       builder.Property(e => e.ProcedureId)
                 .HasColumnName("procedureId")

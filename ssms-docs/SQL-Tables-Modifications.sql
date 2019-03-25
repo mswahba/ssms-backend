@@ -21,27 +21,67 @@
 -- insert into studentStatuses values (6, 'متخرج', 'Graduated', 'أنهى الطالب سنوات الدراسة بالقسم')
 -- Go
 
--- modify parent table:
+-- modify parents table:
 -- sp_rename to rename table from [parents] to [guardians]
--- alter table parent add [notes] [nvarchar](max) NULL
+-- add these fields
+-------------------
 -- jobEmployer
 -- jobTitle
--- jobAddress
 -- jobPhone
+-- jobAddress
+-- notes
 
--- remove these fields:
+-- remove these fields
+----------------------
 -- relativeName
 -- relativeMobile
 -- relativePhone
 -- relativeAddress
 -- relativeRelation
 
+-- alter table parents drop column [job]
+-- alter table parents drop column [workAddress]
+-- alter table parents drop column [workPhone]
+-- alter table parents drop column [relativeName]
+-- alter table parents drop column [relativeMobile]
+-- alter table parents drop column [relativePhone]
+-- alter table parents drop column [relativeAddress]
+-- alter table parents drop column [relativeRelation]
+
+-- alter table parents add [jobEmployer] [nvarchar](100) NULL
+-- alter table parents add [jobTitle] [nvarchar](50) NULL
+-- alter table parents add [jobPhone] [varchar](20) NULL
+-- alter table parents add [jobAddress] [nvarchar](max) NULL
+-- alter table parents add [notes] [nvarchar](max) NULL
+
 -- modify students table:
 -- add column mobileMother2
 -- add column healthIssuesIds
 -- add column healthNeedsIds
--- add column addressID
+-- add column addressId
 -- add column statusId
+
+-- alter table students add [healthIssuesIds] [varchar](max) NULL
+-- alter table students add [healthNeedsIds] [varchar](max) NULL
+-- alter table students add [mobileMother2] [varchar](20) NULL
+-- alter table students add [addressId] [int] NULL
+-- alter table students add [statusId] [tinyint] NULL
+
+-- add the 2 relations [addressId - statusId]
+-- --------------------
+-- ALTER TABLE [dbo].[students]
+-- ADD CONSTRAINT [FK_parentsAddresses_students] FOREIGN KEY([addressId])
+-- REFERENCES [dbo].[parentsAddresses] ([addressId])
+-- ON UPDATE No Action
+-- ON DELETE No Action
+-- GO
+
+-- ALTER TABLE [dbo].[students]
+-- ADD CONSTRAINT [FK_studentStatuses_students] FOREIGN KEY([statusId])
+-- REFERENCES [dbo].[studentStatuses] ([statusId])
+-- ON UPDATE No Action
+-- ON DELETE No Action
+-- GO
 
 -- add new table relatives
 -- CREATE TABLE [dbo].[relatives](
@@ -113,6 +153,9 @@
 -- 	[healthIssueNameEn] [nvarchar](100) NULL
 -- )
 -- GO
+
+-- alter table HealthIssues alter column [healthIssueId] [smallint] NULL
+-- alter table HealthNeeds alter column [healthNeedId] [smallint] NULL
 
 -- add new table HealthNeeds
 -- CREATE TABLE [dbo].[healthNeeds](

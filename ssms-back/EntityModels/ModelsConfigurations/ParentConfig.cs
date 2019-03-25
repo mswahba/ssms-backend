@@ -33,38 +33,21 @@ namespace SSMS.EntityModels
       builder.Property(e => e.LNameEn).HasColumnName("lNameEn").HasMaxLength(20);
 
       builder.Property(e => e.HouseNum).HasColumnName("houseNum").HasMaxLength(5);
-
       builder.Property(e => e.IdExpireDateG).HasColumnType("date");
-
       builder.Property(e => e.IdExpireDateH).HasColumnName("idExpireDateH").HasColumnType("nchar(10)");
-
       builder.Property(e => e.IdIssuePlace).HasMaxLength(50);
-
-      builder.Property(e => e.Job).HasColumnName("job");
-
       builder.Property(e => e.Mobile1).HasColumnName("mobile1").HasMaxLength(15);
-
       builder.Property(e => e.Mobile2).HasColumnName("mobile2").HasMaxLength(15);
-
       builder.Property(e => e.CountryId).HasColumnName("countryId").HasMaxLength(15);
-
       builder.Property(e => e.Phone).HasColumnName("phone").HasMaxLength(15);
-
-      builder.Property(e => e.RelativeAddress).HasColumnName("relativeAddress");
-
-      builder.Property(e => e.RelativeMobile).HasColumnName("relativeMobile").HasMaxLength(15);
-
-      builder.Property(e => e.RelativeName).HasColumnName("relativeName").HasMaxLength(60);
-
-      builder.Property(e => e.RelativePhone).HasColumnName("relativePhone").HasMaxLength(15);
-
-      builder.Property(e => e.RelativeRelation).HasColumnName("relativeRelation").HasMaxLength(50);
-
       builder.Property(e => e.Street).HasColumnName("street");
 
-      builder.Property(e => e.WorkAddress).HasColumnName("workAddress");
+      builder.Property(e => e.JobTitle).HasColumnName("jobTitle").HasMaxLength(20);
+      builder.Property(e => e.JobPhone).HasColumnName("jobPhone").HasMaxLength(20);
+      builder.Property(e => e.JobEmployer).HasColumnName("jobEmployer").HasMaxLength(100);
+      builder.Property(e => e.JobAddress).HasColumnName("jobAddress");
 
-      builder.Property(e => e.WorkPhone).HasColumnName("workPhone").HasMaxLength(15);
+      builder.Property(e => e.Notes).HasColumnName("notes");
 
       builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
       builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");

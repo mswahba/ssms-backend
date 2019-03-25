@@ -15,17 +15,20 @@ namespace SSMS.EntityModels
     public virtual DbSet<AcademicWeek> AcademicWeeks { get; set; }
     public virtual DbSet<AcademicYear> AcademicYears { get; set; }
     public virtual DbSet<Action> Actions { get; set; }
-    public virtual DbSet<BehavioralViolation> BehavioralViolations { get; set; }
     public virtual DbSet<Branch> Branches { get; set; }
-    public virtual DbSet<ClassStudent> ClassesStudents { get; set; }
+    public virtual DbSet<StudentClass> StudentsClasses { get; set; }
     public virtual DbSet<Classroom> Classrooms { get; set; }
+    public virtual DbSet<City> Cities { get; set; }
     public virtual DbSet<Department> Departments { get; set; }
+    public virtual DbSet<District> Districts { get; set; }
     public virtual DbSet<DocType> DocTypes { get; set; }
     public virtual DbSet<Employee> Employees { get; set; }
     public virtual DbSet<EmployeeAction> EmployeesActions { get; set; }
     public virtual DbSet<EmployeeFinance> EmployeesFinance { get; set; }
     public virtual DbSet<EmployeeHR> EmployeesHR { get; set; }
     public virtual DbSet<EmployeeJob> EmployeesJobs { get; set; }
+    public virtual DbSet<HealthIssue> HealthIssues { get; set; }
+    public virtual DbSet<HealthNeed> HealthNeeds { get; set; }
     public virtual DbSet<Grade> Grades { get; set; }
     public virtual DbSet<GradeSubject> GradesSubjects { get; set; }
     public virtual DbSet<Job> Jobs { get; set; }
@@ -38,15 +41,20 @@ namespace SSMS.EntityModels
     public virtual DbSet<NotificationType> NotificationTypes { get; set; }
     public virtual DbSet<NotificationTypeUser> NotificationTypesUsers { get; set; }
     public virtual DbSet<Parent> Parents { get; set; }
+    public virtual DbSet<ParentAddress> ParentAddresses { get; set; }
     public virtual DbSet<Period> Periods { get; set; }
     public virtual DbSet<PeriodDetails> PeriodsDetails { get; set; }
     public virtual DbSet<PeriodFile> PeriodsFiles { get; set; }
-    public virtual DbSet<RemedialProcedure> RemedialProcedures { get; set; }
+    public virtual DbSet<Procedure> Procedures { get; set; }
+    public virtual DbSet<Relation> Relations { get; set; }
+    public virtual DbSet<Relative> Relatives { get; set; }
     public virtual DbSet<SchoolDayEvent> SchoolDayEvents { get; set; }
     public virtual DbSet<School> Schools { get; set; }
     public virtual DbSet<Stage> Stages { get; set; }
     public virtual DbSet<Student> Students { get; set; }
     public virtual DbSet<StudentProcedure> StudentsProcedures { get; set; }
+    public virtual DbSet<StudentRelative> StudentsRelatives { get; set; }
+    public virtual DbSet<StudentStatus> StudentsStatuses { get; set; }
     public virtual DbSet<StudentViolation> StudentsViolations { get; set; }
     public virtual DbSet<Subject> Subjects { get; set; }
     public virtual DbSet<TeacherEdu> TeachersEdu { get; set; }
@@ -58,6 +66,9 @@ namespace SSMS.EntityModels
     public virtual DbSet<AccountStatus> AccountStatuses { get; set; }
     public virtual DbSet<VerificationCodeType> VerificationCodeTypes {get; set;}
     public virtual DbSet<VerificationCode> VerificationCodes {get; set;}
+    public virtual DbSet<ViolationDegree> ViolationsDegrees {get; set;}
+    public virtual DbSet<ViolationType> ViolationsTypes {get; set;}
+    public virtual DbSet<Violation> Violations { get; set; }
     public virtual DbSet<RefreshToken> RefreshTokens {get; set;}
     public virtual DbSet<WeekPlan> WeeksPlans { get; set; }
     #endregion
@@ -96,9 +107,9 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new AcademicWeekConfig());
       modelBuilder.ApplyConfiguration(new AcademicYearConfig());
       modelBuilder.ApplyConfiguration(new ActionConfig());
-      modelBuilder.ApplyConfiguration(new BehavioralViolationConfig());
+      modelBuilder.ApplyConfiguration(new ViolationConfig());
       modelBuilder.ApplyConfiguration(new BranchConfig());
-      modelBuilder.ApplyConfiguration(new ClassStudentConfig());
+      modelBuilder.ApplyConfiguration(new StudentClassConfig());
       modelBuilder.ApplyConfiguration(new ClassroomConfig());
       modelBuilder.ApplyConfiguration(new DepartmentConfig());
       modelBuilder.ApplyConfiguration(new DocTypeConfig());
@@ -123,7 +134,7 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new PeriodConfig());
       modelBuilder.ApplyConfiguration(new PeriodDetailsConfig());
       modelBuilder.ApplyConfiguration(new PeriodFileConfig());
-      modelBuilder.ApplyConfiguration(new RemedialProcedureConfig());
+      modelBuilder.ApplyConfiguration(new ProcedureConfig());
       modelBuilder.ApplyConfiguration(new SchoolDayEventConfig());
       modelBuilder.ApplyConfiguration(new SchoolConfig());
       modelBuilder.ApplyConfiguration(new StageConfig());

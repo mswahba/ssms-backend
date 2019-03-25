@@ -33,14 +33,11 @@ namespace SSMS.EntityModels
         public string Street { get; set; }
         public string District { get; set; }
         public byte? CityId { get; set; }
-        public string Job { get; set; }
-        public string WorkAddress { get; set; }
-        public string WorkPhone { get; set; }
-        public string RelativeName { get; set; }
-        public string RelativeMobile { get; set; }
-        public string RelativePhone { get; set; }
-        public string RelativeAddress { get; set; }
-        public string RelativeRelation { get; set; }
+        public string JobEmployer { get; set; }
+        public string JobTitle { get; set; }
+        public string JobPhone { get; set; }
+        public string JobAddress { get; set; }
+        public string Notes { get; set; }
         public string IssuerId { get; set; }
         public DateTime SysStartTime { get; set; }
         public DateTime SysEndTime { get; set; }

@@ -17,7 +17,7 @@ namespace SSMS.EntityModels
         public bool? IsDeleted { get; set; }
 
         public EmployeeJob EmpJob { get; set; }
-        public RemedialProcedure Procedure { get; set; }
+        public Procedure Procedure { get; set; }
         public StudentViolation StudentViolation { get; set; }
     }
 }

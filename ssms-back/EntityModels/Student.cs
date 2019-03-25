@@ -7,7 +7,7 @@ namespace SSMS.EntityModels
     {
         public Student()
         {
-            ClassesStudents = new HashSet<ClassStudent>();
+            StudentsClasses = new HashSet<StudentClass>();
             PeriodsDetails = new HashSet<PeriodDetails>();
             StudentsViolations = new HashSet<StudentViolation>();
             IsDeleted = false;
@@ -29,7 +29,8 @@ namespace SSMS.EntityModels
         public DateTime? IdExpireDateG { get; set; }
         public string IdExpireDateH { get; set; }
         public string Mobile { get; set; }
-        public string MobileMother { get; set; }
+        public string MobileMother1 { get; set; }
+        public string MobileMother2 { get; set; }
         public string Email { get; set; }
         public DateTime? BirthDateG { get; set; }
         public string BirthDateH { get; set; }
@@ -37,16 +38,22 @@ namespace SSMS.EntityModels
         public string SpecialNeeds { get; set; }
         public string PreviousSchool { get; set; }
         public byte CountryId { get; set; }
+        public string HealthIssuesIds { get; set; }
+        public string HealthNeedsIds { get; set; }
+        public int? AddressId { get; set; }
+        public byte? StatusId { get; set; }
         public string IssuerId { get; set; }
         public DateTime SysStartTime { get; set; }
         public DateTime SysEndTime { get; set; }
         public bool? IsDeleted { get; set; }
-        
+
         public User _User { get; set; }
         public Parent Parent { get; set; }
         public User _Student { get; set; }
         public Country Country { get; set; }
-        public ICollection<ClassStudent> ClassesStudents { get; set; }
+        public ParentAddress ParentAddress { get; set; }
+        public StudentStatus StudentStatus { get; set; }
+        public ICollection<StudentClass> StudentsClasses { get; set; }
         public ICollection<PeriodDetails> PeriodsDetails { get; set; }
         public ICollection<StudentViolation> StudentsViolations { get; set; }
     }

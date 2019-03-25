@@ -46,7 +46,8 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.Mobile).HasColumnName("mobile").HasMaxLength(15);
 
-      builder.Property(e => e.MobileMother).HasColumnName("mobileMother").HasMaxLength(15);
+      builder.Property(e => e.MobileMother1).HasColumnName("mobileMother1").HasMaxLength(15);
+      builder.Property(e => e.MobileMother2).HasColumnName("mobileMother1").HasMaxLength(15);
 
       builder.Property(e => e.ParentId).HasColumnName("parentId").HasColumnType("char(10)");
 
@@ -55,6 +56,10 @@ namespace SSMS.EntityModels
       builder.Property(e => e.SpecialNeeds).HasColumnName("specialNeeds");
 
       builder.Property(e => e.CountryId).HasColumnName("countryId");
+      builder.Property(e => e.AddressId).HasColumnName("addressId");
+      builder.Property(e => e.StatusId).HasColumnName("statusId");
+      builder.Property(e => e.HealthIssuesIds).HasColumnName("healthIssuesIds");
+      builder.Property(e => e.HealthNeedsIds).HasColumnName("healthNeedsIds");
 
       builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
       builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
@@ -81,6 +86,16 @@ namespace SSMS.EntityModels
                 .WithMany(c => c.Students)
                 .HasForeignKey(s => s.CountryId)
                 .HasConstraintName("FK_students_countries");
+
+      builder.HasOne(s => s.ParentAddress)
+                .WithMany(c => c.Students)
+                .HasForeignKey(s => s.AddressId)
+                .HasConstraintName("FK_parentsAddresses_students");
+
+      builder.HasOne(s => s.StudentStatus)
+                .WithMany(c => c.Students)
+                .HasForeignKey(s => s.StatusId)
+                .HasConstraintName("FK_studentStatuses_students");
     }
   }
 }

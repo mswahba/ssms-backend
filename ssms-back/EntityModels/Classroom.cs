@@ -7,7 +7,7 @@ namespace SSMS.EntityModels
     {
         public Classroom()
         {
-            ClassesStudents = new HashSet<ClassStudent>();
+            StudentsClasses = new HashSet<StudentClass>();
             Periods = new HashSet<Period>();
             IsDeleted = false;
         }
@@ -19,7 +19,7 @@ namespace SSMS.EntityModels
         public bool? IsDeleted { get; set; }
 
         public Grade Grade { get; set; }
-        public ICollection<ClassStudent> ClassesStudents { get; set; }
+        public ICollection<StudentClass> StudentsClasses { get; set; }
         public ICollection<Period> Periods { get; set; }
     }
 }
