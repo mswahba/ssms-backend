@@ -105,9 +105,9 @@
 -- add new table studentsRelatives
 -- CREATE TABLE [dbo].[studentsRelatives](
 -- 	[studentRelativeId] [int] identity(1,1) PRIMARY KEY,
--- 	[studentId] [char](10) NOT NULL,
--- 	[relativeId] [int] NOT NULL,
--- 	[relationId] [tinyint] NOT NULL,
+-- 	[studentId] [char](10) NULL,
+-- 	[relativeId] [int] NULL,
+-- 	[relationId] [tinyint]  NULL,
 -- 	[priority] [tinyint] NULL,
 --  [sysStartTime] datetime2 (2) GENERATED ALWAYS AS ROW START,
 --  [sysEndTime] datetime2 (2) GENERATED ALWAYS AS ROW END,
@@ -154,8 +154,14 @@
 -- )
 -- GO
 
--- alter table HealthIssues alter column [healthIssueId] [smallint] NULL
--- alter table HealthNeeds alter column [healthNeedId] [smallint] NULL
+-- alter table healthIssues alter column [healthIssueId] [smallint] NOT NULL
+-- alter table healthNeeds alter column [healthNeedId] [smallint] NOT NULL
+
+-- ALTER TABLE [dbo].[healthIssues]   
+-- ADD CONSTRAINT PK_healthIssues_healthIssueId PRIMARY KEY CLUSTERED (healthIssueId);  
+
+-- ALTER TABLE [dbo].[healthNeeds]
+-- ADD CONSTRAINT PK_healthNeeds_healthNeedId PRIMARY KEY CLUSTERED (healthNeedId);
 
 -- add new table HealthNeeds
 -- CREATE TABLE [dbo].[healthNeeds](

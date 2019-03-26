@@ -118,6 +118,8 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new EmployeeFinanceConfig());
       modelBuilder.ApplyConfiguration(new EmployeeHRConfig());
       modelBuilder.ApplyConfiguration(new EmployeeJobConfig());
+      modelBuilder.ApplyConfiguration(new HealthIssueConfig());
+      modelBuilder.ApplyConfiguration(new HealthNeedConfig());
       modelBuilder.ApplyConfiguration(new GradeConfig());
       modelBuilder.ApplyConfiguration(new GradeSubjectConfig());
       modelBuilder.ApplyConfiguration(new JobConfig());
@@ -141,6 +143,7 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new StudentConfig());
       modelBuilder.ApplyConfiguration(new StudentProcedureConfig());
       modelBuilder.ApplyConfiguration(new StudentStatusConfig());
+      modelBuilder.ApplyConfiguration(new StudentRelativeConfig());
       modelBuilder.ApplyConfiguration(new StudentViolationConfig());
       modelBuilder.ApplyConfiguration(new SubjectConfig());
       modelBuilder.ApplyConfiguration(new TeacherEduConfig());

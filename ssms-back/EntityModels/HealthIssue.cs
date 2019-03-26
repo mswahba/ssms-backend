@@ -5,5 +5,6 @@ namespace SSMS.EntityModels
         public short HealthIssueId { get; set; }
         public string HealthIssueNameAr { get; set; }
         public string HealthIssueNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

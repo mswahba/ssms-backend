@@ -9,6 +9,7 @@ namespace SSMS.EntityModels
         {
             StudentsClasses = new HashSet<StudentClass>();
             PeriodsDetails = new HashSet<PeriodDetails>();
+            StudentsRelatives = new HashSet<StudentRelative>();
             StudentsViolations = new HashSet<StudentViolation>();
             IsDeleted = false;
         }
@@ -55,6 +56,7 @@ namespace SSMS.EntityModels
         public StudentStatus StudentStatus { get; set; }
         public ICollection<StudentClass> StudentsClasses { get; set; }
         public ICollection<PeriodDetails> PeriodsDetails { get; set; }
+        public ICollection<StudentRelative> StudentsRelatives { get; set; }
         public ICollection<StudentViolation> StudentsViolations { get; set; }
     }
 }

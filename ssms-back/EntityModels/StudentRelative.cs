@@ -14,8 +14,9 @@ namespace SSMS.EntityModels
         public DateTime SysEndTime { get; set; }
         public string IssuerId { get; set; }
 
-        public Relative Relative { get; set; }
-        public Relation Relation { get; set; }
-        public User User { get; set; }
+        public Student _Student { get; set; }
+        public Relative _Relative { get; set; }
+        public Relation _Relation { get; set; }
+        public User _User { get; set; }
     }
 }
