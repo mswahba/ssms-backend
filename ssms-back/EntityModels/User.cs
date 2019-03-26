@@ -23,6 +23,9 @@ namespace SSMS.EntityModels
       PeriodsFiles = new HashSet<PeriodFile>();
       RefreshTokens = new HashSet<RefreshToken>();
       Students = new HashSet<Student>();
+      StudentsClasses = new HashSet<StudentClass>();
+      StudentsProcedures = new HashSet<StudentProcedure>();
+      StudentsViolations = new HashSet<StudentViolation>();
       Subjects = new HashSet<Subject>();
       TeachersEdu = new HashSet<TeacherEdu>();
       TeachersQuorums = new HashSet<TeacherQuorum>();
@@ -70,6 +73,9 @@ namespace SSMS.EntityModels
     public ICollection<PeriodDetails> PeriodsDetails { get; set; }
     public ICollection<PeriodFile> PeriodsFiles { get; set; }
     public ICollection<Student> Students { get; set; }
+    public ICollection<StudentClass> StudentsClasses { get; set; }
+    public ICollection<StudentProcedure> StudentsProcedures { get; set; }
+    public ICollection<StudentViolation> StudentsViolations { get; set; }
     public ICollection<Subject> Subjects { get; set; }
     public ICollection<TeacherEdu> TeachersEdu { get; set; }
     public ICollection<TeacherQuorum> TeachersQuorums { get; set; }

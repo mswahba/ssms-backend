@@ -7,23 +7,15 @@ namespace SSMS.EntityModels
   {
     public void Configure(EntityTypeBuilder<StudentClass> builder)
     {
-      builder.HasKey(e => e.ClassStudentId);
+      builder.HasKey(e => e.StudentClassId);
 
-      builder.ToTable("classesStudents");
+      builder.ToTable("studentsClasses");
 
-      builder.Property(e => e.ClassStudentId)
+      builder.Property(e => e.StudentClassId)
                 .HasColumnName("classStudentId")
                 .ValueGeneratedNever();
 
       builder.Property(e => e.ClassroomId).HasColumnName("classroomId");
-
-      builder.Property(e => e.EndDate)
-                .HasColumnName("endDate")
-                .HasColumnType("date");
-
-      builder.Property(e => e.StartDate)
-                .HasColumnName("startDate")
-                .HasColumnType("date");
 
       builder.Property(e => e.StudentId)
                 .IsRequired()
@@ -34,21 +26,29 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
-      builder.HasOne(d => d.Classroom)
+      builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
+      builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
+      builder.Property(e => e.SysEndTime).HasColumnName("sysEndTime");
+
+      builder.HasOne(d => d._Classroom)
                 .WithMany(p => p.StudentsClasses)
                 .HasForeignKey(d => d.ClassroomId)
-                .HasConstraintName("FK_classesStudents_classrooms");
+                .HasConstraintName("FK_classrooms_studentsClasses");
 
-      builder.HasOne(d => d.Student)
+      builder.HasOne(d => d._Student)
                 .WithMany(p => p.StudentsClasses)
                 .HasForeignKey(d => d.StudentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_classesStudents_students");
+                .HasConstraintName("FK_students_studentsClasses");
 
       builder.HasOne(d => d.Year)
                 .WithMany(p => p.StudentsClasses)
                 .HasForeignKey(d => d.YearId)
-                .HasConstraintName("FK_classesStudents_academicYears");
+                .HasConstraintName("FK_academicYears_studentsClasses");
+
+      builder.HasOne(e => e._User)
+              .WithMany(u => u.StudentsClasses)
+              .HasForeignKey(e => e.IssuerId)
+              .HasConstraintName("FK_users_studentsClasses");
 
     }
   }

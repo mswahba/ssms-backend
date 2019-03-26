@@ -8,19 +8,23 @@ namespace SSMS.EntityModels
         public StudentViolation()
         {
             StudentsProcedures = new HashSet<StudentProcedure>();
-            IsDeleted = false;
         }
 
         public int StudentViolationId { get; set; }
-        public string StudentId { get; set; }
         public short? ViolationId { get; set; }
+        public string StudentId { get; set; }
+        public int? StudentClassId { get; set; }
         public int? EmpJobId { get; set; }
         public DateTime? ViolationDate { get; set; }
-        public bool? IsDeleted { get; set; }
+        public string IssuerId { get; set; }
+        public DateTime SysStartTime { get; set; }
+        public DateTime SysEndTime { get; set; }
 
+		public User _User { get; set; }
+        public Violation _Violation { get; set; }
+        public Student _Student { get; set; }
+        public StudentClass _StudentClass { get; set; }
         public EmployeeJob EmpJob { get; set; }
-        public Student Student { get; set; }
-        public Violation Violation { get; set; }
         public ICollection<StudentProcedure> StudentsProcedures { get; set; }
     }
 }

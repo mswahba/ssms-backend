@@ -140,6 +140,7 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new StageConfig());
       modelBuilder.ApplyConfiguration(new StudentConfig());
       modelBuilder.ApplyConfiguration(new StudentProcedureConfig());
+      modelBuilder.ApplyConfiguration(new StudentStatusConfig());
       modelBuilder.ApplyConfiguration(new StudentViolationConfig());
       modelBuilder.ApplyConfiguration(new SubjectConfig());
       modelBuilder.ApplyConfiguration(new TeacherEduConfig());
@@ -152,6 +153,8 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new VerificationCodeTypeConfig());
       modelBuilder.ApplyConfiguration(new VerificationCodeConfig());
       modelBuilder.ApplyConfiguration(new RefreshTokenConfig());
+      modelBuilder.ApplyConfiguration(new RelationConfig());
+      modelBuilder.ApplyConfiguration(new RelativeConfig());
       modelBuilder.ApplyConfiguration(new WeekPlanConfig());
       #endregion
 

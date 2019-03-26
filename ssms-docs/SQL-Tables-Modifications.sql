@@ -89,9 +89,9 @@
 -- 	[relativeName] [nvarchar](50) NOT NULL,
 -- 	[mobile1] [nvarchar](15) NOT NULL,
 -- 	[mobile2] [nvarchar](15) NULL,
--- 	[phone] [nvarchar](10) NULL,
+-- 	[phone] [nvarchar](15) NULL,
 -- 	[address] [nvarchar](max) NULL,
--- 	[parentId] [char](10) NOT NULL,
+-- 	[parentId] [char](10) NULL,
 -- 	[createdAt] [smalldatetime] NULL
 -- )
 -- GO
@@ -403,7 +403,7 @@
 
 -- modify table remedialProcedures and rename it to procedures
 -- remove categoryId column
--- add column atViolationDegreeId [tinyint] NOT NULL
+-- add column atViolationDegreeId [tinyint] NULL
 -- add column atRepetiton [tinyint] NOT NULL
 -- add column notesAr [nvarchar](max) NULL
 -- add column notesEn [nvarchar](max) NULL
@@ -412,7 +412,7 @@
 -- sp_rename 'dbo.remedialProcedures', 'procedures';
 -- -- alter table [dbo].[procedures] drop column categoryId
 -- alter table [dbo].[procedures] add atViolationDegreeId [tinyint] null
--- alter table [dbo].[procedures] add atRepetiton [tinyint] not null
+-- alter table [dbo].[procedures] add atRepetition [tinyint] not null
 -- alter table [dbo].[procedures] add notesAr [nvarchar](max) null
 -- alter table [dbo].[procedures] add notesEn [nvarchar](max) null
 
@@ -455,7 +455,7 @@
  ----deg3--p38-------------------------
 -- insert into procedures values (25, '','', 3, 1)
 
- -- add new table studentsProcedures
+-- add new table studentsProcedures
 --  CREATE TABLE [dbo].[studentsProcedures](
 -- 	[studentProcedureId] [int] PRIMARY KEY,
 -- 	[studentViolationId] [int] NULL,

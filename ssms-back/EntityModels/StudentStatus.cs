@@ -13,6 +13,7 @@ namespace SSMS.EntityModels
         public string StatusNameAr { get; set; }
         public string StatusNameEn { get; set; }
         public string Notes { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public ICollection<Student> Students { get; set; }
     }

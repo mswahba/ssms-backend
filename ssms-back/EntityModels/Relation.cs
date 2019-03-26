@@ -13,6 +13,7 @@ namespace SSMS.EntityModels
         public byte RelationId { get; set; }
         public string RelationNameAr { get; set; }
         public string RelationNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public ICollection<StudentRelative> StudentsRelatives { get; set; }
     }
