@@ -10,6 +10,7 @@ namespace SSMS.EntityModels
            Students = new HashSet<Student>();
         }
         public int AddressId { get; set; }
+        public string ParentId { get; set; }
         public short? CityId { get; set; }
         public short? DistrictId { get; set; }
         public string StreetName { get; set; }
@@ -21,12 +22,11 @@ namespace SSMS.EntityModels
         public DateTime SysStartTime { get; set; }
         public DateTime SysEndTime { get; set; }
         public string IssuerId { get; set; }
-        public string ParentId { get; set; }
 
-        public City City { get; set; }
-        public District District { get; set; }
-        public User User { get; set; }
-        public Parent Parent { get; set; }
+        public Parent _Parent { get; set; }
+        public City _City { get; set; }
+        public District _District { get; set; }
+        public User _User { get; set; }
 
         public ICollection<Student> Students { get; set; }
     }

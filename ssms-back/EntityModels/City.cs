@@ -8,12 +8,15 @@ namespace SSMS.EntityModels
         public City()
         {
             ParentsAddresses = new HashSet<ParentAddress>();
+            Districts = new HashSet<District>();
         }
 
-        public short cityId { get; set; }
-        public string cityNameAr { get; set; }
-        public string cityNameEn { get; set; }
+        public short CityId { get; set; }
+        public string CityNameAr { get; set; }
+        public string CityNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
 
+        public ICollection<District> Districts { get; set; }
         public ICollection<ParentAddress> ParentsAddresses { get; set; }
     }
 }

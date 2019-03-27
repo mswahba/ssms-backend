@@ -157,8 +157,8 @@
 -- alter table healthIssues alter column [healthIssueId] [smallint] NOT NULL
 -- alter table healthNeeds alter column [healthNeedId] [smallint] NOT NULL
 
--- ALTER TABLE [dbo].[healthIssues]   
--- ADD CONSTRAINT PK_healthIssues_healthIssueId PRIMARY KEY CLUSTERED (healthIssueId);  
+-- ALTER TABLE [dbo].[healthIssues]
+-- ADD CONSTRAINT PK_healthIssues_healthIssueId PRIMARY KEY CLUSTERED (healthIssueId);
 
 -- ALTER TABLE [dbo].[healthNeeds]
 -- ADD CONSTRAINT PK_healthNeeds_healthNeedId PRIMARY KEY CLUSTERED (healthNeedId);
@@ -185,6 +185,16 @@
 -- 	cityId [smallint] NULL
 -- )
 -- GO
+
+-- add the relations
+--------------------
+-- ALTER TABLE [dbo].[districts]
+-- ADD CONSTRAINT [FK_cities_districts] FOREIGN KEY([cityId])
+-- REFERENCES [dbo].[cities] ([cityId])
+-- ON UPDATE No Action
+-- ON DELETE No Action
+-- GO
+
 -- add new table parentsAddresses
 -- CREATE TABLE [dbo].[parentsAddresses](
 -- 	[addressId] [int] identity(1,1) PRIMARY KEY,

@@ -14,6 +14,9 @@ namespace SSMS.EntityModels
         public string DistrictNameAr { get; set; }
         public string DistrictNameEn { get; set; }
         public short? CityId { get; set; }
+        public bool? IsDeleted { get; set; }
+
+        public City _City { get; set; }
 
         public ICollection<ParentAddress> ParentsAddresses { get; set; }
     }

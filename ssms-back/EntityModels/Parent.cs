@@ -9,6 +9,7 @@ namespace SSMS.EntityModels
         {
             Students = new HashSet<Student>();
             Relatives = new HashSet<Relative>();
+            ParentsAddresses = new HashSet<ParentAddress>();
             IsDeleted = false;
         }
 
@@ -49,5 +50,6 @@ namespace SSMS.EntityModels
         public Country Country { get; set; }
         public ICollection<Student> Students { get; set; }
         public ICollection<Relative> Relatives { get; set; }
+        public ICollection<ParentAddress> ParentsAddresses { get; set; }
     }
 }

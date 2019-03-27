@@ -110,8 +110,10 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new ViolationConfig());
       modelBuilder.ApplyConfiguration(new BranchConfig());
       modelBuilder.ApplyConfiguration(new StudentClassConfig());
+      modelBuilder.ApplyConfiguration(new CityConfig());
       modelBuilder.ApplyConfiguration(new ClassroomConfig());
       modelBuilder.ApplyConfiguration(new DepartmentConfig());
+      modelBuilder.ApplyConfiguration(new DistrictConfig());
       modelBuilder.ApplyConfiguration(new DocTypeConfig());
       modelBuilder.ApplyConfiguration(new EmployeeConfig());
       modelBuilder.ApplyConfiguration(new EmployeeActionConfig());
@@ -133,6 +135,7 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new NotificationTypeUserConfig());
       modelBuilder.ApplyConfiguration(new NotificationTypeUserConfig());
       modelBuilder.ApplyConfiguration(new ParentConfig());
+      modelBuilder.ApplyConfiguration(new ParentAddressConfig());
       modelBuilder.ApplyConfiguration(new PeriodConfig());
       modelBuilder.ApplyConfiguration(new PeriodDetailsConfig());
       modelBuilder.ApplyConfiguration(new PeriodFileConfig());
@@ -155,6 +158,8 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new AccountStatusConfig());
       modelBuilder.ApplyConfiguration(new VerificationCodeTypeConfig());
       modelBuilder.ApplyConfiguration(new VerificationCodeConfig());
+      modelBuilder.ApplyConfiguration(new ViolationDegreeConfig());
+      modelBuilder.ApplyConfiguration(new ViolationTypeConfig());
       modelBuilder.ApplyConfiguration(new RefreshTokenConfig());
       modelBuilder.ApplyConfiguration(new RelationConfig());
       modelBuilder.ApplyConfiguration(new RelativeConfig());

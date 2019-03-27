@@ -14,6 +14,7 @@ namespace SSMS.EntityModels
         public byte DegreeId { get; set; }
         public string DegreeNameAr { get; set; }
         public string DegreeNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public ICollection<Procedure> Procedures { get; set; }
         public ICollection<Violation> Violations { get; set; }

@@ -13,6 +13,7 @@ namespace SSMS.EntityModels
         public byte TypeId { get; set; }
         public string TypeNameAr { get; set; }
         public string TypeNameEn { get; set; }
+        public bool? IsDeleted { get; set; }
 
         public ICollection<Violation> Violations { get; set; }
     }

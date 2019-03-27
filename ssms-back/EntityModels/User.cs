@@ -18,6 +18,7 @@ namespace SSMS.EntityModels
       Notifications = new HashSet<Notification>();
       NotificationTypesUsers = new HashSet<NotificationTypeUser>();
       Parents = new HashSet<Parent>();
+      ParentsAddresses = new HashSet<ParentAddress>();
       Periods = new HashSet<Period>();
       PeriodsDetails = new HashSet<PeriodDetails>();
       PeriodsFiles = new HashSet<PeriodFile>();
@@ -70,13 +71,14 @@ namespace SSMS.EntityModels
     public ICollection<Lesson> Lessons { get; set; }
     public ICollection<LessonFile> LessonsFiles { get; set; }
     public ICollection<Parent> Parents { get; set; }
+    public ICollection<ParentAddress> ParentsAddresses { get; set; }
     public ICollection<Period> Periods { get; set; }
     public ICollection<PeriodDetails> PeriodsDetails { get; set; }
     public ICollection<PeriodFile> PeriodsFiles { get; set; }
     public ICollection<Student> Students { get; set; }
     public ICollection<StudentClass> StudentsClasses { get; set; }
     public ICollection<StudentProcedure> StudentsProcedures { get; set; }
-    public ICollection<StudentRelative> StudentsRelatives { get; set; }    
+    public ICollection<StudentRelative> StudentsRelatives { get; set; }
     public ICollection<StudentViolation> StudentsViolations { get; set; }
     public ICollection<Subject> Subjects { get; set; }
     public ICollection<TeacherEdu> TeachersEdu { get; set; }
