@@ -185,7 +185,7 @@ namespace SSMS
     {
       if (filters == null && fields == null && orderBy == null)
         return BadRequest(new Error() { Message = "Must supply at least one of the following : [filters] and/or [fields] and/or [orderBy]" });
-      IQueryable<TEntity> query = _service.GetQuery<TEntity>().AsQueryable();
+      IQueryable<TEntity> query = _service.GetQuery<TEntity>();
       IQueryable dynamicQuery;
       // if filters provided, apply filters and get the query after applying (where) on it
       if (filters != null)

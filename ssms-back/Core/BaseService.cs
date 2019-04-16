@@ -41,7 +41,7 @@ namespace SSMS
           return $"{_field} = {_value}";
       }
     }
-    // build and return sql set clause of update statement from the stters string
+    // build and return sql set clause of update statement from the setters string
     // setters comma separated string of each :(key|value)
     private string _BuildSqlSet<TEntity>(string setters)
     {
@@ -168,8 +168,8 @@ namespace SSMS
         return sqlWhere;
       });
     }
-    //takes item(entity or record) and filter ([0] field [1] operator [2] value)
-    //applies filter on item and returns result (true/false) to where() in ApplyFilter() function
+    // takes item(entity or record) and filter ([0] field [1] operator [2] value)
+    // applies filter on item and returns result (true/false) to where() in ApplyFilter() function
     private bool _CheckFilter(object item, string[] filter)
     {
       string _field = filter[0].Trim();
@@ -438,7 +438,7 @@ namespace SSMS
     }
     public TEntity GetOne<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
-      return _db.Set<TEntity>().Where(expression).SingleOrDefault();
+      return _db.Set<TEntity>().AsNoTracking().SingleOrDefault(expression);
     }
     public TEntity GetOne<TEntity>(List<string> propsToInclude, Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
@@ -451,7 +451,7 @@ namespace SSMS
       // Finally return Filtered entity with all needed navigation properties
       else
       {
-        var query = _db.Set<TEntity>().AsQueryable();
+        var query = _db.Set<TEntity>().AsNoTracking();
         propsToInclude = _db.Model
             .FindEntityType(typeof(TEntity))
             .GetNavigations()
@@ -460,18 +460,18 @@ namespace SSMS
             .ToList();
         foreach (var property in propsToInclude)
           query = query.Include(property);
-        return query.Where(expression).SingleOrDefault();
+        return query.SingleOrDefault(expression);
       }
     }
-    //takes a labmda expression and executes it (using .ToList()) and returns result as list
+    //takes a lambda expression and executes it (using .ToList()) and returns result as list
     public List<TEntity> GetList<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
-      return _db.Set<TEntity>().Where(expression).ToList();
+      return _db.Set<TEntity>().AsNoTracking().Where(expression).ToList();
     }
     //returns all entities without applying any filter expression
     public List<TEntity> GetList<TEntity>() where TEntity : class
     {
-      return _db.Set<TEntity>().ToList();
+      return _db.Set<TEntity>().AsNoTracking().ToList();
     }
     // GetPageResult Does the following:
     // 1) get total items  based on ListType string (all/existing/deleted)
@@ -504,16 +504,16 @@ namespace SSMS
         TotalPages = (int)Math.Ceiling((decimal)count / pageSize),
       };
     }
-    //takes a labmda expression (and doesn't execute it) and returns result as enumerable
-    //so that I can reuse it and add more linq operators (count() or take())
+    // takes a lambda expression (and doesn't execute it) and returns result as enumerable
+    // so that I can reuse it and add more linq operators (count() or take())
     public IQueryable<TEntity> GetQuery<TEntity>(Expression<Func<TEntity, bool>> expression) where TEntity : class
     {
-      return _db.Set<TEntity>().Where(expression);
+      return _db.Set<TEntity>().AsNoTracking().Where(expression);
     }
-    //returns all rows of an entity, AsQuerable to chain it later
+    // returns all rows of an entity, AsNoTracking to return IQueryable to enable chain to it later
     public IQueryable<TEntity> GetQuery<TEntity>() where TEntity : class
     {
-      return _db.Set<TEntity>().AsQueryable();
+      return _db.Set<TEntity>().AsNoTracking();
     }
     // receives a comma separated string of filters
     // and converts it to array of filters,
@@ -521,13 +521,13 @@ namespace SSMS
     // It uses checkFilter() , sends it (item {record} , filter {filed|operator|value})
     public IQueryable<TEntity> ApplyFilter<TEntity>(string filters) where TEntity : class
     {
-      //split filters and add every filter as an item in an array
+      // split filters and add every filter as an item in an array
       string[] filtersArr = filters.Split(',', StringSplitOptions.RemoveEmptyEntries);
-      //list to hold every filter as an arry with 3 item
+      // list to hold every filter as an array with 3 item
       List<string[]> filtersList = filtersArr.Select(item => item.Split('|', StringSplitOptions.RemoveEmptyEntries))
                                               .ToList();
-      //use no tracking so that db context won't track changes on this dbset
-      //better performance that AsQueriable -- used in read only queries
+      // use no tracking so that db context won't track changes on this dbSet
+      // better performance that AsQueryable -- used in read only queries
       var query = _db.Set<TEntity>().AsNoTracking();
       foreach (var filter in filtersList)
         query = query.Where(item => _CheckFilter(item, filter));
@@ -536,9 +536,9 @@ namespace SSMS
     public IQueryable<TEntity> ApplySqlWhere<TEntity>(string filters, string tableName) where TEntity : class
     {
       // use no tracking so that db context won't track changes on this dbset
-      // better performance than AsQueriable -- used in read only queries
+      // better performance than AsQueryable -- used in read only queries
       var query = _db.Set<TEntity>().AsNoTracking();
-      // build the sql select statment with sql where clause
+      // build the sql select statement with sql where clause
       string sqlQuery = $"select * from {tableName} {_BuildSqlWhere<TEntity>(filters)}";
       // finally return the linq query
       return query.FromSql(sqlQuery);
@@ -608,7 +608,7 @@ namespace SSMS
         sql += $"{keyName} = {newKey} where {keyName} = {oldKey}";
       return _db.Database.ExecuteSqlCommand(sql);
     }
-    // build sql update statment with set keyValue pair and with where clause
+    // build sql update statement with set keyValue pair and with where clause
     // from the setters [comma separated key=value]
     // and the filters [comma separated key|operator|value]
     // finally execute the dynamically generated sql update statement
@@ -619,7 +619,7 @@ namespace SSMS
     }
     /// <summary>
     /// takes entity to be deleted, get the 'isDeleted' property value , if exists get  its value
-    /// if isDeleted is 'true'  return , if not change its value to true
+    /// if isDeleted is 'true' return , if not change its value to true
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
@@ -655,8 +655,8 @@ namespace SSMS
     // Modified > update
     // Deleted > delete
     // unchanged > do nothing
-    //db.Entry function checkis if entity is attached or not,
-    //if not, it attaches it to dbSet , then changes its state
+    // db.Entry function checks if entity is attached or not,
+    // if not, it attaches it to dbSet , then changes its state
     public void SetState<TEntity>(TEntity entity, string state) where TEntity : class
     {
       switch (state)
