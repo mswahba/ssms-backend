@@ -8,6 +8,9 @@ namespace SSMS.EntityModels
         public School()
         {
             Branches = new HashSet<Branch>();
+            Abouts = new HashSet<About>();
+            Articles = new HashSet<Article>();
+            Albums = new HashSet<Album>();
             IsDeleted = false;
         }
 
@@ -21,5 +24,8 @@ namespace SSMS.EntityModels
         public bool? IsDeleted { get; set; }
 
         public ICollection<Branch> Branches { get; set; }
+        public ICollection<About> Abouts { get; set; }
+        public ICollection<Article> Articles { get; set; }
+        public ICollection<Album> Albums { get; set; }
     }
 }

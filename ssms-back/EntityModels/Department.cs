@@ -8,6 +8,9 @@ namespace SSMS.EntityModels
         public Department()
         {
             EmployeesJobs = new HashSet<EmployeeJob>();
+            Abouts = new HashSet<About>();
+            Articles = new HashSet<Article>();
+            Albums = new HashSet<Album>();
             IsDeleted = false;
         }
 
@@ -21,5 +24,8 @@ namespace SSMS.EntityModels
 
         public User _User { get; set; }
         public ICollection<EmployeeJob> EmployeesJobs { get; set; }
+        public ICollection<About> Abouts { get; set; }
+        public ICollection<Article> Articles { get; set; }
+        public ICollection<Album> Albums { get; set; }
     }
 }

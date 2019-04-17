@@ -25,7 +25,7 @@
 --   [schoolId] [tinyint] NULL,
 -- 	[stageId] [tinyint] NULL,
 --   [empJobId] [int] NULL,
--- 	[categoryId] [varchar](max) NULL,
+-- 	[categoryId] [tinyint] NULL,
 -- )
 -- GO
 
@@ -52,6 +52,8 @@
 -- ON DELETE NO ACTION
 -- GO
 
+-- ALTER TABLE [dbo].[about] ALTER COLUMN [categoryId] [tinyint] NULL
+
 -- ALTER TABLE [dbo].[about]
 -- ADD CONSTRAINT [FK_mediaCategories_about] FOREIGN KEY([categoryId])
 -- REFERENCES [dbo].[mediaCategories] ([categoryId])
@@ -62,7 +64,18 @@
 -----------------------------------------------------------------
 -- ALTER TABLE [dbo].[articles] ADD [isImportant] [bit] NOT NULL
 -- ALTER TABLE [dbo].[albums] ADD [isImportant] [bit] NOT NULL
+-- ALTER TABLE [dbo].[articles] DROP COLUMN [isImportant]
+-- ALTER TABLE [dbo].[albums] DROP COLUMN [isImportant]
+-- ALTER TABLE [dbo].[articles] ADD [displayAlsoAt] [varchar](10) NOT NULL DEFAULT('none')
+-- ALTER TABLE [dbo].[albums] ADD [displayAlsoAt] [varchar](10) NOT NULL DEFAULT('none')
+-- sp_rename 'dbo.articles.isGlobal', 'forCompany', 'COLUMN'
+-- GO
+-- sp_rename 'dbo.albums.isGlobal', 'forCompany', 'COLUMN'
+-- GO
 -----------------------------------------------------------------
+-- -- displayAlsoAt: [company - school - both - none]
+-- -- to specify which [article and/or album] should be displayed at a higher rank [global - school]
+----------------------------------------------------------------------------------------------------
 -- CREATE TABLE [dbo].[articles] (
 -- 	[articleId] [int] identity(1,1) PRIMARY KEY,
 -- 	[articleTitle] [nvarchar](100) NOT NULL,
@@ -72,7 +85,7 @@
 -- 	[mainPhotoURL] [varchar](max) NULL,
 -- 	[photosURLs] [varchar](max) NULL,
 -- 	[videosURLs] [varchar](max) NULL,
---  [isImportant] [bit] NOT NULL,
+--  [displayAlsoAt] [varchar](10) NOT NULL,
 --  [isGlobal] [bit] NOT NULL,
 --  [schoolId] [tinyint] NULL,
 -- 	[stageId] [tinyint] NULL,
@@ -114,15 +127,15 @@
 --   [descriptionAr] [nvarchar](max) NULL,
 --   [descriptionEn] [nvarchar](max) NULL,
 --   [albumDate] [smalldatetime] NOT NULL,
---   [isImportant] [bit] NOT NULL,
---   [isGlobal] [bit] NOT NULL,
+--   [keywords] [nvarchar](max) NULL,
+--   [displayAlsoAt] [varchar](10) NOT NULL,
+--   [forCompany] [bit] NOT NULL,
+--   [approved] [bit] NOT NULL,
+--   [enabled] [bit] NOT NULL,
 --   [schoolId] [tinyint] NULL,
 -- 	 [stageId] [tinyint] NULL,
 --   [empJobId] [int] NULL,
 --   [categoryId] [tinyint] NULL,
---   [approved] [bit] NOT NULL,
---   [enabled] [bit] NOT NULL,
---   [keywords] [nvarchar](max) NULL,
 -- )
 -- GO
 
@@ -197,7 +210,7 @@
 -- GO
 -------------------------------------------------------------------------------------------
 
--- List columns in all tables whose name is like 'branches'
+-- List columns in all tables whose name is like 'articles'
 -- SELECT
 --   TableName = tbl.TABLE_SCHEMA + '.' + tbl.TABLE_NAME,
 --   ColumnName = col.COLUMN_NAME,
@@ -207,7 +220,7 @@
 -- INNER JOIN INFORMATION_SCHEMA.COLUMNS col
 --   ON col.TABLE_NAME = tbl.TABLE_NAME
 --   AND col.TABLE_SCHEMA = tbl.TABLE_SCHEMA
--- WHERE tbl.TABLE_TYPE = 'BASE TABLE' and tbl.TABLE_NAME = 'branches'
+-- WHERE tbl.TABLE_TYPE = 'BASE TABLE' and tbl.TABLE_NAME = 'articles'
 -- GO
 
 -- SELECT
@@ -258,3 +271,5 @@
 -- DELETE FROM [dbo].[departments]
 -- DELETE FROM [dbo].[grades]
 -- DELETE FROM [dbo].[schoolDayEvents]
+
+-- SELECT * from [dbo].[mediaCategories]

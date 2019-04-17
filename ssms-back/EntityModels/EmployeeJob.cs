@@ -14,6 +14,9 @@ namespace SSMS.EntityModels
             TeachersEdu = new HashSet<TeacherEdu>();
             TeachersQuorums = new HashSet<TeacherQuorum>();
             TimeTable = new HashSet<TimeTable>();
+            Abouts = new HashSet<About>();
+            Articles = new HashSet<Article>();
+            Albums = new HashSet<Album>();
             IsDeleted = false;
         }
 
@@ -40,5 +43,8 @@ namespace SSMS.EntityModels
         public ICollection<TeacherEdu> TeachersEdu { get; set; }
         public ICollection<TeacherQuorum> TeachersQuorums { get; set; }
         public ICollection<TimeTable> TimeTable { get; set; }
+        public ICollection<About> Abouts { get; set; }
+        public ICollection<Article> Articles { get; set; }
+        public ICollection<Album> Albums { get; set; }
     }
 }

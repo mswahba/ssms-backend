@@ -11,6 +11,11 @@ namespace SSMS.EntityModels
   public partial class SSMSContext : DbContext
   {
     #region DbSets
+    public virtual DbSet<MediaCategory> MediaCategories { get; set; }
+    public virtual DbSet<About> Abouts { get; set; }
+    public virtual DbSet<Article> Articles { get; set; }
+    public virtual DbSet<Album> Albums { get; set; }
+    public virtual DbSet<Photo> Photos { get; set; }
     public virtual DbSet<AcademicSemester> AcademicSemesters { get; set; }
     public virtual DbSet<AcademicWeek> AcademicWeeks { get; set; }
     public virtual DbSet<AcademicYear> AcademicYears { get; set; }
@@ -103,6 +108,11 @@ namespace SSMS.EntityModels
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       #region Entity [Tables] Mapping
+      modelBuilder.ApplyConfiguration(new MediaCategoryConfig());
+      modelBuilder.ApplyConfiguration(new AboutConfig());
+      modelBuilder.ApplyConfiguration(new ArticleConfig());
+      modelBuilder.ApplyConfiguration(new AlbumConfig());
+      // modelBuilder.ApplyConfiguration(new PhotoConfig());
       modelBuilder.ApplyConfiguration(new AcademicSemesterConfig());
       modelBuilder.ApplyConfiguration(new AcademicWeekConfig());
       modelBuilder.ApplyConfiguration(new AcademicYearConfig());
