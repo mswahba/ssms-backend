@@ -9,7 +9,7 @@ namespace SSMS.EntityModels
     {
       builder.HasKey(e => e.AboutId);
 
-      builder.ToTable("about");
+      builder.ToTable("abouts");
 
       builder.Property(e => e.AboutId).HasColumnName("aboutId");
 
@@ -27,22 +27,22 @@ namespace SSMS.EntityModels
       builder.HasOne(e => e._School)
             .WithMany(d => d.Abouts)
             .HasForeignKey(e => e.SchoolId)
-            .HasConstraintName("FK_schools_about");
+            .HasConstraintName("FK_schools_abouts");
 
       builder.HasOne(e => e._Department)
             .WithMany(d => d.Abouts)
             .HasForeignKey(e => e.StageId)
-            .HasConstraintName("FK_departments_about");
+            .HasConstraintName("FK_departments_abouts");
 
       builder.HasOne(e => e._EmployeeJob)
             .WithMany(d => d.Abouts)
             .HasForeignKey(e => e.EmpJobId)
-            .HasConstraintName("FK_employeesJobs_about");
+            .HasConstraintName("FK_employeesJobs_abouts");
 
       builder.HasOne(e => e._MediaCategory)
             .WithMany(d => d.Abouts)
             .HasForeignKey(e => e.CategoryId)
-            .HasConstraintName("FK_mediaCategories_about");
+            .HasConstraintName("FK_mediaCategories_abouts");
 
     }
   }

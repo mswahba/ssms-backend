@@ -15,7 +15,7 @@
 -- insert into mediaCategories values (7, 'روابط مواقع التواصل','Social Media Links', 'about')
 -- insert into mediaCategories values (8, 'بيانات اساسية','Basic Info', 'about')
 
--- CREATE TABLE [dbo].[about] (
+-- CREATE TABLE [dbo].[abouts] (
 -- 	[aboutId] [int] identity(1,1) PRIMARY KEY,
 -- 	[aboutTitle] [nvarchar](100) NOT NULL,
 -- 	[aboutText] [nvarchar](max) NOT NULL,
@@ -29,36 +29,41 @@
 -- )
 -- GO
 
+-- ALTER TABLE [dbo].[abouts] ALTER COLUMN [categoryId] [tinyint] NULL
+
 -- add 4 relations [employeesJobs - departments - schools - mediaCategories]
-----------------------------------------------------------
--- ALTER TABLE [dbo].[about]
--- ADD CONSTRAINT [FK_employeesJobs_about] FOREIGN KEY([empJobId])
+---------------------------------------------------------------------------
+
+-- ALTER TABLE [dbo].[abouts] DROP CONSTRAINT [FK_employeesJobs_about]
+-- ALTER TABLE [dbo].[abouts]
+-- ADD CONSTRAINT [FK_employeesJobs_abouts] FOREIGN KEY([empJobId])
 -- REFERENCES [dbo].[employeesJobs] ([empJobId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
--- ALTER TABLE [dbo].[about]
--- ADD CONSTRAINT [FK_departments_about] FOREIGN KEY([stageId])
+-- ALTER TABLE [dbo].[abouts] DROP CONSTRAINT [FK_departments_about]
+-- ALTER TABLE [dbo].[abouts]
+-- ADD CONSTRAINT [FK_departments_abouts] FOREIGN KEY([stageId])
 -- REFERENCES [dbo].[departments] ([departmentId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
--- ALTER TABLE [dbo].[about]
--- ADD CONSTRAINT [FK_schools_about] FOREIGN KEY([schoolId])
+-- ALTER TABLE [dbo].[abouts] DROP CONSTRAINT [FK_schools_about]
+-- ALTER TABLE [dbo].[abouts]
+-- ADD CONSTRAINT [FK_schools_abouts] FOREIGN KEY([schoolId])
 -- REFERENCES [dbo].[schools] ([schoolId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
--- ALTER TABLE [dbo].[about] ALTER COLUMN [categoryId] [tinyint] NULL
-
--- ALTER TABLE [dbo].[about]
--- ADD CONSTRAINT [FK_mediaCategories_about] FOREIGN KEY([categoryId])
+-- ALTER TABLE [dbo].[abouts] DROP CONSTRAINT [FK_mediaCategories_about]
+-- ALTER TABLE [dbo].[abouts]
+-- ADD CONSTRAINT [FK_mediaCategories_abouts] FOREIGN KEY([categoryId])
 -- REFERENCES [dbo].[mediaCategories] ([categoryId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
 -----------------------------------------------------------------
@@ -71,6 +76,8 @@
 -- sp_rename 'dbo.articles.isGlobal', 'forCompany', 'COLUMN'
 -- GO
 -- sp_rename 'dbo.albums.isGlobal', 'forCompany', 'COLUMN'
+-- GO
+-- sp_rename 'dbo.about', 'abouts'
 -- GO
 -----------------------------------------------------------------
 -- -- displayAlsoAt: [company - school - both - none]
@@ -99,26 +106,32 @@
 
 -- add 3 relations [employeesJobs - departments - schools]
 ----------------------------------------------------------
+
+-- ALTER TABLE [dbo].[articles] DROP CONSTRAINT [FK_employeesJobs_articles]
 -- ALTER TABLE [dbo].[articles]
 -- ADD CONSTRAINT [FK_employeesJobs_articles] FOREIGN KEY([empJobId])
 -- REFERENCES [dbo].[employeesJobs] ([empJobId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
+-- ALTER TABLE [dbo].[articles] DROP CONSTRAINT [FK_departments_articles]
 -- ALTER TABLE [dbo].[articles]
 -- ADD CONSTRAINT [FK_departments_articles] FOREIGN KEY([stageId])
 -- REFERENCES [dbo].[departments] ([departmentId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
+-- ALTER TABLE [dbo].[articles] DROP CONSTRAINT [FK_schools_articles]
 -- ALTER TABLE [dbo].[articles]
 -- ADD CONSTRAINT [FK_schools_articles] FOREIGN KEY([schoolId])
 -- REFERENCES [dbo].[schools] ([schoolId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
+
+-----------------------------------------------------------------------------
 
 -- CREATE TABLE [dbo].[albums] (
 -- 	[albumId] [int] identity(1,1) PRIMARY KEY,
@@ -141,34 +154,40 @@
 
 -- add 4 relations [employeesJobs - departments - schools - mediaCategories]
 ----------------------------------------------------------------------------
+
+-- ALTER TABLE [dbo].[albums] DROP CONSTRAINT [FK_employeesJobs_albums]
 -- ALTER TABLE [dbo].[albums]
 -- ADD CONSTRAINT [FK_employeesJobs_albums] FOREIGN KEY([empJobId])
 -- REFERENCES [dbo].[employeesJobs] ([empJobId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
+-- ALTER TABLE [dbo].[albums] DROP CONSTRAINT [FK_departments_albums]
 -- ALTER TABLE [dbo].[albums]
 -- ADD CONSTRAINT [FK_departments_albums] FOREIGN KEY([stageId])
 -- REFERENCES [dbo].[departments] ([departmentId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
+-- ALTER TABLE [dbo].[albums] DROP CONSTRAINT [FK_schools_albums]
 -- ALTER TABLE [dbo].[albums]
 -- ADD CONSTRAINT [FK_schools_albums] FOREIGN KEY([schoolId])
 -- REFERENCES [dbo].[schools] ([schoolId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
+-- ALTER TABLE [dbo].[albums] DROP CONSTRAINT [FK_mediaCategories_albums]
 -- ALTER TABLE [dbo].[albums]
 -- ADD CONSTRAINT [FK_mediaCategories_albums] FOREIGN KEY([categoryId])
 -- REFERENCES [dbo].[mediaCategories] ([categoryId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
+-------------------------------------------------------------------------------------
 -- CREATE TABLE [dbo].[photos] (
 -- 	[photoId] [int] identity(1,1) PRIMARY KEY,
 -- 	[photoTitleAr] [nvarchar](100) NOT NULL,
@@ -195,19 +214,23 @@
 
 -- add 2 relations [employeesJobs - albums]
 ----------------------------------------------------------------------------
+
+-- ALTER TABLE [dbo].[photos] DROP CONSTRAINT [FK_employeesJobs_photos]
 -- ALTER TABLE [dbo].[photos]
 -- ADD CONSTRAINT [FK_employeesJobs_photos] FOREIGN KEY([empJobId])
 -- REFERENCES [dbo].[employeesJobs] ([empJobId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
+-- ON UPDATE CASCADE
+-- ON DELETE SET NULL
 -- GO
 
+-- ALTER TABLE [dbo].[photos] DROP CONSTRAINT [FK_albums_photos]
 -- ALTER TABLE [dbo].[photos]
 -- ADD CONSTRAINT [FK_albums_photos] FOREIGN KEY([albumId])
 -- REFERENCES [dbo].[albums] ([albumId])
 -- ON UPDATE NO ACTION
 -- ON DELETE NO ACTION
 -- GO
+
 -------------------------------------------------------------------------------------------
 
 -- List columns in all tables whose name is like 'articles'
