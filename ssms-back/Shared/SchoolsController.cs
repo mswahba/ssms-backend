@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using SSMS.EntityModels;
 using SSMS.Hubs;
+using SSMS.EntityModels;
 using SSMS.ViewModels;
 
 namespace SSMS.Shared
