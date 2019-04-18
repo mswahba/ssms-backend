@@ -17,6 +17,7 @@ namespace SSMS.EntityModels
             Abouts = new HashSet<About>();
             Articles = new HashSet<Article>();
             Albums = new HashSet<Album>();
+            Photos = new HashSet<Photo>();
             IsDeleted = false;
         }
 
@@ -46,5 +47,6 @@ namespace SSMS.EntityModels
         public ICollection<About> Abouts { get; set; }
         public ICollection<Article> Articles { get; set; }
         public ICollection<Album> Albums { get; set; }
+        public ICollection<Photo> Photos { get; set; }
     }
 }

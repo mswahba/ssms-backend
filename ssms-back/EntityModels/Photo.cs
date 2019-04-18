@@ -10,10 +10,10 @@ namespace SSMS.EntityModels
         public string PhotoTitleEn { get; set; }
         public string DescriptionAr { get; set; }
         public string DescriptionEn { get; set; }
+        public DateTime PhotoDate { get; set; }
         public string PhotoURL { get; set; }
         public string ThumbURL { get; set; }
         public string MoreURL { get; set; }
-        public DateTime PhotoDate { get; set; }
         public bool Approved { get; set; }
         public bool Enabled { get; set; }
         public int? EmpJobId { get; set; }

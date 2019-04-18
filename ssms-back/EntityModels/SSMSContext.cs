@@ -112,7 +112,7 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new AboutConfig());
       modelBuilder.ApplyConfiguration(new ArticleConfig());
       modelBuilder.ApplyConfiguration(new AlbumConfig());
-      // modelBuilder.ApplyConfiguration(new PhotoConfig());
+      modelBuilder.ApplyConfiguration(new PhotoConfig());
       modelBuilder.ApplyConfiguration(new AcademicSemesterConfig());
       modelBuilder.ApplyConfiguration(new AcademicWeekConfig());
       modelBuilder.ApplyConfiguration(new AcademicYearConfig());
