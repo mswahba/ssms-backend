@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
-import UsersList from './users/UsersList';
-import SignIn from './users/SignIn';
-import SignUpParent from './users/SignUpParent';
-import Hijri from './shared/Hijri';
-import HGDatePicker from './shared/HGDatePicker';
+import React, { Component } from 'react'
+import { Switch, Route } from 'react-router-dom'
+import UsersList from './users/UsersList'
+import SignIn from './users/SignIn'
+import SignUpParent from './users/SignUpParent'
 import Schools from './basic/Schools'
-import { ToastContainer } from 'react-toastify';
+import Hijri from '../shared/Hijri'
+import HGDatePicker from '../shared/HGDatePicker'
+import { ToastContainer } from 'react-toastify'
 import '../node_modules/react-toastify/dist/ReactToastify.min.css';
 export default class AppRoutes extends Component {
   render() {

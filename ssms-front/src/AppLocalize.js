@@ -1,8 +1,11 @@
+import { LMSLayout } from './LMSLayout';
 import React, { Component } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { BrowserRouter } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import { withLocalize, getActiveLanguage } from 'react-localize-redux'
-import AppRoutes from './AppRoutes'
+import LMSLayout from './lms-ui/LMSLayout'
+import MediaLayout from './media-ui/MediaLayout'
 import { store } from './AppStore'
 
 class AppLocalize extends Component {
@@ -40,13 +43,15 @@ class AppLocalize extends Component {
       <>
         {styleLinks}
         <BrowserRouter>
-          {/* header */}
-          {/* sidebar */}
-          <AppRoutes />
-          {/* footer */}
+          <Switch>
+            {/* Learning Management System Site */}
+            <Route path="/lms" component={LMSLayout} />
+            {/* Media Site */}
+            <Route path="/" component={MediaLayout} />
+          </Switch>
         </BrowserRouter>
       </>
-    )
+    );
   }
 }
 
