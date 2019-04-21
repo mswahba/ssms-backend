@@ -296,3 +296,4 @@
 -- DELETE FROM [dbo].[schoolDayEvents]
 
 -- SELECT * from [dbo].[mediaCategories]
+-- sp_fkeys 'employeesJobs'
