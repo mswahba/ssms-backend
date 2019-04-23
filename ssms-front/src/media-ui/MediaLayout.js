@@ -1,10 +1,11 @@
 import React from "react"
 import MediaRoutes from './MediaRoutes'
+import Header from "./Header";
 
-export function LMSLayout({}) {
+export default function MediaLayout({}) {
   return (
     <>
-      {/* Header */}
+      <Header />
       <MediaRoutes />
       {/* Footer */}
     </>
