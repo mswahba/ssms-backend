@@ -2,9 +2,9 @@ import React from "react"
 import { connect } from "react-redux"
 import { getTranslate } from 'react-localize-redux'
 import { Field, reduxForm } from 'redux-form'
-import { store } from '../AppStore'
-import { renderInput, Button } from '../shared/FormInputs'
-import { userActions } from "../store/user"
+import { store } from '../../AppStore'
+import { renderInput, Button } from '../../shared/FormInputs'
+import { userActions } from "../../store/user"
 import isNumeric from 'validator/lib/isNumeric'
 import isLength from 'validator/lib/isLength'
 

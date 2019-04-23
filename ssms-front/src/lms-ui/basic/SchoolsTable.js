@@ -1,12 +1,12 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { connect } from "react-redux";
 import { getTranslate } from 'react-localize-redux';
-import { lookupActions } from "../store/lookup";
-import { initTooltips, closeTooltips, formatDate } from '../helpers';
-import '../shared/data-table.css';
+import { lookupActions } from "../../store/lookup";
+import { initTooltips, closeTooltips, formatDate } from '../../helpers';
+import '../../shared/data-table.css';
 class SchoolsTable extends Component {
 
   constructor(props) {

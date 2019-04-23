@@ -1,7 +1,7 @@
 import React from "react"
 import LMSRoutes from './LMSRoutes'
 
-export function LMSLayout({}) {
+export default function LMSLayout({}) {
   return (
     <>
       {/* header */}

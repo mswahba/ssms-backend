@@ -1,9 +1,9 @@
-import React from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import { lookupActions } from "../store/lookup";
-import SchoolsTable from "./SchoolsTable";
-import SchoolsForm from "./SchoolsForm";
+import React from "react"
+import { Switch, Route, Redirect } from "react-router-dom"
+import { connect } from "react-redux"
+import { lookupActions } from "../../store/lookup"
+import SchoolsTable from "./SchoolsTable"
+import SchoolsForm from "./SchoolsForm"
 
 // flag to get data only once
 let fetchData = true;

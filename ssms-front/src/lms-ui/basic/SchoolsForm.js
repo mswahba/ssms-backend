@@ -6,10 +6,10 @@ import { Field, reduxForm, change } from 'redux-form'
 import isLength from 'validator/lib/isLength'
 import isBefore from 'validator/lib/isBefore'
 import isNumeric from 'validator/lib/isNumeric'
-import { store } from '../AppStore'
-import { renderInput, renderDatepicker, renderSwitch, Button } from '../shared/FormInputs'
-import { lookupActions } from '../store/lookup'
-import { initDatePicker, formatDate } from '../helpers'
+import { store } from '../../AppStore'
+import { renderInput, renderDatepicker, renderSwitch, Button } from '../../shared/FormInputs'
+import { lookupActions } from '../../store/lookup'
+import { initDatePicker, formatDate } from '../../helpers'
 
 class _SchoolsReduxForm extends Component {
 
