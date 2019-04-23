@@ -1,4 +1,3 @@
-import { LMSLayout } from './LMSLayout';
 import React, { Component } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { BrowserRouter } from 'react-router-dom'
@@ -7,6 +6,8 @@ import { withLocalize, getActiveLanguage } from 'react-localize-redux'
 import LMSLayout from './lms-ui/LMSLayout'
 import MediaLayout from './media-ui/MediaLayout'
 import { store } from './AppStore'
+import { ToastContainer } from 'react-toastify'
+import '../node_modules/react-toastify/dist/ReactToastify.min.css';
 
 class AppLocalize extends Component {
   constructor(props) {
@@ -50,6 +51,7 @@ class AppLocalize extends Component {
             <Route path="/" component={MediaLayout} />
           </Switch>
         </BrowserRouter>
+        <ToastContainer autoClose={5000} pauseOnFocusLoss={true} />
       </>
     );
   }
