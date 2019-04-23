@@ -1,10 +1,11 @@
 import React from "react"
 
-export function LMSLayout({}) {
+export default function Home({}) {
   return (
     <>
       {/* HeroSlider */}
       {/* NewsSection [3 cards] and [slider]  */}
+      {/* Abouts  */}
       {/* Map */}
       {/* ContactUs */}
     </>

@@ -12,7 +12,7 @@ export const toast = ({ html, time, preventMultiple}) => {
   if(preventMultiple)
     keepLastToast();
 }
-// initailize a datepicker [one element] with the given options
+// initialize a datepicker [one element] with the given options
 export const initDatePicker = ({ format, yearRange, defaultDate, onSelect }) => {
   const picker = document.querySelector(".datepicker");
   const options = {
@@ -55,3 +55,8 @@ export const formatDate = (key,format = true) => (item) => ({
   ...item,
   [key]: (format)? new Date(item[key]).toLocaleDateString('en-gb') : new Date(item[key])
 });
+// initialize a Select [elements] with empty options
+export const initSidenav = () => {
+  const sidenavs = document.querySelectorAll('.sidenav');
+  M.Sidenav.init(sidenavs, {});
+}
