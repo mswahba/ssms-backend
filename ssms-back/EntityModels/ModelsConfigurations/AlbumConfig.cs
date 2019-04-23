@@ -46,7 +46,7 @@ namespace SSMS.EntityModels
 
       builder.HasOne(e => e._MediaCategory)
             .WithMany(d => d.Albums)
-            .HasForeignKey(e => e.EmpJobId)
+            .HasForeignKey(e => e.CategoryId)
             .HasConstraintName("FK_mediaCategories_albums");
 
     }

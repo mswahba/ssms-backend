@@ -13,7 +13,7 @@ namespace SSMS.EntityModels
         public byte? SchoolId { get; set; }
         public byte? StageId { get; set; }
         public int? EmpJobId { get; set; }
-        public string CategoryId { get; set; }
+        public byte? CategoryId { get; set; }
 
         public School _School { get; set; }
         public Department _Department { get; set; }
