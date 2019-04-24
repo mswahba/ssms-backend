@@ -60,3 +60,8 @@ export const initSidenav = () => {
   const sidenavs = document.querySelectorAll('.sidenav');
   M.Sidenav.init(sidenavs, {});
 }
+// initialize a Select [elements] with empty options
+export const initDropdown = () => {
+  const dropdowns = document.querySelectorAll('.dropdown-trigger');
+  M.Dropdown.init(dropdowns, {});
+}
