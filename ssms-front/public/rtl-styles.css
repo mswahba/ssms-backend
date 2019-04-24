@@ -1,4 +1,4 @@
-/* #region materialize datepicker styles */
+/* #region materialize datepicker */
 ul.dropdown-content.select-dropdown {
   right: 60% !important;
   left: auto !important;
@@ -8,5 +8,13 @@ ul.dropdown-content.select-dropdown {
 }
 ul.dropdown-content.select-dropdown:last-child {
   right: 50% !important;
+}
+/* #endregion */
+/* #region materialize dropdown */
+ul.dropdown-content {
+  width: auto !important;
+  top: auto !important;
+  left: auto !important;
+  height: auto !important;
 }
 /* #endregion */

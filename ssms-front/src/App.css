@@ -107,4 +107,8 @@ ul.autocomplete-content li img {
   text-align: right;
 }
 /* #endregion */
-
+/* #region materialize dropdown */
+a.dropdown-trigger {
+  cursor: pointer;
+}
+/* #endregion */
