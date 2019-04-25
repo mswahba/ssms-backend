@@ -1,0 +1,46 @@
+{
+  "home": {
+    "title": [
+      "Assadara Schools",
+      "مدارس الصدارة"
+    ],
+    "nav": {
+      "home": [
+        "home",
+        "الرئيسية"
+      ],
+      "about": [
+        "About",
+        "حول المدرسة"
+      ],
+      "sections": [
+        "Sections",
+        "الأقسام"
+      ],
+      "facilities": [
+        "Facilities",
+        "مرافق المدرسة"
+      ],
+      "admission": [
+        "Admission",
+        "القبول والتسجيل"
+      ],
+      "visionMission": [
+        "Vision & Mission",
+        "الرؤية والرسالة"
+      ],
+      "supervisorMessage": [
+        "General Supervisor's Message",
+        "كلمة المشرف العام"
+      ],
+      "schoolHistory": [
+        "Our School's History",
+        "تاريخ المدارس"
+      ],
+      "organizationalStructure": [
+        "Organizational Structure",
+        "الهيكل التنظيمي"
+      ]
+    }
+  }
+}
