@@ -6,7 +6,7 @@
 /* material icons */
 @import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 /* font-awesome icons */
-@import 'https://use.fontawesome.com/releases/v5.2.0/css/all.css';
+@import 'https://use.fontawesome.com/releases/v5.8.1/css/all.css';
 /* #endregion */
 
 /* #region helper classes */
@@ -108,7 +108,8 @@ ul.autocomplete-content li img {
 }
 /* #endregion */
 /* #region materialize dropdown */
-a.dropdown-trigger {
+a.dropdown-trigger,
+a.sidenav-trigger {
   cursor: pointer;
 }
 /* #endregion */

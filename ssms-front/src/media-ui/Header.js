@@ -1,76 +1,34 @@
 import React from 'react'
-import { Link, NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getTranslate } from 'react-localize-redux'
-import { initSidenav, initDropdown } from '../helpers'
+import Navbar from '../shared/Navbar'
 
 function Header({ trans }) {
-  // after component mounted
-  React.useEffect(() => {
-    initSidenav();
-    initDropdown();
-  }, []);
-  // render
+  const navTitle = { path: '/home', text: trans("home.title") }
+  const navLinks = [
+    { path: '/home', text: trans("home.nav.home"), icon: 'fas fa-home' },
+    {
+      id: 'about-dropdown',
+      icon: 'fas fa-info-circle',
+      text: trans("home.nav.about"),
+      children: [
+        { path: '/about/visionMission', text: trans("home.nav.visionMission") },
+        { path: '/about/visionMission', text: trans("home.nav.supervisorMessage") },
+        { path: '/about/visionMission', text: trans("home.nav.schoolHistory") },
+        { path: '/about/visionMission', text: trans("home.nav.organizationalStructure") },
+      ]
+    },
+    { path: '/sections', text: trans("home.nav.sections"), icon: 'fas fa-landmark' },
+    { path: '/facilities', text: trans("home.nav.facilities"), icon: 'fas fa-flask' },
+    { path: '/admission', text: trans("home.nav.admission"), icon: 'fas fa-check-circle' },
+  ]
   return (
     <div className="rtl">
-      <div className="navbar-fixed">
-        <nav>
-          <div className="nav-wrapper">
-            <Link to="/home" className="brand-logo">{trans("home.title")}</Link>
-            <Link to="#!" data-target="mobile-nav" className="sidenav-trigger hide-on-large-only">
-              <i className="material-icons">menu</i>
-            </Link>
-            <ul id="main-nav" className="hide-on-med-and-down left">
-              <li><NavLink to="/home">{trans("home.nav.home")}</NavLink></li>
-              <li>
-                <a className="dropdown-trigger" data-target="about-dropdown">
-                  <i className="material-icons left">arrow_drop_down</i>
-                  {trans("home.nav.about")}
-                </a>
-              </li>
-              <li><NavLink to="/sections">{trans("home.nav.sections")}</NavLink></li>
-              <li><NavLink to="/facilities">{trans("home.nav.facilities")}</NavLink></li>
-              <li><NavLink to="/admission">{trans("home.nav.admission")}</NavLink></li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-      <ul id="mobile-nav" className="sidenav">
-        <li><NavLink to="/home">Home</NavLink></li>
-        <li>
-          <a className="dropdown-trigger" data-target="about-dropdown1">
-            <i className="material-icons left">arrow_drop_down</i>
-            {trans("home.nav.about")}
-          </a>
-        </li>
-        <li><NavLink to="/sections">Sections</NavLink></li>
-        <li><NavLink to="/facilities">Facilities</NavLink></li>
-        <li><NavLink to="/admission">Admission</NavLink></li>
-      </ul>
-      <ul id="about-dropdown" className="dropdown-content">
-        <li><NavLink to="#!">{trans("home.nav.visionMission")}</NavLink></li>
-        <li className="divider"></li>
-        <li><NavLink to="#!">{trans("home.nav.supervisorMessage")}</NavLink></li>
-        <li className="divider"></li>
-        <li><NavLink to="#!">{trans("home.nav.schoolHistory")}</NavLink></li>
-        <li className="divider"></li>
-        <li><NavLink to="#!">{trans("home.nav.organizationalStructure")}</NavLink></li>
-        <li className="divider"></li>
-      </ul>
-      <ul id="about-dropdown1" className="dropdown-content">
-        <li><NavLink to="#!">{trans("home.nav.visionMission")}</NavLink></li>
-        <li className="divider"></li>
-        <li><NavLink to="#!">{trans("home.nav.supervisorMessage")}</NavLink></li>
-        <li className="divider"></li>
-        <li><NavLink to="#!">{trans("home.nav.schoolHistory")}</NavLink></li>
-        <li className="divider"></li>
-        <li><NavLink to="#!">{trans("home.nav.organizationalStructure")}</NavLink></li>
-      </ul>
+      <Navbar navTitle={navTitle} navLinks={navLinks} />
     </div>
   )
 }
-// select the values needed form redux state
-// get the translate function from localize
+// select the values needed form redux state [get the translate function from localize]
 const mapStateToProps = (state) => ({
   "trans": getTranslate(state.localize)
 })
