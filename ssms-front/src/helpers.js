@@ -56,12 +56,12 @@ export const formatDate = (key,format = true) => (item) => ({
   [key]: (format)? new Date(item[key]).toLocaleDateString('en-gb') : new Date(item[key])
 });
 // initialize a Select [elements] with empty options
-export const initSidenav = () => {
+export const initSidenav = (options = {}) => {
   const sidenavs = document.querySelectorAll('.sidenav');
-  M.Sidenav.init(sidenavs, {});
+  M.Sidenav.init(sidenavs, options);
 }
 // initialize a Select [elements] with empty options
-export const initDropdown = () => {
+export const initDropdown = (options = {}) => {
   const dropdowns = document.querySelectorAll('.dropdown-trigger');
-  M.Dropdown.init(dropdowns, {});
+  M.Dropdown.init(dropdowns, options);
 }
