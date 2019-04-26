@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { getTranslate } from 'react-localize-redux'
+import { getTranslate, getActiveLanguage } from 'react-localize-redux'
 import Navbar from '../shared/Navbar'
 
-function Header({ trans }) {
+function Header({ trans, lang }) {
   const navTitle = { path: '/home', text: trans("home.title") }
   const navLinks = [
     { path: '/home', text: trans("home.nav.home"), icon: 'fas fa-home' },
@@ -24,13 +24,14 @@ function Header({ trans }) {
   ]
   return (
     <div className="rtl">
-      <Navbar navTitle={navTitle} navLinks={navLinks} />
+      <Navbar navTitle={navTitle} navLinks={navLinks} lang={lang} />
     </div>
   )
 }
 // select the values needed form redux state [get the translate function from localize]
 const mapStateToProps = (state) => ({
-  "trans": getTranslate(state.localize)
+  "trans": getTranslate(state.localize),
+  "lang": getActiveLanguage(state.localize).code
 })
 // connect the form with the redux state
 export default connect(mapStateToProps)(Header);
