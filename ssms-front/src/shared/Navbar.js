@@ -7,7 +7,7 @@ const renderNavLinks = (id, className, navLinks, activeLink, setActiveLink) => {
     <ul id={id} className={className}>
       {navLinks.map((link, i) => (
         <li key={i + 1} className={activeLink.includes(link.path) ? 'active' : ''}>
-          {(link.path)
+          {(link.component)
             ? <NavLink to={link.path} onClick={() => setActiveLink(link.path)} >
                 <i className={`${link.icon} right`}></i>
                 {link.text}
@@ -24,36 +24,33 @@ const renderNavLinks = (id, className, navLinks, activeLink, setActiveLink) => {
   )
 }
 
-const renderNavSubLinks = (navLinks) => {
+const renderDropdown = (link, id, activeLink, setActiveLink) => {
+  return (
+    <ul id={`${link.id}-${id}`} className="dropdown-content">
+      {link.children.map((item, i) => (
+        <li key={i + 1} className={activeLink.includes(item.path) ? 'active' : ''}>
+          <NavLink to={item.path} onClick={() => setActiveLink(item.path)}>
+            <i className={`${item.icon || 'fas fa-file-alt'} right`}></i>
+            {item.text}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+const renderNavSubLinks = (navLinks, activeLink, setActiveLink) => {
   const linksWithChildren = navLinks.filter( link => link.children && Array.isArray(link.children) )
   return linksWithChildren.map((link, index) => (
     <div key={index + 1} className="dropdown-contents">
-      <ul id={`${link.id}-main`} className="dropdown-content">
-        {link.children.map((item, i) => (
-          <li key={i + 1}>
-            <NavLink to={item.path}>
-              <i className={`${item.icon || 'fas fa-file-alt'} right`}></i>
-              {item.text}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
-      <ul id={`${link.id}-mobile`} className="dropdown-content">
-        {link.children.map((item, i) => (
-          <li key={i + 1}>
-            <NavLink to={item.path}>
-              <i className={`${item.icon || 'fas fa-file-alt'} right`}></i>
-              {item.text}
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+      { renderDropdown(link, 'main', activeLink, setActiveLink) }
+      { renderDropdown(link, 'mobile', activeLink, setActiveLink) }
     </div>
   ))
 }
 
-export default function Navbar({ navTitle, navLinks, lang }) {
-  const [activeLink, setActiveLink] = React.useState(window.location.pathname)
+function Navbar({ navTitle, navLinks, lang, defaultPath }) {
+  const [activeLink, setActiveLink] = React.useState(defaultPath)
   // after component mounted
   React.useEffect(() => {
     initSidenav({ edge: (lang === 'ar')? 'right' : 'left' });
@@ -72,7 +69,9 @@ export default function Navbar({ navTitle, navLinks, lang }) {
         </nav>
       </div>
       {renderNavLinks("mobile-nav", "sidenav", navLinks, activeLink, setActiveLink)}
-      {renderNavSubLinks(navLinks)}
+      {renderNavSubLinks(navLinks, activeLink, setActiveLink)}
     </>
   )
 }
+
+export default Navbar
