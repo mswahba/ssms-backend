@@ -65,3 +65,10 @@ export const initDropdown = (options = {}) => {
   const dropdowns = document.querySelectorAll('.dropdown-trigger');
   M.Dropdown.init(dropdowns, options);
 }
+// initialize a Select [elements] with empty options
+export const initSlider = (options = {}) => {
+  const sliders = document.querySelectorAll('.slider');
+  M.Slider.init(sliders, options);
+}
+// get the Slider Instance
+export const getSlider = (id) => M.Slider.getInstance(document.getElementById(id));
