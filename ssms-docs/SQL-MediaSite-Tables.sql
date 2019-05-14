@@ -142,15 +142,30 @@
 --   [albumDate] [smalldatetime] NOT NULL,
 --   [keywords] [nvarchar](max) NULL,
 --   [displayAlsoAt] [varchar](10) NOT NULL,
---   [forCompany] [bit] NOT NULL,
 --   [approved] [bit] NOT NULL,
 --   [enabled] [bit] NOT NULL,
+--   [forCompany] [bit] NOT NULL,
 --   [schoolId] [tinyint] NULL,
 -- 	 [stageId] [tinyint] NULL,
 --   [empJobId] [int] NULL,
 --   [categoryId] [tinyint] NULL,
 -- )
 -- GO
+
+-- Insert rows into table '[dbo].[albums]'
+-- INSERT INTO [dbo].[albums]
+-- ( -- columns to insert data into
+--  [albumTitleAr], [albumTitleEn], [descriptionAr], [descriptionEn],
+--  [albumDate], [displayAlsoAt], [forCompany], [approved], [enabled], [categoryId]
+-- )
+-- VALUES
+-- ( -- values for the columns in the list above
+--  'ألبوم الصفحة الرئيسية', 'Hero Slider', 'الألبوم الذي يعرض في أول الصفحة الرئيسية', 'The home page Hero Slider',
+--  GETUTCDATE(), 'company', 1, 1, 1, 6
+-- )
+-- GO
+
+-- SELECT * from [dbo].[albums]
 
 -- add 4 relations [employeesJobs - departments - schools - mediaCategories]
 ----------------------------------------------------------------------------
@@ -204,6 +219,76 @@
 --   [albumId] [int] NULL,
 -- )
 -- GO
+
+-- Insert rows into table '[dbo].[photos]'
+-- INSERT INTO [dbo].[photos]
+-- ( -- columns to insert data into
+--  [photoTitleAr],
+--  [photoTitleEn],
+--  [descriptionAr],
+--  [descriptionEn],
+--  [photoURL],
+--  [thumbURL],
+--  [photoDate], [approved], [enabled], [albumId]
+-- )
+-- VALUES
+-- ( -- values for the columns in the list above
+--  'حفل خريجي مدارس الصدارة',
+--  'Assadarah Graduation Party',
+--  'تكريم خريجي مدارس الصدارة الدفعة السابعة',
+--  'Honoring Assadarah Graduates for Intake 7',
+--  'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--  'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--  GETUTCDATE(), 1, 1, 1
+-- ),
+-- ( -- values for the columns in the list above
+--  'الزيارات الخارجية',
+--  'Outer Visit',
+--  'زيارة طلاب ابتدائية الصدارة إلي مشكاه',
+--  'Assadarah Primary stage students visit to Mishkah',
+--  'https://previews.dropbox.com/p/thumb/AAYE6RSrWVql4kJe6ZbQMAtQRZxU4KamNkVrn-PuuF12KnSl-5y_qPRA3Eh_nePZpwsH-qHwuf2yLWdBpI701eTuV5iJkVM_vbZp9ynt2Lm1T_MhrXEuscoP1yZTuuBqvnVskiXwdExB4LsgTNfswlaEa4BqnQyqFCNvAsxiCp-sqCTzhJR3Ms1x2E5ekbbGrpfoqw72FbHQP_sRSbCUTIAdzvkQvnK9kReR4EYV7bMH82zHQcE9o4zm7MDpjFOBT6tzT2muBWHRjJh8cPwSYZolONYKPA36XzbfyRPgk3uQ72trcvAyl67_f5DFHIgB8GHjxo7TRiN4ORSRMGKWHlpT/p.jpeg',
+--  'https://previews.dropbox.com/p/thumb/AAYE6RSrWVql4kJe6ZbQMAtQRZxU4KamNkVrn-PuuF12KnSl-5y_qPRA3Eh_nePZpwsH-qHwuf2yLWdBpI701eTuV5iJkVM_vbZp9ynt2Lm1T_MhrXEuscoP1yZTuuBqvnVskiXwdExB4LsgTNfswlaEa4BqnQyqFCNvAsxiCp-sqCTzhJR3Ms1x2E5ekbbGrpfoqw72FbHQP_sRSbCUTIAdzvkQvnK9kReR4EYV7bMH82zHQcE9o4zm7MDpjFOBT6tzT2muBWHRjJh8cPwSYZolONYKPA36XzbfyRPgk3uQ72trcvAyl67_f5DFHIgB8GHjxo7TRiN4ORSRMGKWHlpT/p.jpeg',
+--  GETUTCDATE(), 1, 1, 1
+-- ),
+-- ( -- values for the columns in the list above
+--  'المسابقات المحلية',
+--  'Local Competitions',
+--  'مشاركة طلاب ثانوية الصدارة في ماراثون الرياضيات',
+--  'Assadarah Secondary stage students participate in Math Marathon ',
+--  'https://previews.dropbox.com/p/thumb/AAaxuQCFfZD2_9Ea_P7jldQ-4PhpRkcjyWhdG8Ucn1kHstdoXkDSxHc2hDNhHH6ssNgXbqAXF96V38GoCrTNBa4-eqc2JYFgneghvuvACs2SlJA_xuu3SfNjBugsSZEf3OSUOuCHBeIfgiouAXblbbqeaqXYhDZcEVKIRonbP6qRyzc_j3aYYKoCd9pF8IopUa5qujiQzSccDtrF9TnW8OX2uNsoqcXjVNx0e1Dg2nUEhZrYahgGYmoeQ4zdIGozqCJDfI8Wfw0WIGjDf5XDcG7HIPxLsYQ1ASuYcwlcMQ8KhfVnWYmntL6Jzg2eN2UmbtC33alobk8EehevyRZaEiym/p.jpeg',
+--  'https://previews.dropbox.com/p/thumb/AAaxuQCFfZD2_9Ea_P7jldQ-4PhpRkcjyWhdG8Ucn1kHstdoXkDSxHc2hDNhHH6ssNgXbqAXF96V38GoCrTNBa4-eqc2JYFgneghvuvACs2SlJA_xuu3SfNjBugsSZEf3OSUOuCHBeIfgiouAXblbbqeaqXYhDZcEVKIRonbP6qRyzc_j3aYYKoCd9pF8IopUa5qujiQzSccDtrF9TnW8OX2uNsoqcXjVNx0e1Dg2nUEhZrYahgGYmoeQ4zdIGozqCJDfI8Wfw0WIGjDf5XDcG7HIPxLsYQ1ASuYcwlcMQ8KhfVnWYmntL6Jzg2eN2UmbtC33alobk8EehevyRZaEiym/p.jpeg',
+--  GETUTCDATE(), 1, 1, 1
+-- ),
+-- ( -- values for the columns in the list above
+--  'مصادر التعليم',
+--  'Learning Resources',
+--  'حث الطلاب على الاطلاع والقراءة واستخدام مصادر المعرفة',
+--  'Urging student to look for knowledge through Reading and Other Information resources',
+--  'https://previews.dropbox.com/p/thumb/AAb4IKmnaLPAwYHjGo8sgoFpuAclY_1BT-HAzuivKhR7Nezjc74WxRLIdQPBuxJ2y4lw4044fu_l558beC0b0DDxu83XHK3OS0cH1J4rCC8oyONKLUZIYKvUX7Sv8BX1scbJ6otU-nCdbC883gaBUdrO0wHIuRjXUIL_vFlIuJeCUfx-MzJJ_pcfkL45gRBi-vG7fS_SFxPKvETKIEtfPGVJDKj6aUEelKBxaGWsABjRRQEyuTFIIxd26Ilh8F3bYv2f7FwJAqshwqkjTiHv50AYjHYMKLc9m-uCjGjqyIyQcLaRzPEaM9Z-5YN5XxhDn8LXMZQkiMwjah3b_ciJPQ3j/p.jpeg',
+--  'https://previews.dropbox.com/p/thumb/AAb4IKmnaLPAwYHjGo8sgoFpuAclY_1BT-HAzuivKhR7Nezjc74WxRLIdQPBuxJ2y4lw4044fu_l558beC0b0DDxu83XHK3OS0cH1J4rCC8oyONKLUZIYKvUX7Sv8BX1scbJ6otU-nCdbC883gaBUdrO0wHIuRjXUIL_vFlIuJeCUfx-MzJJ_pcfkL45gRBi-vG7fS_SFxPKvETKIEtfPGVJDKj6aUEelKBxaGWsABjRRQEyuTFIIxd26Ilh8F3bYv2f7FwJAqshwqkjTiHv50AYjHYMKLc9m-uCjGjqyIyQcLaRzPEaM9Z-5YN5XxhDn8LXMZQkiMwjah3b_ciJPQ3j/p.jpeg',
+--  GETUTCDATE(), 1, 1, 1
+-- ),
+-- ( -- values for the columns in the list above
+--  'الملاعب والصالات',
+--  'Playgrounds, Gyms and activity rooms',
+--  'ملاعب كرة القدم والسلة والطائرة وحمام السباحة وصالة اللياقة',
+--  'Playgrounds for football, vollyball and basektball. Swimming pool and Gym',
+--  'https://previews.dropbox.com/p/thumb/AAaCqqDD8Ro5zi3uJuDqNK9OHT9PUw343RPGwBkdWe4fRtgFNzuYYnMa7DQ0UiFLL3f0YGboi7NizVVFSPYhH0eJA4LB_O6puCtgTu33C2tImvgyzSjokGQxEGbeEY9nYdf_XmuuRbDyNyrS2IVZqUX6D-L8E2G9mCOPkPgYZLDyg6k50Vzu3Vkl-w5NhExyovvUbS7tlCVSagBtnqKh_pN-IPIejSpyvQ7NgkHFIp66zQMRsGaMphVYoIN4qr-htYlcrcJEtChk_1JDOf9vkWWF_lGwi6oD0qTMmWRy1eHXGrc4gIdGGG7Wr7b1-Xujml0CN8KVfqz_Aax_dSWTw8vr/p.jpeg',
+--  'https://previews.dropbox.com/p/thumb/AAaCqqDD8Ro5zi3uJuDqNK9OHT9PUw343RPGwBkdWe4fRtgFNzuYYnMa7DQ0UiFLL3f0YGboi7NizVVFSPYhH0eJA4LB_O6puCtgTu33C2tImvgyzSjokGQxEGbeEY9nYdf_XmuuRbDyNyrS2IVZqUX6D-L8E2G9mCOPkPgYZLDyg6k50Vzu3Vkl-w5NhExyovvUbS7tlCVSagBtnqKh_pN-IPIejSpyvQ7NgkHFIp66zQMRsGaMphVYoIN4qr-htYlcrcJEtChk_1JDOf9vkWWF_lGwi6oD0qTMmWRy1eHXGrc4gIdGGG7Wr7b1-Xujml0CN8KVfqz_Aax_dSWTw8vr/p.jpeg',
+--  GETUTCDATE(), 1, 1, 1
+-- ),
+-- ( -- values for the columns in the list above
+--  'الإنجازات والجوائز',
+--  'Trophies',
+--  'يشارك طلابنا في العديد من المسابقات والمنافسات المحلية والدولية ويحصلون على العديد من المراكز المتقدمة والجوائز',
+--  'Our students participate in national and international competitions and get a lot of prizes and advanced positions',
+--  'https://previews.dropbox.com/p/thumb/AAaMIwLQRi9mhFUfedYjLcPQaxqUF6rZtfVbm62kubT81i2JigsyDC4QEUiVStZ1hZkesilZBsUFQ-6QEr_-22Q6LYnQAUc4KmSBu711lhjjcP_Ctmu914wH82UpPRFhHae51ggJEx8i6_fk3pQNb6U0G5Kg-Rg1Kv2VZsBn9kRAS2W899OmTIEJd1yozNVBJeqiTctgLLb8dKpWlh31fBVqMQp13XauJAoiM_IPHKhYfyNNFUSO9DMk0iUM2NE874P8KkAK9aCN1CoDvvV_kq_RPvRBRdG4fnphRwME2XpYRE6J2JZqONsd6pMTOh7QcHX7GUxYlHzBd1qfuTqa079b/p.jpeg',
+--  'https://previews.dropbox.com/p/thumb/AAaMIwLQRi9mhFUfedYjLcPQaxqUF6rZtfVbm62kubT81i2JigsyDC4QEUiVStZ1hZkesilZBsUFQ-6QEr_-22Q6LYnQAUc4KmSBu711lhjjcP_Ctmu914wH82UpPRFhHae51ggJEx8i6_fk3pQNb6U0G5Kg-Rg1Kv2VZsBn9kRAS2W899OmTIEJd1yozNVBJeqiTctgLLb8dKpWlh31fBVqMQp13XauJAoiM_IPHKhYfyNNFUSO9DMk0iUM2NE874P8KkAK9aCN1CoDvvV_kq_RPvRBRdG4fnphRwME2XpYRE6J2JZqONsd6pMTOh7QcHX7GUxYlHzBd1qfuTqa079b/p.jpeg',
+--  GETUTCDATE(), 1, 1, 1
+-- )
+-- GO
+
+-- SELECT * from [dbo].[photos]
 
 -- insert photos instructions
 ------------------------------
