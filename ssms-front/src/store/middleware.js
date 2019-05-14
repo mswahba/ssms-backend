@@ -2,7 +2,7 @@ import logger from "redux-logger";
 import axios from "axios";
 import axiosCancel from "axios-cancel";
 import { toast } from 'react-toastify';
-import LS from '../shared/localStorage';
+import LS from '../localStorage';
 
 // set axios baseURL to server API URL
 axios.defaults.baseURL = "http://localhost:5000";
