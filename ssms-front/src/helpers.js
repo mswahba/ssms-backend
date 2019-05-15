@@ -6,6 +6,16 @@ const keepLastToast = () => {
   for (let i=0; i<len-1; i++)
     toasts[i].remove();
 }
+// time [enum] units in milliseconds
+export const time = {
+  year: 31536000000,  // 365 days
+  month: 2592000000,  // 30 days
+  week: 604800000,    // 7 days
+  day: 86400000,
+  hour: 3600000,
+  minute: 60000,
+  second: 1000
+};
 
 export const toast = ({ html, time, preventMultiple}) => {
   M.toast({ html, displayLength: time })
