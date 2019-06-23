@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import axiosCancel from 'axios-cancel'
 import { toast } from 'react-toastify'
-import LS from '../localStorage'
+import LS from './localStorage'
 import { time } from './helpers'
 
 // set axios baseURL to server API URL
@@ -11,7 +12,7 @@ axiosCancel(axios);
 
 // build request and send it to the server and return the data OR error
 // and display the needed toast messages
-async function request(requestId, request, successToast, errorToast) {
+async function _request(requestId, request, successToast, errorToast) {
   let allPromises = [],
     requestPromise = null;
   // build the ajax request promise
@@ -23,7 +24,7 @@ async function request(requestId, request, successToast, errorToast) {
     requestPromise = axios.all(allPromises, { requestId });
   } else if ( Array.isArray(request) && typeof request[0] === 'string' ) {
     const [ method, url, body = {} ] = request;
-    body.requestId = action.type;
+    body.requestId = requestId;
     requestPromise = axios[method](url, body);
   }
   // send request
@@ -35,19 +36,19 @@ async function request(requestId, request, successToast, errorToast) {
     }
     return { status: 'success', response: res }
   } catch(err) {
-      if(errorToast && errorToast.length)
-        toast[errorToast[0]](errorToast[1]);
-      // The request was made and the server responded with a status code that falls out of the range of 2xx
-      // error.response.data - error.response.status - error.response.headers
-      if (err.response)
-        return { status: 'error', response: err.response.data || err.response.status }
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-      else if (err.request)
-        return { status: 'error', response: err.request }
-      // Something happened in setting up the request that triggered an Error
-      else
-        return { status: 'error', response: err }
+    if(errorToast && errorToast.length)
+      toast[errorToast[0]](errorToast[1]);
+    // The request was made and the server responded with a status code that falls out of the range of 2xx
+    // error.response.data - error.response.status - error.response.headers
+    if (err.response)
+      return { status: 'error', response: err.response.data || err.response.status }
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
+    else if (err.request)
+      return { status: 'error', response: err.request }
+    // Something happened in setting up the request that triggered an Error
+    else
+      return { status: 'error', response: err }
   }
 }
 
@@ -61,19 +62,19 @@ async function getData({ requestId, request, localStorageKey, successToast, erro
   // if the timestamp in the given timeout [not expired]
   // then setState to data_state
   if(data && (Date.now() - data.timestamp) < timeout )
-    setState({ loading: false, error: null, data });
+    setState({ loading: false, error: null, data: data.data });
   else {
     // if there isn't stored data then request data from API
-    const { status, response } = await request(requestId, request, successToast, errorToast);
+    const { status, response } = await _request(requestId, request, successToast, errorToast);
     // if the result has error then setState to error_state
     if (status === 'error')
       setState({ loading: false, error: response, data: null });
     // if the result has success
     else if (status === 'success') {
-      data = response
+      data = response.data
       // store it in local storage
       if (localStorageKey)
-        LS.set(localStorageKey, { ...data, timestamp: Date.now() });
+        LS.set(localStorageKey, { data, timestamp: Date.now() });
       // setState to data_state
       setState({ loading: false, error: null, data });
     }
