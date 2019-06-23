@@ -69,7 +69,7 @@ namespace SSMS
       string _value = filter[2].Trim();
 
       var prop = typeof(TEntity).GetProperty(_field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-      //if field not found or null , return emtpy string
+      //if field not found or null , return empty string
       if (prop == null)
         return "";
       var propertyType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
@@ -155,7 +155,7 @@ namespace SSMS
     {
       // split filters and add every filter as an item in an array
       string[] filtersArr = filters.SplitAndRemoveEmpty(',');
-      // list to hold every filter as an arry with 3 item
+      // list to hold every filter as an array with 3 item
       List<string[]> filtersList = filtersArr.Select(item => item.SplitAndRemoveEmpty('|'))
                                              .ToList();
       // build the condition of every filter one by one
@@ -535,7 +535,7 @@ namespace SSMS
     }
     public IQueryable<TEntity> ApplySqlWhere<TEntity>(string filters, string tableName) where TEntity : class
     {
-      // use no tracking so that db context won't track changes on this dbset
+      // use no tracking so that db context won't track changes on this dbSet
       // better performance than AsQueryable -- used in read only queries
       var query = _db.Set<TEntity>().AsNoTracking();
       // build the sql select statement with sql where clause

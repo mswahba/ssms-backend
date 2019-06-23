@@ -8,7 +8,7 @@ using SSMS.EntityModels;
 
 namespace SSMS.MediaSite
 {
-  public class PhotosController : BaseController<Photo, int, About>
+  public class PhotosController : BaseController<Photo, int, Photo>
   {
     private readonly BaseService _service;
     private readonly IMapper _mapper;

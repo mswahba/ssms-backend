@@ -119,7 +119,7 @@ namespace SSMS
       _tableName = tableName;
       _keyName = keyName;
     }
-    //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table besed on route param-
+    //Get list of all items OR Non-Deleted (only) or Deleted (only) Items in a table based on route param-
     //we send the list type as Route parameter ("all OR "deleted" OR "Existing")
     //we receive pagesize and page number (optional) if exists we return pageResult
     // which is a complex type that contains :
