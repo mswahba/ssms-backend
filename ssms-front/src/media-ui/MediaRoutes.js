@@ -12,10 +12,12 @@ const renderRoutes = routes => {
 
 function MediaRoutes ({ navLinks, defaultPath }) {
   return (
-    <Switch>
-      {renderRoutes(navLinks)}
-      <Redirect to={defaultPath} />
-    </Switch>
+    <main>
+      <Switch>
+        {renderRoutes(navLinks)}
+        <Redirect to={defaultPath} />
+      </Switch>
+    </main>
   )
 }
 

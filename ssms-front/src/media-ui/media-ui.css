@@ -28,3 +28,10 @@ i.material-icons.backward {
   color: #fff;
 }
 /* #endregion */
+
+main {
+  min-height: 70vh;
+}
+div.spinner-container {
+  height: 70vh;
+}

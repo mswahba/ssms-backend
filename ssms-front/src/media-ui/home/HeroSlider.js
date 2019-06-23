@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { getTranslate, getActiveLanguage } from 'react-localize-redux'
 import { initSlider, getSlider } from '../../helpers'
 import { useFetch } from '../../customHooks'
+import Loading from '../../shared/Loading';
 
 // the heroSlider materialize-css instance
 let heroSlider
@@ -11,34 +12,6 @@ const captionAligns = [
   'center-align',
   'right-align'
 ]
-// the slides data
-// const _slides = [
-//   {
-//     photoURL: 'https://lorempixel.com/580/250/nature/1',
-//     captionAlign: 'left-align',
-//     title: 'Left Aligned Caption',
-//     description: `Here's our small slogan.`
-//   },
-//   {
-//     photoURL: 'https://lorempixel.com/580/250/nature/2',
-//     captionAlign: 'center-align',
-//     title: 'This is our big Tagline!',
-//     description: `Here's our big slogan.`
-//   },
-//   {
-//     photoURL: 'https://lorempixel.com/580/250/nature/3',
-//     captionAlign: 'center-align',
-//     title: 'This is our small Tagline!',
-//     description: `Here's our small slogan.`
-//   },
-//   {
-//     photoURL: 'https://lorempixel.com/580/250/nature/4',
-//     captionAlign: 'right-align',
-//     title: 'Right Aligned Caption',
-//     description: `Here's our small slogan.`
-//   }
-// ]
-
 // to move slides based on [lang, direction] using heroSlider instance [next(), prev()]
 const moveSlider = (lang, dir) => (e) => {
   if (dir === 'backward')
@@ -68,7 +41,7 @@ const renderSlides = (lang, slides) => {
 }
 // HeroSlider component
 function HeroSlider ({ trans, lang }) {
-  // const [slides, setSlides] = React.useState(_slides)
+  // get slides from LS OR Server
   const { loading, error, data: slides } = useFetch({
     requestId: 'hero_slider',
     request: ['get', '/photos?filters=approved|=|1,enabled|=|1,albumId|=|1'],
@@ -77,26 +50,14 @@ function HeroSlider ({ trans, lang }) {
   })
 
   React.useEffect(() => {
-    if(slides) {
+    if(slides && slides.length) {
       initSlider()
       heroSlider = getSlider('hero-slider');
     }
   }, [slides])
 
   if(loading)
-    return (
-      <div className="preloader-wrapper big active">
-        <div className="spinner-layer spinner-blue">
-          <div className="circle-clipper left">
-            <div className="circle"></div>
-          </div><div className="gap-patch">
-            <div className="circle"></div>
-          </div><div className="circle-clipper right">
-            <div className="circle"></div>
-          </div>
-        </div>
-      </div>
-    )
+    return <Loading />
 
   else if (error)
     return <div className="card-panel red lighten-4">{error}</div>
