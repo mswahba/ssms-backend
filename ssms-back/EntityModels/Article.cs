@@ -5,6 +5,11 @@ namespace SSMS.EntityModels
 {
     public class Article
     {
+        public Article()
+        {
+            ArticleDate = DateTime.UtcNow.AddHours(3);
+            DisplayAlsoAt = "none";
+        }
         public int ArticleId { get; set; }
         public string ArticleTitle { get; set; }
         public string ArticleText { get; set; }
