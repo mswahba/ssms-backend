@@ -41,6 +41,28 @@
         "Organizational Structure",
         "الهيكل التنظيمي"
       ]
+    },
+    "news": {
+      "title": [
+        "News Section",
+        "أخبارنا"
+      ],
+      "newsListLink": [
+        "All News",
+        "كافة الأخبار"
+      ],
+      "Date": [
+        "Date",
+        "التاريخ"
+      ],
+      "Author": [
+        "Author",
+        "الكاتب"
+      ],
+      "emptyNews": [
+        "No News are found right now ...",
+        "... لا توجد أخبار حالياً"
+      ]
     }
   }
 }
