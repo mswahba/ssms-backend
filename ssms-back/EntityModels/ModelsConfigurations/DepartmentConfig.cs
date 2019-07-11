@@ -12,10 +12,10 @@ namespace SSMS.EntityModels
       builder.ToTable("departments");
 
       builder.Property(e => e.DepartmentId).HasColumnName("departmentId");
-
       builder.Property(e => e.DepartmentNameAr).HasColumnName("departmentNameAr").HasMaxLength(100);
-
       builder.Property(e => e.DepartmentNameEn).HasColumnName("departmentNameEn").HasMaxLength(100);
+      builder.Property(e => e.IsStage).HasColumnName("isStage");
+      builder.Property(e => e.BranchId).HasColumnName("branchId");
 
       builder.Property(e => e.IssuerId).HasColumnName("issuerId").HasMaxLength(10);
       builder.Property(e => e.SysStartTime).HasColumnName("sysStartTime");
@@ -24,9 +24,15 @@ namespace SSMS.EntityModels
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
       builder.HasOne(e => e._User)
-            .WithMany(u => u.Departments)
-            .HasForeignKey(e => e.IssuerId)
-            .HasConstraintName("FK_users_departments");
+        .WithMany(u => u.Departments)
+        .HasForeignKey(e => e.IssuerId)
+        .HasConstraintName("FK_users_departments");
+
+      builder.HasOne(e => e._Branch)
+        .WithMany(b => b.Departments)
+        .HasForeignKey(e => e.BranchId)
+        .HasConstraintName("FK_branches_departments");
+
     }
   }
 }

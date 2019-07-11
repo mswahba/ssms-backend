@@ -570,6 +570,13 @@ GO
 -- DROP TABLE [stages]
 
 -- ALTER TABLE [dbo].[departments] ADD [branchId] [tinyint] NULL
+-- ALTER TABLE [dbo].[departments]
+-- ADD CONSTRAINT [FK_branches_departments] FOREIGN KEY([branchId])
+-- REFERENCES [dbo].[branches] ([branchId])
+-- ON UPDATE NO ACTION
+-- ON DELETE NO ACTION
+-- GO
+
 -- DELETE FROM [dbo].[departments]
 -- DELETE FROM [dbo].[grades]
 -- DELETE FROM [dbo].[schoolDayEvents]
@@ -584,44 +591,13 @@ GO
 -- SELECT * FROM [dbo].[schools]
 -- GO
 
--- CREATE TABLE [dbo].[stages] (
--- 	[stageId] [tinyint] PRIMARY KEY,
--- 	[stageNameAr] [nvarchar](25) NOT NULL,
---   [stageNameEn] [nvarchar](25) NOT NULL,
---   [branchId] [tinyint] NULL,
---   [isDeleted] [bit] NOT NULL DEFAULT(0)
--- )
--- GO
--- ALTER TABLE [dbo].[stages]
--- ADD CONSTRAINT [FK_stages_branches] FOREIGN KEY([branchId])
--- REFERENCES [dbo].[branches] ([branchId])
--- ON UPDATE NO ACTION
--- ON DELETE NO ACTION
--- GO
-
--- ALTER TABLE [dbo].[stages] DROP CONSTRAINT [FK_stages_branches]
--- DROP TABLE [dbo].[stages]
-
--- Insert rows into table '[dbo].[stages]'
--- insert into [dbo].[stages] values (1, 'ابتدائي', 'Primary', 1, 0)
--- insert into [dbo].[stages] values (2, 'متوسط', 'Intermediate', 1, 0)
--- insert into [dbo].[stages] values (3, 'ثانوي', 'Secondary', 1, 0)
-
--- insert into [dbo].[stages] values (4, 'رياض أطفال', 'Kindergarten', 2, 0)
--- insert into [dbo].[stages] values (5, 'ابتدائي', 'Primary', 2, 0)
--- insert into [dbo].[stages] values (6, 'متوسط', 'Intermediate', 2, 0)
--- insert into [dbo].[stages] values (7, 'ثانوي', 'Secondary', 2, 0)
-
 -- Select rows from a Table or View 'TableOrViewName' in schema 'SchemaName'
 -- insert into departments
 -- ([departmentId], [departmentNameAr], [departmentNameEn], [isDeleted], [issuerId], [isStage], [branchId])
--- values (1, 'ابتدائي', 'Primary', 0, '1122112211', 1, 1)
--- insert into departments
--- ([departmentId], [departmentNameAr], [departmentNameEn], [isDeleted], [issuerId], [isStage], [branchId])
--- values (2, 'متوسط', 'Intermediate', 0, '1122112211', 1, 1)
--- insert into departments
--- ([departmentId], [departmentNameAr], [departmentNameEn], [isDeleted], [issuerId], [isStage], [branchId])
--- values (3, 'ثانوي', 'Secondary', 0, '1122112211', 1, 1)
+-- values
+-- (1, 'ابتدائي', 'Primary', 0, '1122112211', 1, 1),
+-- (2, 'متوسط', 'Intermediate', 0, '1122112211', 1, 1),
+-- (3, 'ثانوي', 'Secondary', 0, '1122112211', 1, 1)
 
 -- insert into departments
 -- ([departmentId], [departmentNameAr], [departmentNameEn], [isDeleted], [issuerId], [isStage], [branchId])

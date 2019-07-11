@@ -7,7 +7,7 @@ namespace SSMS.EntityModels
     {
         public Branch()
         {
-            Stages = new HashSet<Stage>();
+            Departments = new HashSet<Department>();
             IsDeleted = false;
         }
 
@@ -18,6 +18,6 @@ namespace SSMS.EntityModels
         public bool? IsDeleted { get; set; }
 
         public School School { get; set; }
-        public ICollection<Stage> Stages { get; set; }
+        public ICollection<Department> Departments { get; set; }
     }
 }
