@@ -66,9 +66,6 @@
 .pointer {
   cursor: pointer;
 }
-.card-header {
-  padding: 1.2rem 1rem;
-}
 .sm {
   font-size: 2.5rem !important;
   line-height: inherit !important;
@@ -81,22 +78,22 @@
   font-size: 6rem !important;
   line-height: inherit !important;
 }
-.p-rl-1 {
+.p-x-1 {
   padding: 0 1rem;
 }
-.p-rl-2 {
+.p-x-2 {
   padding: 0 2rem;
 }
-.p-rl-3 {
+.p-x-3 {
   padding: 0 3rem;
 }
-.p-tp-1 {
+.p-y-1 {
   padding: 1rem 0;
 }
-.p-tp-2 {
+.p-y-2 {
   padding: 2rem 0;
 }
-.p-tp-3 {
+.p-y-3 {
   padding: 3rem 0;
 }
 .p-1 {
@@ -107,6 +104,9 @@
 }
 .p-3 {
   padding: 3rem;
+}
+.m-0 {
+  margin: 0;
 }
 /* #endregion */
 
@@ -223,5 +223,14 @@ ul.autocomplete-content li img {
 a.dropdown-trigger,
 a.sidenav-trigger {
   cursor: pointer;
+}
+/* #endregion */
+
+/* #region materialize dropdown */
+.card-header {
+  padding: 1.2rem 1rem;
+}
+.news-section .card-content {
+  height: 270px;
 }
 /* #endregion */
