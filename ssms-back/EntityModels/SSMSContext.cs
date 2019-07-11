@@ -55,7 +55,6 @@ namespace SSMS.EntityModels
     public virtual DbSet<Relative> Relatives { get; set; }
     public virtual DbSet<SchoolDayEvent> SchoolDayEvents { get; set; }
     public virtual DbSet<School> Schools { get; set; }
-    public virtual DbSet<Stage> Stages { get; set; }
     public virtual DbSet<Student> Students { get; set; }
     public virtual DbSet<StudentProcedure> StudentsProcedures { get; set; }
     public virtual DbSet<StudentRelative> StudentsRelatives { get; set; }
@@ -152,7 +151,6 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new ProcedureConfig());
       modelBuilder.ApplyConfiguration(new SchoolDayEventConfig());
       modelBuilder.ApplyConfiguration(new SchoolConfig());
-      modelBuilder.ApplyConfiguration(new StageConfig());
       modelBuilder.ApplyConfiguration(new StudentConfig());
       modelBuilder.ApplyConfiguration(new StudentProcedureConfig());
       modelBuilder.ApplyConfiguration(new StudentStatusConfig());
