@@ -350,4 +350,13 @@ export default () => {
         return ( en_alpha.test(this) || ar_alpha.test(this) );
     }
   }
+  // truncate string
+  String.prototype.truncate = function( n, useWordBoundary = true ) {
+    if (this.length <= n)
+      return this;
+    var subString = this.substr(0, n-1);
+    return (useWordBoundary
+        ? subString.substr(0, subString.lastIndexOf(' '))
+        : subString) + "..."
+  };
 };
