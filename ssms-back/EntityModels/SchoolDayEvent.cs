@@ -21,7 +21,7 @@ namespace SSMS.EntityModels
         public TimeSpan? EndTime { get; set; }
         public bool? IsDeleted { get; set; }
 
-        public Stage Stage { get; set; }
+        public Department _Department { get; set; }
         public ICollection<Period> Periods { get; set; }
         public ICollection<TimeTable> TimeTable { get; set; }
     }

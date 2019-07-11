@@ -25,10 +25,10 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
-      builder.HasOne(d => d.Stage)
-                .WithMany(p => p.Grades)
+      builder.HasOne(g => g._Department)
+                .WithMany(d => d.Grades)
                 .HasForeignKey(d => d.StageId)
-                .HasConstraintName("FK_grades_stages");
+                .HasConstraintName("FK_Departments_grades");
 
     }
   }

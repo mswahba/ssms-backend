@@ -37,10 +37,10 @@ namespace SSMS.EntityModels
 
       builder.Property(e => e.IsDeleted).HasColumnName("isDeleted");
 
-      builder.HasOne(d => d.Stage)
-                .WithMany(p => p.SchoolDayEvents)
+      builder.HasOne(s => s._Department)
+                .WithMany(d => d.SchoolDayEvents)
                 .HasForeignKey(d => d.StageId)
-                .HasConstraintName("FK_schoolDayEvents_stages");
+                .HasConstraintName("FK_Departments_schoolDayEvents");
 
     }
   }

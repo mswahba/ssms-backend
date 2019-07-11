@@ -18,7 +18,7 @@ namespace SSMS.EntityModels
         public string GradeNameEn { get; set; }
         public bool? IsDeleted { get; set; }
 
-        public Stage Stage { get; set; }
+        public Department _Department { get; set; }
         public ICollection<Classroom> Classrooms { get; set; }
         public ICollection<GradeSubject> GradesSubjects { get; set; }
     }

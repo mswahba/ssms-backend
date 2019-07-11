@@ -7,6 +7,7 @@ namespace SSMS.EntityModels
     {
         public Department()
         {
+            SchoolDayEvents = new HashSet<SchoolDayEvent>();
             EmployeesJobs = new HashSet<EmployeeJob>();
             Abouts = new HashSet<About>();
             Articles = new HashSet<Article>();
@@ -27,6 +28,8 @@ namespace SSMS.EntityModels
         public User _User { get; set; }
         public Branch _Branch { get; set; }
         public ICollection<EmployeeJob> EmployeesJobs { get; set; }
+        public ICollection<SchoolDayEvent> SchoolDayEvents { get; set; }
+        public ICollection<Grade> Grades { get; set; }
         public ICollection<About> Abouts { get; set; }
         public ICollection<Article> Articles { get; set; }
         public ICollection<Album> Albums { get; set; }
