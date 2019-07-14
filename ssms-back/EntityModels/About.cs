@@ -5,11 +5,14 @@ namespace SSMS.EntityModels
     public class About
     {
         public int AboutId { get; set; }
-        public string AboutTitle { get; set; }
-        public string AboutText { get; set; }
+        public string AboutTitleAr { get; set; }
+        public string AboutTitleEn { get; set; }
+        public string AboutTextAr { get; set; }
+        public string AboutTextEn { get; set; }
         public DateTime AboutDate { get; set; }
         public string PhotoURL { get; set; }
-        public bool IsGlobal { get; set; }
+        public string VideoURL { get; set; }
+        public bool ForCompany { get; set; }
         public byte? SchoolId { get; set; }
         public byte? StageId { get; set; }
         public int? EmpJobId { get; set; }

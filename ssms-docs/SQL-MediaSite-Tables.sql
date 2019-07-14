@@ -17,11 +17,13 @@
 
 -- CREATE TABLE [dbo].[abouts] (
 -- 	[aboutId] [int] identity(1,1) PRIMARY KEY,
--- 	[aboutTitle] [nvarchar](100) NOT NULL,
--- 	[aboutText] [nvarchar](max) NOT NULL,
+-- 	[aboutTitleAr] [nvarchar](100) NOT NULL,
+-- [aboutTitleEn] [nvarchar](100) NOT NULL,
+-- 	[aboutTextAr] [nvarchar](max) NOT NULL,
+-- [aboutTextEn] [nvarchar](max) NOT NULL,
 -- 	[aboutDate] [smalldatetime] NOT NULL,
 -- 	[photoURL] [varchar](max) NULL,
---   [isGlobal] [bit] NOT NULL,
+--   [forCompany] [bit] NOT NULL,
 --   [schoolId] [tinyint] NULL,
 -- 	[stageId] [tinyint] NULL,
 --   [empJobId] [int] NULL,
@@ -30,6 +32,110 @@
 -- GO
 
 -- ALTER TABLE [dbo].[abouts] ALTER COLUMN [categoryId] [tinyint] NULL
+
+-- sp_rename 'dbo.abouts.aboutTitle', 'aboutTitleAr', 'COLUMN'
+-- sp_rename 'dbo.abouts.aboutText', 'aboutTextAr', 'COLUMN'
+-- sp_rename 'dbo.abouts.isGlobal', 'forCompany', 'COLUMN'
+
+-- ALTER TABLE [dbo].[abouts] ADD [aboutTitleEn] [nvarchar](100) NOT NULL
+-- ALTER TABLE [dbo].[abouts] ADD [aboutTextEn] [nvarchar](max) NOT NULL
+-- ALTER TABLE [dbo].[abouts] ALTER COLUMN [aboutTextAr] [nvarchar](max) NOT NULL
+-- ALTER TABLE [dbo].[abouts] ADD [videoURL] [nvarchar](max) NULL
+
+-- SELECT * FROM [dbo].[abouts]
+-- GO
+
+-- Update rows in table 'abouts'
+-- UPDATE [dbo].[abouts]
+-- SET [videoURL] = 'https://www.youtube.com/watch?v=ZoNgUKLW4TQ'
+-- WHERE [aboutId] = 1
+-- GO
+
+-- INSERT INTO [dbo].[abouts]
+-- ( -- columns to insert data into
+-- 	[aboutTitleAr],
+--   [aboutTitleEn],
+-- 	[aboutTextAr],
+--   [aboutTextEn],
+-- 	[aboutDate],
+-- 	[photoURL],
+--   [forCompany],
+--   [schoolId],
+-- 	[categoryId]
+-- )
+-- VALUES
+-- ( -- first row: values for the columns in the list above
+--   'مرحبا بكم',
+--   'Welcome',
+--   'منذ إنشائها عام 1434 هـ الموافق 2013 ميلاديا وتسهم مدارس الصدارة بدور ريادي في بناء أجيال جديدة قادرة على النهوض بالمملكة والمساهمة في تطور ونهضة الوطن.
+-- وتعتبر مدارسنا من المدارس المميزة في شمال الرياض من حيث الجودة ومواكبة أحدث التقنيات في مجال التربية والتعليم واستخدام أفضل الأساليب التربوية والتدريسية من خلال طافم من المعلمين والمشرفين التربويين الذي يعملون بدأب ونشاط لتحقيق رؤية المدارس وإيصال رسالتها وتنفيذ أهدافها.‎',
+--   'Since its establishment in 1434 AH corresponding to 2013 AD. The schools of the forerunner play a leading role in building new generations capable of advancing the Kingdom and contributing to the development and renaissance of the homeland.
+-- Our schools are distinguished schools in the north of Riyadh in terms of quality and keep abreast of the latest technologies in the field of education and the use of the best educational and teaching methods through Tafm of teachers and educational supervisors who are working diligently to achieve the vision of schools and delivery of its mission and the implementation of its objectives.',
+--   GETUTCDATE(),
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   0,
+--   1,
+--   8
+-- ),
+-- ( -- first row: values for the columns in the list above
+--   'الرؤية',
+--   'Vision',
+--   'الريادة في تقديم تعليم عالي الجودة لإعداد جيلٍ واعٍ يرتقي إلى الصدارة على مستوى منطقة الرياض',
+--   'To lead the way in providing high quality education to prepare a conscious generation to reach the forefront in the Riyadh region',
+--   GETUTCDATE(),
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   0,
+--   1,
+--   8
+-- ),
+-- ( -- first row: values for the columns in the list above
+--   'الرسالة',
+--   'Mission',
+--   'العمل على تسخير الإمكانيّات المادية والبشرية لرفع مستوى التحصيل العلمي والسلوكي للطلاب في سبيل الارتقاء للصدارة',
+--   'Work on harnessing the material and human resources to raise the level of educational achievement and behavior of students in order to rise to the top',
+--   GETUTCDATE(),
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   0,
+--   1,
+--   8
+-- ),
+-- ( -- first row: values for the columns in the list above
+--   'الأهداف',
+--   'Objectives',
+--   'تقديم تعليم متميز و الرقي بسلوك الطلاب وفق قدراتهم واستعداداتهم للوصول إلى شخصية متوازنة متعلمة تحترم الرأي و الرأي الآخر و تتعايش في مجتمع آمن يتوفر فيه الإنصاف و العدالة و يسود فيه الحب و التعاون و يعمل على إلهام الطالب على الإبداع و التفكير الخلَّاق',
+--   'To provide outstanding education and improve the behavior of students according to their abilities and readiness to reach a balanced balanced and educated person respect the opinion and the other opinion and coexist in a secure society in which there is equity and justice and prevail in love and cooperation and works to inspire students to creativity and creative thinking',
+--   GETUTCDATE(),
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   0,
+--   1,
+--   8
+-- ),
+-- ( -- first row: values for the columns in the list above
+--   'النشأة والتطور',
+--   'Evolution and Development',
+--   'تأسست المدرسة عام  2013م  الموافق للعام 1434هـ
+-- ومن المعلوم أن النمو الذي تشهده المملكة العربية السعودية في المجالات كافة لابد أن يواكبه النمو الثقافي و المعرفي للأجيال فيها وعلى مختلف مستويات أعمارهم , و قد حملت مدارسنا (الصدارة ) على عاتقها أمانة الدور الريادي في وضع الخطط و البرامج التي تقوم بمسؤولية النهوض بأبنائنا إلى المستوى التربوي و التعليمي اللائقين و ليكون لها من اسمها نصيب فتتبوَّأ مركز الصدارة حاملة للتربية و التعليم كرسالة و مسؤولية و أمانة في مراحل التعليم كافة للبنين و البنات , و قد كان للقائمين على تأسيس المدارس و المشرفين عليها الرؤية العلمية و المعرفية المتناغمة مع الرؤية العصرية للمملكة (2030) بما يرِّسخ أسس الرقي بالمدارس و ينقلها من نجاح إلى نجاح أسمى في الميدانين السلوكي و المعرفي .
+-- و قد تبنت المدارس بقسميها (البنين و البنات) أحدث الطرق للوصول إلى الأهداف المنشودة و المرسومة لها في بناء جيل إسلامي مثقف مدرك لأهمية مواكبة التقدم العصري المذهل .',
+--   'The school was established in 2013 corresponding to 1434 AH
+-- It is known that the growth witnessed by Saudi Arabia in all fields must be accompanied by the cultural and cognitive development of generations and at different levels of age. Our schools have assumed the responsibility of leading role in developing plans and programs that are responsible for raising our children to the level Education and education as a message, responsibility and trust in all stages of education for boys and girls. The founders of the schools and their supervisors have the scientific and cognitive vision consistent with the vision (2030) to establish the foundations of school development and move it from success to higher success in the behavioral and cognitive fields.
+-- The schools have adopted the most modern ways to reach the desired goals in building an educated Islamic generation that is aware of the importance of keeping pace with modern progress.',
+--   GETUTCDATE(),
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   0,
+--   1,
+--   8
+-- ),
+-- ( -- first row: values for the columns in the list above
+--   'كلمة المشرف العام',
+--   'Supervisor Message',
+--   'استثمارنا في التعليم رغبة في التوصل إلى عقول قادرة على مواجهة آخر التحديثات والتحديات، نحن بحاجة لمواكبة مجتمعات أخرى حتى نساهم في تخريج جيل فريدٍ عقليًّا وعمليًّا، ونتبوأ مكاننا في صدارة مؤسسات التربية والتعليم',
+--   'Our investment in education In order to reach minds capable of facing the latest updates and challenges, we need to keep pace with other communities so that we contribute to the generation of a unique generation mentally and practically, and we anticipate our place in the forefront of educational institutions',
+--   GETUTCDATE(),
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   0,
+--   1,
+--   8
+-- )
 
 -- add 4 relations [employeesJobs - departments - schools - mediaCategories]
 ---------------------------------------------------------------------------
@@ -108,176 +214,176 @@
 -- GO
 
 -- Insert rows into table '[dbo].[articles]'
-INSERT INTO [dbo].[articles]
-( -- columns to insert data into
-  [articleTitleAr],
-  [articleTitleEn],
-  [articleTextAr],
-  [articleTextEn],
-  [authorNameAr],
-  [authorNameEn],
-  [mainPhotoURL],
-  [articleDate],
-  [displayAlsoAt],
-  [forCompany],
-  [schoolId],
-  [stageId],
-  [categoryIds],
-  [approved],
-  [enabled],
-  [keywords]
-)
-VALUES
-( -- first row: values for the columns in the list above
-  'حفل تخرج طلاب مدارس الصدارة الأهليه',
-  'Graduation Ceremony for students of Assadara schools',
-  'حفل تخرج وتكريم طلاب الصف الثالث الثانوي بمدارس الصدارة الأهليه وكان حفل مميز بحضور مالك المدارس الأستاذ/خالد الرسيني وقائدها /الإستاذ مساعد الفهد وجميع منسوبيها واولياء الامور وجميع الخريجين الف مبروك للجميع.
-تضمن الحفل العديد من الفقرات التي شارك بها الطلاب الخريجين بالإضافة إلى كلمة قائد المدرسة والتي رحب فيها بالسادة الضيوف وأولياء أمور الطلاب كما قام بتكريم الطلاب وتوزيع الجوائز والدروع عليهم. تضمن الحفل فقرات باللغتين العربية والإنجليزية بالإضافة إلى مسيرة الطلاب الخريجين ثم انتهى بالعشاء الذي شارك فيها طلاب المدارس وأولياء الأمور ومنسوبي المدارس.
-',
-  'A ceremony was held in the presence of the owner of the schools, Mr. Khalid Al-Risini, and its leader / Mr. Al-Fahad, all its employees, parents and all graduates. Congratulations to all.The ceremony included several sections in which the graduate students participated in addition to the speech of the school leader, in which he welcomed the guests and parents of the students. He also honored the students and distributed prizes and shields to them. The ceremony included sections in Arabic and English in addition to the march of graduate students and ended with a dinner attended by school students, parents and school staff.',
-  'أحمد وهبة',
-  'Ahmed Wahba',
-  'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
-  GETUTCDATE(),
-  'both',
-  0,
-  1,
-  1,
-  '1',
-  1,
-  1,
-  'assadara schools graduation'
-)
-INSERT INTO [dbo].[articles]
-( -- columns to insert data into
-  [articleTitleAr],
-  [articleTitleEn],
-  [articleTextAr],
-  [articleTextEn],
-  [authorNameAr],
-  [authorNameEn],
-  [mainPhotoURL],
-  [articleDate],
-  [displayAlsoAt],
-  [forCompany],
-  [schoolId],
-  [stageId],
-  [categoryIds],
-  [approved],
-  [enabled],
-  [keywords]
-)
-VALUES
-( -- first row: values for the columns in the list above
-  'تمثيل مدارس الصدارة الاهليه في مسابقة فيرست ليقو لي',
-  'Representing the premier private schools in the First Lego Le Competition',
-  'شارك طلاب مدارس الصدارة الاهليه في مسابقة (Fll) فرست ليقو لي وحصلوا على المركز الثالث في التقييم على مستوى مدارس الرياض ولله الحمد. كانت المسابقه جميله حصد فيها طلابنا العلم والمعرفه وكأس المركز الثالث والعديد من الميداليات.
-أشرف على تدريب وإعداد الطلاب للمسابقة معلموا الحاسب الآلي والروبوت حيث كان الطلاب يشاركون في ورشة عمل لمدة شهر تدربوا فيه على تنفيذ العديد من العمليات المتقدمة في التعامع مع الروبوت. ',
-  'The students of the private schools participated in the Fll competition, and they won the third place in the assessment at the level of the schools of Riyadh and all praise. It was a beautiful race where our students won the science and knowledge, the third place trophy and many medals.
-The training and preparation of students for the competition was supervised by computer and robot teachers where students participated in a one-month workshop where they practiced many advanced robotics operations.',
-  'أحمد وهبة',
-  'Ahmed Wahba',
-  'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
-  GETUTCDATE(),
-  'none',
-  0,
-  1,
-  2,
-  '1',
-  1,
-  1,
-  'assadara schools graduation'
-),
-( -- first row: values for the columns in the list above
-  'احتفال اليوم الوطني',
-  'National Day Celebration',
-  'احتفلت مدارس الصدارة الأهلية باليوم الوطني الـ88 للملكة العربية السعودية بحضور قادة الأقسام والمعلمين والإداريين وذلك يوم الثلاثاء الموافق : 1440/1/8 هـ حيث تزنينت المدرسة بالأعلام الخضراء والشعارات والكلمات الوطنية بمشاركة الطلاب والمعلمين
-وتنوعت احتفالات المدرسة بالفقرات الوطنية والبرامج المتنوعة ، التى من شأنها أن تساهم في تعزيز الوطنية لدى طلاب المدارس وتعريفهم بقيمة الولاء للوطن وبأهمية التعليم ودوره الكبير في نهضة الوطن وتقدمه',
-  'Al-Sidra National Schools celebrated the 88th National Day of the Kingdom of Saudi Arabia in the presence of the heads of departments, teachers and administrators on Tuesday 1440/1/8 H. The school was decorated with green flags, slogans and national words with the participation of students and teachers.
-The school celebrations varied with national chapters and various programs, which would contribute to enhancing patriotism among school students and introducing them to the value of loyalty to the nation and the importance of education and its great role in the renaissance and progress of the country.',
-  'أحمد وهبة',
-  'Ahmed Wahba',
-  'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
-  GETUTCDATE(),
-  'both',
-  1,
-  null,
-  null,
-  '1',
-  1,
-  1,
-  'assadara schools graduation'
-),
-( -- first row: values for the columns in the list above
-  'نادي الروبوت',
-  'The Robot Club',
-  'تأسس نادي الروبوت التابع لمدارس الصدارة في الفصل الأول من العام 1434/ 1435 هـ وقد شارك النادي في بطولات الروبوت على مستوى الرياض وعلى مستوى المملكة وحقق بفضل الله العديد من الإنجازات منها :
-- الحصول على المركز الأول في مسابقة Robocop على مستوى الرياض 1436/ 1437 هـ
-- الحصول على المركز الثاني في مسابقة VEXعلى مستوى الرياض 2014م وتأهله للتصفيات النهائية على مستوى المملكة وحصوله على المركز الثالث .
-- الجدير بالذكر أن المدارس تقدم حصة إثرائية أسبوعية في الروبوت لطلاب المرحلة الابتدائية والمتوسطة يتعلم من خلالها الطالب أساسيات',
-  'The robot club of the top schools was founded in the first quarter of the year 1434/1435 H. The club has participated in the robotics championships in Riyadh and Kingdom level.
-- Obtained the first place in the competition Robocop at the level of Riyadh 1436/1437 e
-- Get the second place in the competition VEX at the level of Riyadh 2014 and qualify for the finalists in the Kingdom and get the third place.
-- It is worth noting that the schools offer a weekly enrichment lesson in robot for primary and middle school students through which the student learns the basics',
-  'أحمد وهبة',
-  'Ahmed Wahba',
-  'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
-  GETUTCDATE(),
-  'both',
-  0,
-  1,
-  3,
-  '1',
-  1,
-  1,
-  'assadara schools graduation'
-),
-( -- first row: values for the columns in the list above
-  'مدارس الصدارة و الـآيلتس العالمي لتعليم اللغة الإنجليزية و اختباراتها',
-  'IELTS International Language Schools and their tests',
-  'نظام تقييم اللغة الإنجليزية الدولي الـ "IELTS" هو امتحان اللغة الإنجليزية الأكثر شهرة على مستوى العالم، حيث يقدم أكثر من مليوني شخص حول العالم الامتحان كل عام.
+-- INSERT INTO [dbo].[articles]
+-- ( -- columns to insert data into
+--   [articleTitleAr],
+--   [articleTitleEn],
+--   [articleTextAr],
+--   [articleTextEn],
+--   [authorNameAr],
+--   [authorNameEn],
+--   [mainPhotoURL],
+--   [articleDate],
+--   [displayAlsoAt],
+--   [forCompany],
+--   [schoolId],
+--   [stageId],
+--   [categoryIds],
+--   [approved],
+--   [enabled],
+--   [keywords]
+-- )
+-- VALUES
+-- ( -- first row: values for the columns in the list above
+--   'حفل تخرج طلاب مدارس الصدارة الأهليه',
+--   'Graduation Ceremony for students of Assadara schools',
+--   'حفل تخرج وتكريم طلاب الصف الثالث الثانوي بمدارس الصدارة الأهليه وكان حفل مميز بحضور مالك المدارس الأستاذ/خالد الرسيني وقائدها /الإستاذ مساعد الفهد وجميع منسوبيها واولياء الامور وجميع الخريجين الف مبروك للجميع.
+-- تضمن الحفل العديد من الفقرات التي شارك بها الطلاب الخريجين بالإضافة إلى كلمة قائد المدرسة والتي رحب فيها بالسادة الضيوف وأولياء أمور الطلاب كما قام بتكريم الطلاب وتوزيع الجوائز والدروع عليهم. تضمن الحفل فقرات باللغتين العربية والإنجليزية بالإضافة إلى مسيرة الطلاب الخريجين ثم انتهى بالعشاء الذي شارك فيها طلاب المدارس وأولياء الأمور ومنسوبي المدارس.
+-- ',
+--   'A ceremony was held in the presence of the owner of the schools, Mr. Khalid Al-Risini, and its leader / Mr. Al-Fahad, all its employees, parents and all graduates. Congratulations to all.The ceremony included several sections in which the graduate students participated in addition to the speech of the school leader, in which he welcomed the guests and parents of the students. He also honored the students and distributed prizes and shields to them. The ceremony included sections in Arabic and English in addition to the march of graduate students and ended with a dinner attended by school students, parents and school staff.',
+--   'أحمد وهبة',
+--   'Ahmed Wahba',
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   GETUTCDATE(),
+--   'both',
+--   0,
+--   1,
+--   1,
+--   '1',
+--   1,
+--   1,
+--   'assadara schools graduation'
+-- )
+-- INSERT INTO [dbo].[articles]
+-- ( -- columns to insert data into
+--   [articleTitleAr],
+--   [articleTitleEn],
+--   [articleTextAr],
+--   [articleTextEn],
+--   [authorNameAr],
+--   [authorNameEn],
+--   [mainPhotoURL],
+--   [articleDate],
+--   [displayAlsoAt],
+--   [forCompany],
+--   [schoolId],
+--   [stageId],
+--   [categoryIds],
+--   [approved],
+--   [enabled],
+--   [keywords]
+-- )
+-- VALUES
+-- ( -- first row: values for the columns in the list above
+--   'تمثيل مدارس الصدارة الاهليه في مسابقة فيرست ليقو لي',
+--   'Representing the premier private schools in the First Lego Le Competition',
+--   'شارك طلاب مدارس الصدارة الاهليه في مسابقة (Fll) فرست ليقو لي وحصلوا على المركز الثالث في التقييم على مستوى مدارس الرياض ولله الحمد. كانت المسابقه جميله حصد فيها طلابنا العلم والمعرفه وكأس المركز الثالث والعديد من الميداليات.
+-- أشرف على تدريب وإعداد الطلاب للمسابقة معلموا الحاسب الآلي والروبوت حيث كان الطلاب يشاركون في ورشة عمل لمدة شهر تدربوا فيه على تنفيذ العديد من العمليات المتقدمة في التعامع مع الروبوت. ',
+--   'The students of the private schools participated in the Fll competition, and they won the third place in the assessment at the level of the schools of Riyadh and all praise. It was a beautiful race where our students won the science and knowledge, the third place trophy and many medals.
+-- The training and preparation of students for the competition was supervised by computer and robot teachers where students participated in a one-month workshop where they practiced many advanced robotics operations.',
+--   'أحمد وهبة',
+--   'Ahmed Wahba',
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   GETUTCDATE(),
+--   'none',
+--   0,
+--   1,
+--   2,
+--   '1',
+--   1,
+--   1,
+--   'assadara schools graduation'
+-- ),
+-- ( -- first row: values for the columns in the list above
+--   'احتفال اليوم الوطني',
+--   'National Day Celebration',
+--   'احتفلت مدارس الصدارة الأهلية باليوم الوطني الـ88 للملكة العربية السعودية بحضور قادة الأقسام والمعلمين والإداريين وذلك يوم الثلاثاء الموافق : 1440/1/8 هـ حيث تزنينت المدرسة بالأعلام الخضراء والشعارات والكلمات الوطنية بمشاركة الطلاب والمعلمين
+-- وتنوعت احتفالات المدرسة بالفقرات الوطنية والبرامج المتنوعة ، التى من شأنها أن تساهم في تعزيز الوطنية لدى طلاب المدارس وتعريفهم بقيمة الولاء للوطن وبأهمية التعليم ودوره الكبير في نهضة الوطن وتقدمه',
+--   'Al-Sidra National Schools celebrated the 88th National Day of the Kingdom of Saudi Arabia in the presence of the heads of departments, teachers and administrators on Tuesday 1440/1/8 H. The school was decorated with green flags, slogans and national words with the participation of students and teachers.
+-- The school celebrations varied with national chapters and various programs, which would contribute to enhancing patriotism among school students and introducing them to the value of loyalty to the nation and the importance of education and its great role in the renaissance and progress of the country.',
+--   'أحمد وهبة',
+--   'Ahmed Wahba',
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   GETUTCDATE(),
+--   'both',
+--   1,
+--   null,
+--   null,
+--   '1',
+--   1,
+--   1,
+--   'assadara schools graduation'
+-- ),
+-- ( -- first row: values for the columns in the list above
+--   'نادي الروبوت',
+--   'The Robot Club',
+--   'تأسس نادي الروبوت التابع لمدارس الصدارة في الفصل الأول من العام 1434/ 1435 هـ وقد شارك النادي في بطولات الروبوت على مستوى الرياض وعلى مستوى المملكة وحقق بفضل الله العديد من الإنجازات منها :
+-- - الحصول على المركز الأول في مسابقة Robocop على مستوى الرياض 1436/ 1437 هـ
+-- - الحصول على المركز الثاني في مسابقة VEXعلى مستوى الرياض 2014م وتأهله للتصفيات النهائية على مستوى المملكة وحصوله على المركز الثالث .
+-- - الجدير بالذكر أن المدارس تقدم حصة إثرائية أسبوعية في الروبوت لطلاب المرحلة الابتدائية والمتوسطة يتعلم من خلالها الطالب أساسيات',
+--   'The robot club of the top schools was founded in the first quarter of the year 1434/1435 H. The club has participated in the robotics championships in Riyadh and Kingdom level.
+-- - Obtained the first place in the competition Robocop at the level of Riyadh 1436/1437 e
+-- - Get the second place in the competition VEX at the level of Riyadh 2014 and qualify for the finalists in the Kingdom and get the third place.
+-- - It is worth noting that the schools offer a weekly enrichment lesson in robot for primary and middle school students through which the student learns the basics',
+--   'أحمد وهبة',
+--   'Ahmed Wahba',
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   GETUTCDATE(),
+--   'both',
+--   0,
+--   1,
+--   3,
+--   '1',
+--   1,
+--   1,
+--   'assadara schools graduation'
+-- ),
+-- ( -- first row: values for the columns in the list above
+--   'مدارس الصدارة و الـآيلتس العالمي لتعليم اللغة الإنجليزية و اختباراتها',
+--   'IELTS International Language Schools and their tests',
+--   'نظام تقييم اللغة الإنجليزية الدولي الـ "IELTS" هو امتحان اللغة الإنجليزية الأكثر شهرة على مستوى العالم، حيث يقدم أكثر من مليوني شخص حول العالم الامتحان كل عام.
 
-الأنشطة :
-تدريب الطلاب على المحادثة بأعلى مستوى مع الناطقين بها
-تهيئة الطالب وتدريبه لاجتياز الاختبار العالمي الـ "IELTS .
-إعداد الطالب لمتطلبات سوق العمل مستقبلا .
-إعداد الطالب دراسيا لاجتياز اختباراته بسهولة
-مناهج إضافية عن الاختبارات الدولية الـ "IELTS
+-- الأنشطة :
+-- تدريب الطلاب على المحادثة بأعلى مستوى مع الناطقين بها
+-- تهيئة الطالب وتدريبه لاجتياز الاختبار العالمي الـ "IELTS .
+-- إعداد الطالب لمتطلبات سوق العمل مستقبلا .
+-- إعداد الطالب دراسيا لاجتياز اختباراته بسهولة
+-- مناهج إضافية عن الاختبارات الدولية الـ "IELTS
 
-المميزات
-قاعات تدريب بأعلى المستويات العالمية في التعليم
-محاضرون متخصصون في تعليم اللغة الإنجليزية بمعايير عالمية
-إقامة ورش عمل وزيارات خارجية للمتميزين داخل وخارج المملكة
- برمجة الروبوت بالاستعانة بمجموعة من الروبوتات التعليمية التي توفرها المدارس لطلبة النادي',
-  'IELTS is the world most widely recognized English exam, with more than 2 million people taking the exam each year.
+-- المميزات
+-- قاعات تدريب بأعلى المستويات العالمية في التعليم
+-- محاضرون متخصصون في تعليم اللغة الإنجليزية بمعايير عالمية
+-- إقامة ورش عمل وزيارات خارجية للمتميزين داخل وخارج المملكة
+--  برمجة الروبوت بالاستعانة بمجموعة من الروبوتات التعليمية التي توفرها المدارس لطلبة النادي',
+--   'IELTS is the world most widely recognized English exam, with more than 2 million people taking the exam each year.
 
-Activities:
-Train students to converse at the highest level with their native speakers
-Train and train the student to pass the IELTS Global Test.
-Preparing the student for the requirements of the labor market in the future.
-Prepare the student to pass the tests easily
-Additional approaches to IELTS international tests
+-- Activities:
+-- Train students to converse at the highest level with their native speakers
+-- Train and train the student to pass the IELTS Global Test.
+-- Preparing the student for the requirements of the labor market in the future.
+-- Prepare the student to pass the tests easily
+-- Additional approaches to IELTS international tests
 
-Advantages
-World-class training halls in education
-Specialists in teaching English language with international standards
-Organizing workshops and external visits for distinguished individuals inside and outside the Kingdom
- Programming robots using a set of educational robots provided by schools to club students',
-  'أحمد وهبة',
-  'Ahmed Wahba',
-  'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
-  GETUTCDATE(),
-  'both',
-  0,
-  1,
-  4,
-  '1',
-  1,
-  1,
-  'assadara schools graduation'
-)
--- add more rows here
-GO
+-- Advantages
+-- World-class training halls in education
+-- Specialists in teaching English language with international standards
+-- Organizing workshops and external visits for distinguished individuals inside and outside the Kingdom
+--  Programming robots using a set of educational robots provided by schools to club students',
+--   'أحمد وهبة',
+--   'Ahmed Wahba',
+--   'https://previews.dropbox.com/p/thumb/AAY8d1Wp3yFGvsljOWZTXoxG8G9tTGcqRVDTLhiOrIvgKabxhBBXqMbiPOmaRbifjIpqt8WzueGnThvJJSKSd6wS34wMn1hV6DLGX60MknIzuz-qyy9I9R9FEDZm3EVGHud85bEQdxaL-FIkUvO_kTmNCWrMVeRcrIbKC5fQM0EhdkouK-LkeFRY2QpYpeuuaZIYO3BG_nX3cPGRaQ20wYpnVBQpdf_b2MUoxC7fpCRgTHa6xXH4tq1iLN_VHMXXYMmTh5OAXiRUjj2-6uGuG6vBQurSFiZ5DeJhmYcFMwwGyaopFw6JtD5Bir8NNmXfOTJ7gdlg5W-52__dcft-tM11/p.jpeg',
+--   GETUTCDATE(),
+--   'both',
+--   0,
+--   1,
+--   4,
+--   '1',
+--   1,
+--   1,
+--   'assadara schools graduation'
+-- )
+-- -- add more rows here
+-- GO
 
 -- ALTER TABLE [dbo].[articles] DROP COLUMN [articleTitle]
 -- ALTER TABLE [dbo].[articles] ADD [articleTitleAr] [nvarchar](100) NOT NULL
@@ -610,3 +716,6 @@ GO
 -- Select rows from a Table or View 'departments' in schema 'SchemaName'
 -- SELECT * FROM [dbo].[articles]
 -- GO
+
+-- SELECT TOP (3) * FROM [dbo].[articles] WHERE categoryIds like '%1%' ORDER BY articleId DESC
+-- SELECT * FROM [dbo].[articles]

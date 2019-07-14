@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.SignalR;
 using AutoMapper;
 using SSMS.Hubs;
 using SSMS.EntityModels;
+using SSMS.ViewModels;
 
 namespace SSMS.MediaSite
 {
-  public class AboutsController : BaseController<About, int, About>
+  public class AboutsController : BaseController<About, int, VAbout>
   {
     private readonly BaseService _service;
     private readonly IMapper _mapper;
