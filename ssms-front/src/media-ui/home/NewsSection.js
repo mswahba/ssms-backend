@@ -61,7 +61,7 @@ function NewsSection ({ trans, lang }) {
   console.log("TCL: NewsSection -> news", news)
 
   return (
-    <div className='news-section red lighten-1'>
+    <section className='news-section red lighten-1'>
       <div className='flex-between p-1'>
         <h3 className="m-0">{trans("home.news.title")}</h3>
         <Link to='/news-list'>{trans("home.news.newsListLink")}</Link>
@@ -78,7 +78,7 @@ function NewsSection ({ trans, lang }) {
               </div>
             : <div className='card-panel red lighten-4'>{trans("home.news.emptyNews")}</div>
       }
-    </div>
+    </section>
   )
 }
 
