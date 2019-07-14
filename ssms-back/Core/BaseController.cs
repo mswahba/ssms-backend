@@ -12,6 +12,7 @@ using SSMS.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using SSMS.Hubs;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace SSMS
 {
@@ -218,6 +219,23 @@ namespace SSMS
         return BadRequest(new Error() { Message = "Invalid Id ..." });
       return _GetEntityResult(entity);
     }
+    [HttpGet("find/{ids}")]
+    public IActionResult Find(string ids)
+    {
+      // if there is a comma separated ids then remove any empty values
+      if(ids.Contains(","))
+        ids = String.Join(',', ids.SplitAndRemoveEmpty(','));
+      // build and execute the select statement to get needed items
+      string query = $"select * from {_tableName} where {_keyName} in ({ids})";
+      var items = _service.GetQuery<TEntity>().FromSql(query).ToList();
+      // if there is no items then return Error
+      if (items == null || items.Count == 0)
+        return BadRequest(new Error() { Message = "Invalid Ids ..." });
+      // finally return the result with or without mapping
+      if (typeof(TEntity).Name != typeof(TVEntity).Name)
+        return Ok( items.Select(item => _mapper.Map<TVEntity>(item)) );
+      return Ok(items);
+    }
     [HttpPost("add")]
     public async Task<IActionResult> Add([FromBody] TEntity entity)
     {
@@ -344,7 +362,7 @@ namespace SSMS
       //dict to hold anonymous obj .....
       var fieldsArr = fields.SplitAndRemoveEmpty(',');
       Dictionary<string, object> obj;
-      //Get collection of all fileds(columns) and items(rows)
+      //Get collection of all fields(columns) and items(rows)
       var items = _service.GetQuery<TEntity>().ToList();
       //filter the collection of items to return only the required fields
       // Select creates an empty array of type the same as that returns from its inside block

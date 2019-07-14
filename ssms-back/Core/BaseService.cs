@@ -25,7 +25,7 @@ namespace SSMS
       string _field = keyValue[0].Trim();
       string _value = keyValue[1].Trim();
       var prop = typeof(TEntity).GetProperty(_field, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-      // if field not found or null then return emtpy string
+      // if field not found or null then return empty string
       if (prop == null)
         return "";
       TypeCode typeCode = System.Type.GetTypeCode(Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
@@ -47,7 +47,7 @@ namespace SSMS
     {
       // split setters and add every key value pair in set command as an item in an array
       string[] settersArr = setters.SplitAndRemoveEmpty(',');
-      // list to hold every key value pair in set command as an arry with 2 items
+      // list to hold every key value pair in set command as an array with 2 items
       List<string[]> settersList = settersArr.Select(item => item.SplitAndRemoveEmpty('|'))
                                              .ToList();
       // and finally return the aggregate sqlSet statement
