@@ -3,7 +3,9 @@ import Navbar from '../shared/Navbar'
 
 function Header({ navTitle, navLinks, lang, defaultPath }) {
   return (
-    <Navbar navTitle={navTitle} navLinks={navLinks} lang={lang} defaultPath={defaultPath} />
+    <header>
+      <Navbar navTitle={navTitle} navLinks={navLinks} lang={lang} defaultPath={defaultPath} />
+    </header>
   )
 }
 

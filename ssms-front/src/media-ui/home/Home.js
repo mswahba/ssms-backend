@@ -4,10 +4,11 @@ import NewsSection from './NewsSection'
 import WelcomeSection from './WelcomeSection';
 import VisionSection from './VisionSection';
 import SupervisorMessage from '../about/SupervisorMessage';
+import SchoolMap from './SchoolMap';
 
 export default function Home ({}) {
   return (
-    <>
+    <main>
       {/* HeroSlider */}
       <HeroSlider />
       {/* NewsSection [4 cards] */}
@@ -18,8 +19,8 @@ export default function Home ({}) {
       <VisionSection />
       {/* Supervisor Message  */}
       <SupervisorMessage />
-      {/* Map */}
-      {/* ContactUs */}
-    </>
+      {/* school on google maps */}
+      <SchoolMap />
+    </main>
   )
 }
