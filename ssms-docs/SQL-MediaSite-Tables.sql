@@ -721,7 +721,7 @@
 -- SELECT * FROM [dbo].[articles]
 
 -- SELECT * FROM [dbo].[photos]
--- SELECT * FROM [dbo].[abouts]
+SELECT * FROM [dbo].[abouts]
 -- SELECT * FROM [dbo].[articles]
 
 -- Update rows in table '[dbo].[photos'
@@ -786,7 +786,7 @@
 -- WHERE aboutId = 5
 -- GO
 -- UPDATE [dbo].[abouts]
--- SET [photoURL] = 'https://i.ibb.co/hmjpvwW/06.jpg'
+-- SET [photoURL] = 'https://i.ibb.co/ZKT7wyb/ceo.jpg'
 -- WHERE aboutId = 6
 -- GO
 
