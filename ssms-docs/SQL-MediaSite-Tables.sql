@@ -719,3 +719,96 @@
 
 -- SELECT TOP (3) * FROM [dbo].[articles] WHERE categoryIds like '%1%' ORDER BY articleId DESC
 -- SELECT * FROM [dbo].[articles]
+
+-- SELECT * FROM [dbo].[photos]
+-- SELECT * FROM [dbo].[abouts]
+-- SELECT * FROM [dbo].[articles]
+
+-- Update rows in table '[dbo].[photos'
+---------------------------------------
+-- UPDATE [dbo].[photos]
+-- SET
+--   [photoURL] = 'https://i.ibb.co/HVy83Qn/01.jpg',
+--   [thumbURL] = 'https://i.ibb.co/HVy83Qn/01.jpg'
+-- WHERE photoId = 1
+-- GO
+-- UPDATE [dbo].[photos]
+-- SET
+--   [photoURL] = 'https://i.ibb.co/YZpzy97/02.jpg',
+--   [thumbURL] = 'https://i.ibb.co/YZpzy97/02.jpg'
+-- WHERE photoId = 2
+-- GO
+-- UPDATE [dbo].[photos]
+-- SET
+--   [photoURL] = 'https://i.ibb.co/YR9VQVG/03.jpg',
+--   [thumbURL] = 'https://i.ibb.co/YR9VQVG/03.jpg'
+-- WHERE photoId = 3
+-- GO
+-- UPDATE [dbo].[photos]
+-- SET
+--   [photoURL] = 'https://i.ibb.co/St5dpL6/04.jpg',
+--   [thumbURL] = 'https://i.ibb.co/St5dpL6/04.jpg'
+-- WHERE photoId = 4
+-- GO
+-- UPDATE [dbo].[photos]
+-- SET
+--   [photoURL] = 'https://i.ibb.co/wzZ1DN1/05.jpg',
+--   [thumbURL] = 'https://i.ibb.co/wzZ1DN1/05.jpg'
+-- WHERE photoId = 5
+-- GO
+-- UPDATE [dbo].[photos]
+-- SET
+--   [photoURL] = 'https://i.ibb.co/hmjpvwW/06.jpg',
+--   [thumbURL] = 'https://i.ibb.co/hmjpvwW/06.jpg'
+-- WHERE photoId = 6
+-- GO
+
+-- Update rows in table '[dbo].[abouts]'
+---------------------------------------
+-- UPDATE [dbo].[abouts]
+-- SET [photoURL] = 'https://i.ibb.co/HVy83Qn/01.jpg'
+-- WHERE aboutId = 1
+-- GO
+-- UPDATE [dbo].[abouts]
+-- SET [photoURL] = 'https://i.ibb.co/YZpzy97/02.jpg'
+-- WHERE aboutId = 2
+-- GO
+-- UPDATE [dbo].[abouts]
+-- SET [photoURL] = 'https://i.ibb.co/YR9VQVG/03.jpg'
+-- WHERE aboutId = 3
+-- GO
+-- UPDATE [dbo].[abouts]
+-- SET [photoURL] = 'https://i.ibb.co/St5dpL6/04.jpg'
+-- WHERE aboutId = 4
+-- GO
+-- UPDATE [dbo].[abouts]
+-- SET [photoURL] = 'https://i.ibb.co/wzZ1DN1/05.jpg'
+-- WHERE aboutId = 5
+-- GO
+-- UPDATE [dbo].[abouts]
+-- SET [photoURL] = 'https://i.ibb.co/hmjpvwW/06.jpg'
+-- WHERE aboutId = 6
+-- GO
+
+-- Update rows in table '[dbo].[articles]'
+---------------------------------------
+-- UPDATE [dbo].[articles]
+-- SET [mainPhotoURL] = 'https://i.ibb.co/HVy83Qn/01.jpg'
+-- WHERE articleId = 4
+-- GO
+-- UPDATE [dbo].[articles]
+-- SET [mainPhotoURL] = 'https://i.ibb.co/YZpzy97/02.jpg'
+-- WHERE articleId = 5
+-- GO
+-- UPDATE [dbo].[articles]
+-- SET [mainPhotoURL] = 'https://i.ibb.co/YR9VQVG/03.jpg'
+-- WHERE articleId = 6
+-- GO
+-- UPDATE [dbo].[articles]
+-- SET [mainPhotoURL] = 'https://i.ibb.co/St5dpL6/04.jpg'
+-- WHERE articleId = 7
+-- GO
+-- UPDATE [dbo].[articles]
+-- SET [mainPhotoURL] = 'https://i.ibb.co/wzZ1DN1/05.jpg'
+-- WHERE articleId = 8
+-- GO
