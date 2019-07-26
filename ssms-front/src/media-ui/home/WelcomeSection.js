@@ -39,7 +39,7 @@ function Welcome({ lang, aboutTitleAr, aboutTitleEn, aboutTextAr, aboutTextEn  }
 }
 
 function WelcomeSection({ trans, lang }) {
-  // get slides from LS OR Server
+  // get welcome from LS OR Server
   const { loading, error, data: welcome } = useFetch({
     requestId: key,
     request: ['get', endpoint],
