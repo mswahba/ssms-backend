@@ -14,6 +14,8 @@
 -- insert into mediaCategories values (6, 'الشرائح الرئيسية','Hero Slider', 'albums')
 -- insert into mediaCategories values (7, 'روابط مواقع التواصل','Social Media Links', 'about')
 -- insert into mediaCategories values (8, 'بيانات اساسية','Basic Info', 'about')
+-- insert into mediaCategories values (9, 'بيانات الاتصال','Contact Info', 'about')
+-- insert into mediaCategories values (10, 'روابط هامة','Useful Links', 'about')
 
 -- CREATE TABLE [dbo].[abouts] (
 -- 	[aboutId] [int] identity(1,1) PRIMARY KEY,
@@ -43,12 +45,6 @@
 -- ALTER TABLE [dbo].[abouts] ADD [videoURL] [nvarchar](max) NULL
 
 -- SELECT * FROM [dbo].[abouts]
--- GO
-
--- Update rows in table 'abouts'
--- UPDATE [dbo].[abouts]
--- SET [videoURL] = 'https://www.youtube.com/watch?v=ZoNgUKLW4TQ'
--- WHERE [aboutId] = 1
 -- GO
 
 -- INSERT INTO [dbo].[abouts]
@@ -136,6 +132,198 @@
 --   1,
 --   8
 -- )
+
+-- INSERT INTO [dbo].[abouts]
+-- ( -- columns to insert data into
+-- 	[aboutTitleAr],
+--   [aboutTitleEn],
+-- 	[aboutTextAr],
+--   [aboutTextEn],
+-- 	[aboutDate],
+--   [forCompany],
+--   [schoolId],
+-- 	[categoryId]
+-- )
+-- VALUES
+-- (
+--   'العنوان',
+--   'Address',
+--   '107 حي النرجس - الرياض - المملكة العربية السعودية ‎',
+--   '107، An Narjis, Riyadh 13323, Saudi Arabia',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   9
+-- ),
+-- (
+--   'التلفون',
+--   'Phone',
+--   '+966538450055‎',
+--   '+966538450055',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   9
+-- ),
+-- (
+--   'الإيميل',
+--   'Email',
+--   '‎assadaraSchools@gmail.com',
+--   'assadaraSchools@gmail.com',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   9
+-- ),
+-- (
+--   'الفاكس',
+--   'Fax',
+--   '‎+966538450055',
+--   '+966538450055',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   9
+-- ),
+-- (
+--   'الرمز البريدي',
+--   'Postal Code',
+--   '‎1234566',
+--   '1234566',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   9
+-- ),
+-- (
+--   'مواعيد العمل',
+--   'Working Hours',
+--   'الأحد - الخميس 06:30 ص - 02:00 م‎',
+--   'Sunday-Thursday 06:30 AM - 02:00 PM',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   9
+-- )
+
+-- INSERT INTO [dbo].[abouts]
+-- ( -- columns to insert data into
+-- 	[aboutTitleAr],
+--   [aboutTitleEn],
+-- 	[aboutTextAr],
+--   [aboutTextEn],
+-- 	[aboutDate],
+--   [forCompany],
+--   [schoolId],
+-- 	[categoryId]
+-- )
+-- VALUES
+-- (
+--   'تويتر',
+--   'Twitter',
+--   'https://twitter.com/Assadarah',
+--   'https://twitter.com/Assadarah',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   7
+-- ),
+-- (
+--   'يوتيوب',
+--   'Youtube',
+--   'https://www.youtube.com/user/assadarah',
+--   'https://www.youtube.com/user/assadarah',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   7
+-- ),
+-- (
+--   'فايسبوك',
+--   'Facebook',
+--   'https://www.facebook.com/mohammad.wahba.58',
+--   'https://www.facebook.com/mohammad.wahba.58',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   7
+-- ),
+-- (
+--   'انستجرام',
+--   'Instagram',
+--   'https://www.instagram.com/explore/locations/148878629/',
+--   'https://www.instagram.com/explore/locations/148878629/',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   7
+-- ),
+-- (
+--   'سناب شات',
+--   'Snapchat',
+--   'https://www.snapchat.com/',
+--   'https://www.snapchat.com/',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   7
+-- )
+
+-- INSERT INTO [dbo].[abouts]
+-- ( -- columns to insert data into
+-- 	[aboutTitleAr],
+--   [aboutTitleEn],
+-- 	[aboutTextAr],
+--   [aboutTextEn],
+-- 	[aboutDate],
+--   [forCompany],
+--   [schoolId],
+-- 	[categoryId]
+-- )
+-- VALUES
+-- (
+--   'وزارة التعليم',
+--   'Ministry Of Education',
+--   'https://www.moe.gov.sa',
+--   'https://www.moe.gov.sa',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   10
+-- ),
+-- (
+--   'بوابة نور',
+--   'Noor Portal',
+--   'https://noor.moe.gov.sa/noor/login.aspx',
+--   'https://noor.moe.gov.sa/noor/login.aspx',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   10
+-- ),
+-- (
+--   'موقع المدارس الإداري',
+--   'School Admin Site',
+--   'http://www.Assadarah1.com',
+--   'http://www.Assadarah1.com',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   10
+-- ),
+-- (
+--   'المناهج الدراسية',
+--   'School Books',
+--   'http://ebook.sa/default.aspx',
+--   'http://ebook.sa/default.aspx',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   10
+-- )
+
+-- SELECT * FROM [dbo].[abouts]
+-- GO
 
 -- add 4 relations [employeesJobs - departments - schools - mediaCategories]
 ---------------------------------------------------------------------------
@@ -724,7 +912,7 @@
 SELECT * FROM [dbo].[abouts]
 -- SELECT * FROM [dbo].[articles]
 
--- Update rows in table '[dbo].[photos'
+-- Update rows in table '[dbo].[photos]'
 ---------------------------------------
 -- UPDATE [dbo].[photos]
 -- SET
@@ -761,6 +949,12 @@ SELECT * FROM [dbo].[abouts]
 --   [photoURL] = 'https://i.ibb.co/hmjpvwW/06.jpg',
 --   [thumbURL] = 'https://i.ibb.co/hmjpvwW/06.jpg'
 -- WHERE photoId = 6
+-- GO
+
+-- Update rows in table 'abouts'
+-- UPDATE [dbo].[abouts]
+-- SET [videoURL] = 'https://www.youtube.com/watch?v=ZoNgUKLW4TQ'
+-- WHERE [aboutId] = 1
 -- GO
 
 -- Update rows in table '[dbo].[abouts]'
