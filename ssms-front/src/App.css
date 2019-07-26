@@ -227,6 +227,9 @@ a.sidenav-trigger {
 /* #endregion */
 
 /* #region mediaSite styles */
+main, .main {
+  min-height: 90vh;
+}
 .card-header {
   padding: 1.2rem 1rem;
 }

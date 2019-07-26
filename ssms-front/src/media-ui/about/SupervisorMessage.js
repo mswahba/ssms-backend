@@ -24,6 +24,14 @@ const CardText = styled.p`
   font-size: 1.2rem;
 `
 
+function CEOMessageWrapper({ isSection, children }) {
+  return (
+    (isSection)
+      ? <section>{children}</section>
+      : <>{children}</>
+  )
+}
+
 function CEOMessage({ trans, lang, aboutTitleAr, aboutTitleEn, aboutTextAr, aboutTextEn, photoURL }) {
   return (
     <div className="card">
@@ -38,7 +46,7 @@ function CEOMessage({ trans, lang, aboutTitleAr, aboutTitleEn, aboutTextAr, abou
   )
 }
 
-function SupervisorMessage({ trans, lang }) {
+function SupervisorMessage({ trans, lang, isSection }) {
   // get Supervisor Message from LS OR Server
   const { loading, error, data } = useFetch({
     requestId: key,
@@ -49,7 +57,7 @@ function SupervisorMessage({ trans, lang }) {
   })
 
   return (
-    <section>
+    <CEOMessageWrapper isSection={isSection}>
       { (loading)
         ? <Loading />
         : (error)
@@ -58,7 +66,7 @@ function SupervisorMessage({ trans, lang }) {
             ? <CEOMessage trans={trans} lang={lang} {...data} />
             : <div className='card-panel red lighten-4'>{trans("home.news.emptyNews")}</div>
       }
-    </section>
+    </CEOMessageWrapper>
   )
 }
 

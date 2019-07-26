@@ -8,7 +8,7 @@ import SchoolMap from './SchoolMap';
 
 export default function Home ({}) {
   return (
-    <main>
+    <>
       {/* HeroSlider */}
       <HeroSlider />
       {/* NewsSection [4 cards] */}
@@ -18,9 +18,9 @@ export default function Home ({}) {
       {/* Vision Section  */}
       <VisionSection />
       {/* Supervisor Message  */}
-      <SupervisorMessage />
+      <SupervisorMessage isSection={true} />
       {/* school on google maps */}
       <SchoolMap />
-    </main>
+    </>
   )
 }
