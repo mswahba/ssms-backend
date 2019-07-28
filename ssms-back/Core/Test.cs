@@ -76,8 +76,8 @@ namespace SSMS
     }
     public static void onConfigure(IHubContext<DbHub> dbHub)
     {
-      SqlTableWatcher._dbHub = dbHub;
-      SqlTableWatcher.WatchAll(new string[] { "User", "School", "Country", "Action" });
+      // SqlTableWatcher._dbHub = dbHub;
+      // SqlTableWatcher.WatchAll(new string[] { "User", "School", "Country", "Action" });
       // SqlTableWatcher.Watch<User>("users");
       // SqlTableWatcher.Stop("users");
       // SqlTableWatcher.WatchAll();
