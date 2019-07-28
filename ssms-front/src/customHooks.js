@@ -44,11 +44,13 @@ async function _request(requestId, request, successToast, errorToast) {
       return { status: 'error', response: err.response.data || err.response.status }
     // The request was made but no response was received
     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-    else if (err.request)
+    else if (err.request && Object.keys(err.request).length)
       return { status: 'error', response: err.request }
     // Something happened in setting up the request that triggered an Error
-    else
-      return { status: 'error', response: err }
+    else {
+      let error = JSON.parse(JSON.stringify(err))
+      return { status: 'error', response: error.message || 'Something went wrong!' }
+    }
   }
 }
 
