@@ -4,6 +4,10 @@
       "Assadara Schools",
       "مدارس الصدارة"
     ],
+    "emptyData": [
+      "No Data are found right now ...",
+      "... لا توجد بيانات حالياً"
+    ],
     "nav": {
       "home": [
         "home",
@@ -62,6 +66,20 @@
       "emptyNews": [
         "No News are found right now ...",
         "... لا توجد أخبار حالياً"
+      ]
+    },
+    "footer": {
+      "contact": [
+        "Contact Details",
+        "بيانات الإتصال"
+      ],
+      "useful": [
+        "Useful Links",
+        "روابط هامة"
+      ],
+      "social": [
+        "Social Links",
+        "روابط مواقع التواصل"
       ]
     }
   }
