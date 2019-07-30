@@ -30,6 +30,7 @@ async function _request(requestId, request, successToast, errorToast) {
   // send request
   try {
     const res = await requestPromise
+    console.log("TCL: function_request -> res", res)
     if(res) {
       if(successToast && successToast.length)
         toast[successToast[0]](successToast[1]);
@@ -73,7 +74,10 @@ async function getData({ requestId, request, localStorageKey, successToast, erro
       setState({ loading: false, error: response, data: null });
     // if the result has success
     else if (status === 'success') {
-      data = response.data
+      // handle if sending multiple requests [response is Array]
+      data = (Array.isArray(response))
+        ? response.map(item => item.data)
+        : response.data
       // store it in local storage
       if (localStorageKey)
         LS.set(localStorageKey, { data, timestamp: Date.now() });
