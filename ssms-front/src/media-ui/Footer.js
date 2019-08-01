@@ -13,19 +13,39 @@ const contactEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|9'
 const usefulEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|10'
 const socialEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|7'
 
-const SectionCollection = styled.ul`
+const Collection = styled.ul`
   border: none !important;
+`
+const SocialCollection = styled(Collection)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 const SectionItem = styled.li`
   border-bottom: none !important;
 `
 const FooterIcon = styled.i`
-  width: 2rem;
+  width: 2.5rem;
   font-size: 1.5rem;
   text-align: center;
 `
+const SocialWrapper = styled.div`
+  margin-top: 1rem;
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+`
 const SocialIcon = styled.i`
-  font-size: 2.5rem;
+  font-size: 3.5rem;
+  margin: 0 0.5rem 1rem;
+`
+const ContactField = styled.span`
+  margin-left: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffff00;
 `
 
 const getSectionTitle = (id, trans) => {
@@ -77,16 +97,22 @@ const getItemIcon = (title) => {
   }
 }
 
+function SectionHeader ({ trans, categoryId }) {
+  return (
+    <li className="collection-header w-75">
+      <h6>{getSectionTitle(categoryId,trans)}</h6>
+    </li>
+  )
+}
+
 function SectionContent ({ lang, item, id }) {
   switch (id) {
     case 9:
       return (
         <>
           <FooterIcon className={`${getItemIcon(item.aboutTitleEn)} indigo-text text-darken-3`}></FooterIcon>
-          <span>
-            {lang === 'ar' ? item.aboutTitleAr : item.aboutTitleEn}:
-            {lang === 'ar' ? item.aboutTextAr : item.aboutTextEn}
-          </span>
+          <ContactField>{lang === 'ar' ? item.aboutTitleAr : item.aboutTitleEn}:</ContactField>
+          <span>{lang === 'ar' ? item.aboutTextAr : item.aboutTextEn}</span>
         </>
       )
     case 10:
@@ -110,18 +136,26 @@ function SectionContent ({ lang, item, id }) {
 }
 
 function FooterSection({ className = '', trans, lang, data  }) {
+  if(data[0].categoryId === 7)
+    return (
+      <SocialCollection className={`collection with-header ${className}`}>
+        <SectionHeader trans={trans} categoryId={data[0].categoryId} />
+        <SocialWrapper>
+          {data.map(item => (
+            <SectionContent key={item.aboutId} lang={lang} item={item} id={item.categoryId} />
+          ))}
+        </SocialWrapper>
+      </SocialCollection>
+    )
   return (
-    <SectionCollection className={`collection with-header ${className}`}>
-      <li className="collection-header w-75">
-        <h6>{getSectionTitle(data[0].categoryId,trans)}</h6>
-      </li>
+    <Collection className={`collection with-header ${className}`}>
+      <SectionHeader trans={trans} categoryId={data[0].categoryId} />
       {data.map(item => (
-        <SectionItem key={item.aboutId}
-          className={`collection-item ${ item.categoryId !== 7 ? 'flex' : '' }`}>
-          <SectionContent lang={lang} item={item} id={data[0].categoryId} />
+        <SectionItem key={item.aboutId} className='collection-item flex'>
+          <SectionContent lang={lang} item={item} id={item.categoryId} />
         </SectionItem>
       ))}
-    </SectionCollection>
+    </Collection>
   )
 }
 
