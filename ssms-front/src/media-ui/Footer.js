@@ -13,6 +13,18 @@ const contactEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|9'
 const usefulEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|10'
 const socialEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|7'
 
+// const _socialColors = {
+//   'Facebook': '#002a82',
+//   'Youtube': '#b31217',
+//   'Instagram': '#003789',
+//   'Twitter': '#55acee',
+//   'Snapchat': '#fffc00'
+// }
+
+const FooterWrapper = styled.footer`
+  background-color: #1565c0;
+  color: #fff;
+`
 const Collection = styled.ul`
   border: none !important;
 `
@@ -21,7 +33,10 @@ const SocialCollection = styled(Collection)`
   flex-direction: column;
   align-items: center;
 `
-const SectionItem = styled.li`
+const CollectionItem = styled.li`
+  background-color: transparent !important;
+`
+const SectionItem = styled(CollectionItem)`
   border-bottom: none !important;
 `
 const FooterIcon = styled.i`
@@ -37,15 +52,29 @@ const SocialWrapper = styled.div`
   align-items: center;
   flex-wrap: wrap;
 `
+// color: ${({ title }) => `${_socialColors[title]} !important`};
 const SocialIcon = styled.i`
   font-size: 3.5rem;
   margin: 0 0.5rem 1rem;
+  color: #eaeaea !important;
+  transition: transform 0.2s ease-out;
+  &:hover {
+    transform: scale(1.3);
+  }
 `
 const ContactField = styled.span`
   margin-left: 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffff00;
+  color: #fff9a5;
+`
+const SectionLink = styled.a`
+  font-weight: 600;
+  color: #fff9a5 !important;
+  &:hover {
+    color: #ffff00 !important;
+    text-decoration: underline;
+  }
 `
 
 const getSectionTitle = (id, trans) => {
@@ -99,9 +128,9 @@ const getItemIcon = (title) => {
 
 function SectionHeader ({ trans, categoryId }) {
   return (
-    <li className="collection-header w-75">
+    <CollectionItem className="collection-header w-75">
       <h6>{getSectionTitle(categoryId,trans)}</h6>
-    </li>
+    </CollectionItem>
   )
 }
 
@@ -110,7 +139,7 @@ function SectionContent ({ lang, item, id }) {
     case 9:
       return (
         <>
-          <FooterIcon className={`${getItemIcon(item.aboutTitleEn)} indigo-text text-darken-3`}></FooterIcon>
+          <FooterIcon className={getItemIcon(item.aboutTitleEn)}></FooterIcon>
           <ContactField>{lang === 'ar' ? item.aboutTitleAr : item.aboutTitleEn}:</ContactField>
           <span>{lang === 'ar' ? item.aboutTextAr : item.aboutTextEn}</span>
         </>
@@ -118,16 +147,16 @@ function SectionContent ({ lang, item, id }) {
     case 10:
       return (
         <>
-          <FooterIcon className={`${getItemIcon(item.aboutTitleEn)} indigo-text text-darken-3`}></FooterIcon>
-          <a href={item.aboutTextEn}>
+          <FooterIcon className={getItemIcon(item.aboutTitleEn)}></FooterIcon>
+          <SectionLink href={item.aboutTextEn}>
             {lang === 'ar' ? item.aboutTitleAr : item.aboutTitleEn}
-          </a>
+          </SectionLink>
         </>
       )
     case 7:
       return (
         <a href={item.aboutTextEn} className="flex-center">
-          <SocialIcon className={getItemIcon(item.aboutTitleEn)}></SocialIcon>
+          <SocialIcon title={item.aboutTitleEn} className={getItemIcon(item.aboutTitleEn)}></SocialIcon>
         </a>
       )
     default:
@@ -174,7 +203,7 @@ function Footer({ trans, lang }) {
   })
 
   return (
-    <footer className="row">
+    <FooterWrapper className="row">
     { (loading)
       ? <Loading />
       : (error)
@@ -187,7 +216,7 @@ function Footer({ trans, lang }) {
             </>
           : <div className='card-panel red lighten-4'>{trans("home.emptyData")}</div>
     }
-    </footer>
+    </FooterWrapper>
   )
 }
 
