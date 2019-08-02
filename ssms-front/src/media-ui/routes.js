@@ -2,7 +2,7 @@ import Home from './home/Home'
 import Sections from './Sections'
 import Facilities from './Facilities'
 import Admission from './Admission'
-import VisionMission from './about/VisionMission'
+import VisionMissionObjectives from './about/VisionMissionObjectives'
 import SupervisorMessage from './about/SupervisorMessage'
 import SchoolHistory from './about/SchoolHistory'
 import OrganizationalStructure from './about/OrganizationalStructure'
@@ -18,7 +18,7 @@ export const navLinks = (trans) => ([
     text: trans('home.nav.about'),
     path: '/about',
     children: [
-      { path: '/about/vision-mission', text: trans("home.nav.visionMission"), component: VisionMission },
+      { path: '/about/vision-mission', text: trans("home.nav.visionMission"), component: VisionMissionObjectives },
       { path: '/about/supervisor-message', text: trans("home.nav.supervisorMessage"), component: SupervisorMessage },
       { path: '/about/school-history', text: trans("home.nav.schoolHistory"), component: SchoolHistory },
       { path: '/about/organizational-structure', text: trans("home.nav.organizationalStructure"), component: OrganizationalStructure },

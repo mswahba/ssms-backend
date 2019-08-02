@@ -171,6 +171,30 @@
 .w-100 {
   width: 100%;
 }
+.b-0 {
+  border: none !important;
+}
+.lh-18 {
+  line-height: 1.8rem;
+}
+.lh-19 {
+  line-height: 1.9rem;
+}
+.lh-20 {
+  line-height: 2rem;
+}
+.lh-22 {
+  line-height: 2.2rem;
+}
+.lh-24 {
+  line-height: 2.4rem;
+}
+.lh-25 {
+  line-height: 2.5rem;
+}
+.head-color {
+  color: #0d47a1;
+}
 /* #endregion */
 
 /* #region scrollbar styles */
