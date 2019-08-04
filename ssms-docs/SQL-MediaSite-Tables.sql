@@ -133,6 +133,30 @@
 --   8
 -- )
 
+-- insert OrganizatioalChart
+-- INSERT INTO [dbo].[abouts]
+-- ( -- columns to insert data into
+-- 	[aboutTitleAr],
+--   [aboutTitleEn],
+-- 	[aboutTextAr],
+--   [aboutTextEn],
+-- 	[aboutDate],
+--   [forCompany],
+--   [schoolId],
+-- 	[categoryId]
+-- )
+-- VALUES (
+--   'الهيكل التنظيمي للمدارس',
+--   'Schools Organizatioal Chart',
+--   'https://i.ibb.co/YBSBR2d/Organizatioal-Chart.png',
+--   'https://i.ibb.co/YBSBR2d/Organizatioal-Chart.png',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   8
+-- )
+-- GO
+
 -- INSERT INTO [dbo].[abouts]
 -- ( -- columns to insert data into
 -- 	[aboutTitleAr],
@@ -917,7 +941,7 @@
 -- SELECT * FROM [dbo].[articles]
 
 -- SELECT * FROM [dbo].[photos]
-SELECT * FROM [dbo].[abouts]
+-- SELECT * FROM [dbo].[abouts]
 -- SELECT * FROM [dbo].[articles]
 
 -- Update rows in table '[dbo].[photos]'
