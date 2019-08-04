@@ -22,7 +22,8 @@ const socialEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|7'
 // }
 
 const FooterWrapper = styled.footer`
-  background-color: #1565c0;
+  margin-bottom: 0 !important;
+  background-color: var(--main-bg-color);
   color: #fff;
 `
 const Collection = styled.ul`

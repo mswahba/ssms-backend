@@ -18,21 +18,23 @@ const itemIcons = {
   Objectives: 'fas fa-bullseye'
 }
 const itemColors = {
-  Vision: '#3949ab',
-  Mission: '#283593',
-  Objectives: '#1a237e'
+  Vision: 'var(--hover-bg-color)',
+  Mission: 'var(--main-bg-color)',
+  Objectives: 'var(--selected-bg-color)'
 }
 
 const CollectionItem = styled.li`
   background-color: ${ ({ title }) => itemColors[title] } !important;
-  color: #fff !important;
+  color: var(--third-fr-color) !important;
 `
 const ItemIcon = styled.i`
   font-size: 2.4rem !important;
-  background-color: #fff !important;
+  background-color: var(--third-fr-color) !important;
   color: ${ ({ title }) => itemColors[title] } !important;
 `
 const ItemTitle = styled.span`
+  display: block;
+  margin: 1rem 0 !important;
   font-size: 1.5rem;
   font-weight: 600;
   color: #fffc00;
@@ -65,7 +67,7 @@ function VisionMissionObjectives({ trans, lang }) {
   })
   return (
     <div className='row'>
-      <h3 className='center-align head-color'>{trans("home.visionMissionObjectives.title")}</h3>
+      <h4 className='center-align head-color'>{trans("home.visionMissionObjectives.title")}</h4>
       { (loading)
         ? <Loading />
         : (error)

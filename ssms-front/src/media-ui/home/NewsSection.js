@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { connect } from 'react-redux'
 import { getTranslate, getActiveLanguage } from 'react-localize-redux'
+import styled from 'styled-components'
 
 import { time } from '../../helpers'
 import { useFetch } from '../../customHooks'
@@ -11,6 +12,18 @@ import Loading from '../../shared/Loading'
 const key = 'news_section'
 const endpoint =
   "/db/query/SELECT TOP (4) * FROM [dbo].[articles] WHERE categoryIds like '%1%' ORDER BY articleId DESC"
+
+// styles
+const NewsWrapper = styled.section`
+  background-color: var(--third-bg-color);
+  color: var(--third-fr-color);
+`
+const NewsTitle = styled.h3`
+  color: var(--second-color);
+`
+const NewsListLink = styled(Link)`
+  color: var(--second-color);
+`
 
 function NewsCard ({
   lang,
@@ -61,10 +74,10 @@ function NewsSection ({ trans, lang }) {
   console.log("TCL: NewsSection -> news", news)
 
   return (
-    <section className='news-section red lighten-1'>
+    <NewsWrapper className='news-section'>
       <div className='flex-between p-1'>
-        <h3 className="m-0">{trans("home.news.title")}</h3>
-        <Link to='/news-list'>{trans("home.news.newsListLink")}</Link>
+        <NewsTitle className="m-0">{trans("home.news.title")}</NewsTitle>
+        <NewsListLink to='/news-list'>{trans("home.news.newsListLink")}</NewsListLink>
       </div>
       { (loading)
         ? <Loading />
@@ -78,7 +91,7 @@ function NewsSection ({ trans, lang }) {
               </div>
             : <div className='card-panel red lighten-4'>{trans("home.news.emptyNews")}</div>
       }
-    </section>
+    </NewsWrapper>
   )
 }
 

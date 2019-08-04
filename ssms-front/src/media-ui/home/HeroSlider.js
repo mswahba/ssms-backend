@@ -1,10 +1,17 @@
 import React from 'react'
+
 import { connect } from 'react-redux'
 import { getTranslate, getActiveLanguage } from 'react-localize-redux'
+import styled from 'styled-components'
+
 import { initSlider, getSlider } from '../../helpers'
 import { useFetch } from '../../customHooks'
 import Loading from '../../shared/Loading';
 
+// styles
+const Slides = styled.ul`
+  height: 100% !important;
+`
 // the heroSlider materialize-css instance
 let heroSlider
 const captionAligns = [
@@ -65,9 +72,9 @@ function HeroSlider ({ trans, lang }) {
   else if (slides)
     return (
       <div id='hero-slider' className='slider'>
-        <ul className='slides'>
+        <Slides className='slides'>
           {renderSlides(lang, slides)}
-        </ul>
+        </Slides>
         <div className='slider-buttons'>
           <i className='material-icons forward'   onClick={moveSlider(lang, 'forward')}>arrow_forward_ios</i>
           <i className='material-icons backward'  onClick={moveSlider(lang, 'backward')}>arrow_back_ios</i>

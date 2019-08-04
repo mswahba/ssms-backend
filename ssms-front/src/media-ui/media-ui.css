@@ -1,9 +1,31 @@
 .container-fluid {
   padding: 0 1rem;
 }
+main, .main {
+  min-height: 90vh;
+  margin: 0;
+}
+div.spinner-container {
+  height: 70vh;
+}
 /* #region navbar */
 .navbar-fixed {
   overflow: hidden;
+}
+header nav {
+  background-color: var(--main-bg-color);
+}
+header .dropdown-content li>a,
+header .dropdown-content li>span {
+  color: var(--main-bg-color);
+}
+header .dropdown-content li:hover,
+header .dropdown-content li.active {
+  background-color: var(--main-bg-color);
+}
+header .dropdown-content li>a:hover,
+header .dropdown-content li>span.active {
+  color: #fff;
 }
 /* #endregion */
 /* #region hero-slider */
@@ -28,10 +50,11 @@ i.material-icons.backward {
   color: #fff;
 }
 /* #endregion */
-
-main {
-  min-height: 70vh;
+/* #region Home styles */
+.card-header {
+  padding: 1.2rem 1rem;
 }
-div.spinner-container {
-  height: 70vh;
+.news-section .card-content {
+  height: 270px;
 }
+/* #endregion */

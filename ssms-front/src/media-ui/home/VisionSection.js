@@ -31,14 +31,14 @@ const transform = ({ dir }) =>
 const BackCard = styled.div`
   width: 95%;
   height: 10rem;
-  background-color: #0044ff;
+  background-color: var(--main-bg-color);
   position: absolute;
   transform: ${transform};
 `
 const FrontCard = styled.div`
   width: 85%;
   padding: 0.5rem;
-  background-color: #b8e1ff !important;
+  background-color: var(--light-bg-color) !important;
   position: absolute;
   top: -2rem;
   left: ${({ dir }) => dir === "start" ? "auto" : "auto" };
@@ -46,9 +46,9 @@ const FrontCard = styled.div`
   transform: ${transform};
 `
 const CardIcon = styled.i`
-  background-color: #b8e1ff;
+  background-color: var(--light-bg-color);
   font-size: 3rem !important;
-  color: #ff9900;
+  color: var(--selected-bg-color);
   border-radius: 100%;
   padding: 1rem;
   width: 5rem;
