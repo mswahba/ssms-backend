@@ -233,6 +233,12 @@
 .head-color {
   color: #0d47a1;
 }
+.content-text {
+  padding: 0.5rem 2rem;
+  line-height: 2.5rem;
+  font-size: 1.2rem;
+  text-align: justify;
+}
 /* #endregion */
 
 /* #region scrollbar styles */

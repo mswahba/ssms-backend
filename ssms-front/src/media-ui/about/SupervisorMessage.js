@@ -18,12 +18,6 @@ const CEOImg = styled.img`
   border-radius: 100% !important;
 `
 
-const CardText = styled.p`
-  padding: 0.5rem 2rem;
-  line-height: 2.5rem;
-  font-size: 1.2rem;
-`
-
 function CEOMessageWrapper({ isSection, children }) {
   return (
     (isSection)
@@ -40,7 +34,7 @@ function CEOMessage({ trans, lang, aboutTitleAr, aboutTitleEn, aboutTextAr, abou
       </div>
       <div className="card-content center-align">
         <span className="card-title">{lang === 'ar' ? aboutTitleAr : aboutTitleEn}</span>
-        <CardText>{lang === 'ar' ? aboutTextAr : aboutTextEn}</CardText>
+        <p className='content-text'>{lang === 'ar' ? aboutTextAr : aboutTextEn}</p>
       </div>
     </div>
   )

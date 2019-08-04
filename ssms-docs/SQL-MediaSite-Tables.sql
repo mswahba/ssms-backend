@@ -325,6 +325,14 @@
 -- SELECT * FROM [dbo].[abouts]
 -- GO
 
+-- Update rows in table '[dbo].[abouts]'
+-- UPDATE [dbo].[abouts]
+-- SET
+--   [aboutTitleAr] = 'تاريخ المدارس',
+--   [aboutTitleEn] = 'Schools History'
+-- WHERE [aboutId] = 5
+-- GO
+
 -- add 4 relations [employeesJobs - departments - schools - mediaCategories]
 ---------------------------------------------------------------------------
 

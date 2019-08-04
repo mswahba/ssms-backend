@@ -15,17 +15,18 @@ div.spinner-container {
 header nav {
   background-color: var(--main-bg-color);
 }
-header .dropdown-content li>a,
-header .dropdown-content li>span {
+header .dropdown-content li > a,
+header .dropdown-content li > span {
   color: var(--main-bg-color);
 }
 header .dropdown-content li:hover,
 header .dropdown-content li.active {
   background-color: var(--main-bg-color);
 }
-header .dropdown-content li>a:hover,
-header .dropdown-content li>span.active {
-  color: #fff;
+header .dropdown-content li > a:hover,
+header .dropdown-content li.active > a,
+header .dropdown-content li > span.active {
+  color: var(--third-fr-color);
 }
 /* #endregion */
 /* #region hero-slider */
