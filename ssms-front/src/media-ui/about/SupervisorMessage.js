@@ -16,27 +16,39 @@ const CEOImg = styled.img`
   width: 180px !important;
   height: 180px !important;
   border-radius: 100% !important;
+  top: 1.1rem !important;
+`
+const CEOSection = styled.section`
+  background-color: var(--third-bg-color) !important;
+`
+const CEOCard = styled.div`
+  background-color: transparent !important;
+  color: ${ ({ isSection }) => isSection ? 'var(--third-fr-color)' : 'inherit' };
+`
+const CEOTitle = styled.span`
+  color: ${ ({ isSection }) => isSection ? 'var(--second-color)' : 'var(--main-bg-color)' };
+  font-weight: 600 !important;
 `
 
 function CEOMessageWrapper({ isSection, children }) {
   return (
     (isSection)
-      ? <section>{children}</section>
+      ? <CEOSection>{children}</CEOSection>
       : <>{children}</>
   )
 }
 
-function CEOMessage({ trans, lang, aboutTitleAr, aboutTitleEn, aboutTextAr, aboutTextEn, photoURL }) {
+function CEOMessage({ isSection, lang, aboutTitleAr, aboutTitleEn, aboutTextAr, aboutTextEn, photoURL }) {
   return (
-    <div className="card">
+    <CEOCard isSection={isSection} className="card">
       <div className="card-image flex-center">
         <CEOImg src={photoURL} />
       </div>
       <div className="card-content center-align">
-        <span className="card-title">{lang === 'ar' ? aboutTitleAr : aboutTitleEn}</span>
+        <CEOTitle isSection={isSection} className="card-title">{lang === 'ar' ? aboutTitleAr : aboutTitleEn}</CEOTitle>
         <p className='content-text'>{lang === 'ar' ? aboutTextAr : aboutTextEn}</p>
       </div>
-    </div>
+    </CEOCard>
   )
 }
 
@@ -57,7 +69,7 @@ function SupervisorMessage({ trans, lang, isSection }) {
         : (error)
           ? <div className='card-panel red lighten-4'>{error}</div>
           : (data)
-            ? <CEOMessage trans={trans} lang={lang} {...data} />
+            ? <CEOMessage lang={lang} isSection={isSection} {...data} />
             : <div className='card-panel red lighten-4'>{trans("home.news.emptyNews")}</div>
       }
     </CEOMessageWrapper>
