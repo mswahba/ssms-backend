@@ -19,10 +19,10 @@ const NewsWrapper = styled.section`
   color: var(--third-fr-color);
 `
 const NewsTitle = styled.h3`
-  color: var(--second-color);
+  color: var(--third-fr-color);
 `
 const NewsListLink = styled(Link)`
-  color: var(--second-color);
+  color: var(--third-fr-color);
 `
 
 function NewsCard ({

@@ -26,7 +26,7 @@ const CEOCard = styled.div`
   color: ${ ({ isSection }) => isSection ? 'var(--third-fr-color)' : 'inherit' };
 `
 const CEOTitle = styled.span`
-  color: ${ ({ isSection }) => isSection ? 'var(--second-color)' : 'var(--main-bg-color)' };
+  color: ${ ({ isSection }) => isSection ? 'var(--third-fr-color)' : 'var(--main-bg-color)' };
   font-weight: 600 !important;
 `
 
