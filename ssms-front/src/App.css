@@ -11,7 +11,7 @@
 
 /* #region css colors */
 :root {
-  --main-bg-color: #1565c0; /* blue darken-3 */
+  --main-bg-color: #0057e7; /* #1565c0  blue darken-3 */
   --hover-bg-color: #1976d2; /* blue darken-2 */
   --selected-bg-color: #0d47a1; /* blue darken-4 */
   --second-color: #fffc00;
