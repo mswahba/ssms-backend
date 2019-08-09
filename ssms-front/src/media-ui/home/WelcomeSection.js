@@ -2,6 +2,7 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { getTranslate, getActiveLanguage } from 'react-localize-redux'
+import styled from 'styled-components'
 
 import { useFetch } from '../../customHooks'
 import { time } from '../../helpers'
@@ -11,19 +12,29 @@ import Loading from '../../shared/Loading'
 const key = 'welcome_section'
 const endpoint = '/abouts/1'
 
+const WelcomeWrapper = styled.section`
+  height: 300px;
+`
+const WelcomeCol = styled.section`
+  padding: 0;
+  height: 100%;
+`
+const WelcomeCard = styled.section`
+  height: 100%;
+  margin: 0 !important;
+`
+
 function Welcome({ lang, aboutTitleAr, aboutTitleEn, aboutTextAr, aboutTextEn  }) {
   return (
     <>
-      <div className='col l6 s12'>
-        <div className='card'>
+      <WelcomeCol className='col l6 s12'>
+        <WelcomeCard className='card'>
           <div className='card-content'>
-            <span className='card-title'>
-              {lang === 'ar' ? aboutTitleAr : aboutTitleEn}
-            </span>
-            <p style={{ lineHeight: '2.2rem' }}>{lang === 'ar' ? aboutTextAr : aboutTextEn}</p>
+            <span className='card-title content-title'>{lang === 'ar' ? aboutTitleAr : aboutTitleEn}</span>
+            <p className='content-text-sm'>{lang === 'ar' ? aboutTextAr : aboutTextEn}</p>
           </div>
-        </div>
-      </div>
+        </WelcomeCard>
+      </WelcomeCol>
       <div className='col l6 s12'>
         <iframe
           width='100%'
@@ -49,7 +60,7 @@ function WelcomeSection({ trans, lang }) {
   })
 
   return (
-    <section className="row">
+    <WelcomeWrapper className="row">
       { (loading)
         ? <Loading />
         : (error)
@@ -58,7 +69,7 @@ function WelcomeSection({ trans, lang }) {
             ? <Welcome lang={lang} {...welcome} />
             : <div className='card-panel red lighten-4'>{trans("home.news.emptyNews")}</div>
       }
-    </section>
+    </WelcomeWrapper>
   )
 }
 

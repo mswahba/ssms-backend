@@ -13,16 +13,15 @@ const key = 'vision_section'
 const endpoint = '/abouts/find/2,3'
 
 const Section = styled.section`
-  padding: 0 2rem;
+  padding: 4rem 2rem 1rem;
+  background-color: var(--third-bg-color);
 `
-
 const CardContainer = styled.div`
   position: relative;
   @media (max-width: 992px) {
     margin-bottom: 1rem;
   }
 `
-
 const transform = ({ dir }) =>
   dir === 'start'
     ? css`skewX(15deg)`
@@ -31,14 +30,16 @@ const transform = ({ dir }) =>
 const BackCard = styled.div`
   width: 95%;
   height: 10rem;
-  background-color: var(--main-bg-color);
+  background-color: var(--second-bg-color);
   position: absolute;
   transform: ${transform};
 `
 const FrontCard = styled.div`
   width: 85%;
+  height: 140px;
   padding: 0.5rem;
-  background-color: var(--light-bg-color) !important;
+  background-color: var(--third-fr-color) !important;
+  color: var(--second-bg-color) !important;
   position: absolute;
   top: -2rem;
   left: ${({ dir }) => dir === "start" ? "auto" : "auto" };
@@ -46,9 +47,9 @@ const FrontCard = styled.div`
   transform: ${transform};
 `
 const CardIcon = styled.i`
-  background-color: var(--light-bg-color);
+  background-color: var(--third-bg-color);
   font-size: 3rem !important;
-  color: var(--selected-bg-color);
+  color: var(--second-bg-color);
   border-radius: 100%;
   padding: 1rem;
   width: 5rem;

@@ -40,7 +40,7 @@ function CEOMessageWrapper({ isSection, children }) {
 
 function CEOMessage({ isSection, lang, aboutTitleAr, aboutTitleEn, aboutTextAr, aboutTextEn, photoURL }) {
   return (
-    <CEOCard isSection={isSection} className="card">
+    <CEOCard isSection={isSection} className="card card-m-0">
       <div className="card-image flex-center">
         <CEOImg src={photoURL} />
       </div>

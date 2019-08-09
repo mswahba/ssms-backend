@@ -3,7 +3,6 @@ import styled from 'styled-components'
 
 const MapSection = styled.section`
   height: 450px;
-  margin-top: -14px;
 `
 const Map = styled.iframe`
   border: none;

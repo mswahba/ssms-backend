@@ -15,9 +15,10 @@
   --hover-bg-color: #1976d2; /* blue darken-2 */
   --selected-bg-color: #0d47a1; /* blue darken-4 */
   --second-color: #fffc00;
-  --light-bg-color: #bbdefb;
+  --light-bg-color: #ffbe4f;
+  --second-bg-color: 	#0c457d;
   --third-bg-color: #ff7900;
-  --third-fr-color: #fff;
+  --third-fr-color: #ffffff;
 }
 /* #endregion */
 /* #region helper classes */
@@ -46,6 +47,13 @@
 .flex-around-top {
   display: flex;
   justify-content: space-around;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-g-1 {
+  flex-grow: 1;
 }
 .flex-b-25 {
   flex-basis: 25%;
@@ -127,6 +135,9 @@
 }
 .mt-3 {
   margin-top: 3rem;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
 }
 .mb-1 {
   margin-bottom: 1rem;
@@ -241,6 +252,13 @@
   line-height: 2.5rem;
   font-size: 1.2rem;
   text-align: justify;
+}
+.content-text-sm {
+  line-height: 2rem;
+  text-align: justify;
+}
+.card-m-0 {
+  margin: 0 !important;
 }
 /* #endregion */
 
@@ -357,5 +375,11 @@ ul.autocomplete-content li img {
 a.dropdown-trigger,
 a.sidenav-trigger {
   cursor: pointer;
+}
+/* #endregion */
+
+/* #region materialize grid */
+.rtl .row {
+  margin-bottom: 0 !important;
 }
 /* #endregion */
