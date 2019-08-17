@@ -16,6 +16,7 @@
 -- insert into mediaCategories values (8, 'بيانات اساسية','Basic Info', 'about')
 -- insert into mediaCategories values (9, 'بيانات الاتصال','Contact Info', 'about')
 -- insert into mediaCategories values (10, 'روابط هامة','Useful Links', 'about')
+-- insert into mediaCategories values (11, 'القبول والتسجيل','Admission', 'about')
 
 -- CREATE TABLE [dbo].[abouts] (
 -- 	[aboutId] [int] identity(1,1) PRIMARY KEY,
@@ -344,6 +345,176 @@
 --   0,
 --   1,
 --   10
+-- )
+
+-- INSERT INTO [dbo].[abouts]
+-- ( -- columns to insert data into
+-- 	[aboutTitleAr],
+--   [aboutTitleEn],
+-- 	[aboutTextAr],
+--   [aboutTextEn],
+-- 	[aboutDate],
+--   [forCompany],
+--   [schoolId],
+-- 	[categoryId]
+-- )
+-- VALUES
+-- (
+--   'سياسة القبول',
+--   'Admission Policy',
+--   '<h3>سياسة التسجيل</h3>
+-- <p>
+--   الرسوم لا تشمل الضريبة المضافة.
+--   الخصم النقدي 1000 ريال لكل طالب عند السداد الكامل للعام الدراسي  وينتهي الخصم النقدي للسداد بعد أسبوعين من بداية الدراسة.
+--   دفعة التسجيل 2000 ريال تحسم من الرسوم تدفع مرة واحدة عند التسجيل ولا ترد.
+--   يسدد ولي الأمر كامل رسوم  الفصل الأول قبل انتهاء الربع الأول  ورسوم الفصل الثاني قبل انتهاء الربع الثالث وذلك عند اختيار طريقة السداد على قسطين.
+--   لن يتم استلام الكتب أو الزي حتي سداد رسومهما.
+-- </p>
+-- <h3>نظام الانسحاب</h3>
+-- <ul>
+--   <li>يعد تاريخ استلام المدارس لخطاب الانسحاب هو التاريخ المعتبر وليس تاريخ الخطاب</li>
+--   <li>عند إبلاغ المدارس بانسحاب الطالب قبل بداية الفصل الدراسي فإنه يحق للطالب استرجاع كامل الرسوم الدراسيةبعد خصم رسوم الكتب والزي كاملا اذا استخدم الزي والكتب.</li>
+--   <li>يحسم 25% من رسوم الفصل الدراسي  عند انسحاب الطالب خلال الأسبوع الثاني من الفصل الدراسي.</li>
+--   <li>يحسم 50% من رسوم الفصل الدراسي  عند انسحاب الطالب خلال الأسبوع الثالث من الفصل الدراسي.</li>
+--   <li>يحسم 100% من رسوم الفصل الدراسي  عند انسحاب الطالب خلال الأسبوع الرابع من الفصل الدراسي.</li>
+--   <li>عند الانسحاب خلال العام الدراسي يدفع الطالب المتبقي من القيمة الكتب الفعلية للكتب  500 ريال للروضة، و1500 ريال للابتدائي و2000ريال للمتوسط والثانوي</li>
+--   <li>عند الانسحاب تخصم قيمة الخصم الذي تم عند التسجيل.</li>
+-- </ul>',
+--   '<h3>Registration Policy</h3>
+-- <p>
+--   If full fee is paid, the contract will be for whole Academic Year.
+--     Cash discount SR 1000 per Learner upon payment at the beginning of the academic year for full year. The cash payment discount expires two weeks after the beginning of the academic year.
+--     A registration non-refundable down payment of SR. 2000 has to be paid and will automatically bededucted from the fees (upon first registration only).
+--     Transportation Fees is 5000 Two ways, and 3000 One way for one Academic Year.
+--     The entire first semester fees are to be paid by the parent / guardian before the end of the first quarter and for the second semester the fees have to be paid before the end of the third quarter if the option of two-installment is chosen.
+--     Books and uniforms will not be received until their cost is paid.
+-- </p>
+-- <h3>Withdrawal Policy</h3>
+-- <ul>
+--   <li>The date of receiving the withdrawal letter is the official date not the date typed on the withdrawal letter.</li>
+--   <li>In case of withdrawal before the academic year starts, all school fees are completely refundable except books and uniform fees if uniform or books are used.</li>
+--   <li>25% of the semester fees will be deducted in case of withdrawal during the second week of the semester.</li>
+--   <li>50% of the semester fees will be deducted in case of withdrawal during the third week of the semester.</li>
+--   <li>100% of the semester fees will be deducted in case of withdrawal during the fourth week of the semester.</li>
+--   <li>Upon withdrawal during school year, the complete fee of books is deductible as follows: SR. 500 for Kindergarten, SR. 1500 for Primary School and SR. 2,000 for Middle & High Schools.</li>
+--   <li>Discounted price is deductible as well.</li>
+-- </ul>',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   11
+-- ),
+-- (
+--   'إجراءات التسجيل',
+--   'Registration Procedures',
+--   '<h3>تعليمات التسجيل</h3>
+-- <ul>
+--   <li>أدخل جميع التفاصيل بشكل كامل وصحيح.</li>
+--   <li>يجب أن يكون الاسم و تاريخ الميلاد وفقًا لجواز السفر.</li>
+--   <li>يجب توفير رقمي جوال على الأقل.</li>
+--   <li>يجب أن يوافق ولي الأمر على الشروط.</li>
+-- </ul>
+-- <h3>المستندات المطلوبة</h3>
+-- <ul>
+--   <li>نسخة جواز سفر المتعلمين</li>
+--   <li>نسخة من بطاقة الهوية الوطنية / بطاقة تصريح الإقامة للمتعلمين</li>
+--   <li>نسخة من شهادة ميلاد المتعلمين</li>
+--   <li>نسخة من جواز ولي الأمر</li>
+--   <li>نسخة من بطاقة الهوية الوطنية / وصي الإقامة لشخصين</li>
+--   <li>شهادة التخليص المالي / رسالة من المدرسة السابقة</li>
+--   <li>شهادة التخرج من المدرسة / قبول سحب المتعلمين من المدرسة السابقة</li>
+--   <li>مستند نقل الطلب على نظام نور(في حالة النقل).</li>
+--   <li>اكتمال سلسلة بطاقات النتائج من KG إلى الصف الأخير</li>
+--   <li>شهادة التطعيم</li>
+--   <li>شهادة طبية</li>
+-- </ul>
+-- <h3>ملاحظات عامة</h3>
+-- <p>
+--   سيخضع كل متعلم عند التسجيل لاختبار القبول أو امتحان التقييم أو التقييم العام وفقًا لمتطلبات المجلس الأكاديمي. يمكن إلغاء هذا الأمر في بعض الحالات بناءً على تقدير المدير الأكاديمي أو أحد أعضاء المجلس الأكاديمي.
+--     سيخضع كل متعلم عند التسجيل وأولياء أموره لمقابلة أكاديمية وإدارية وطبية ونفسية وفقًا لسياسة المدرسة. يمكن إلغاء هذه المقابلة وفقًا لتقدير المجالس الأكاديمية في أي وقت قبل وضع اللمسات الأخيرة على عملية القبول ويمكن أن تعقد في مرحلة لاحقة. يمكن تفويض المقابلة لأي من أعضاء المجلس الأكاديمي أو أي من أعضاء الفريق الأكاديمي من المستشارين الأكاديميين للمعلمين.
+--     في بعض الحالات ، الأكاديمية أو الطبية أو أي شيء آخر ، قد تقرر المدرسة وضع شروط قبل الموافقة على قبول المسجل في المدارس.
+-- </p>
+-- <p>
+--     للمتعلمين القادمين من الخارج سيتعين على جميع المتعلمين الحصول على بطاقة معادلة ممتلئة من الأسد والحصول على موافقة من مكتب القبول والامتحانات في الرياض الذي يعمل تحت إدارة وزارة التربية والتعليم بالمملكة العربية السعودية.
+--     بناءً على القبول ، يمكن إصدار خطاب بناءً على طلب ولي الأمر للقبول بالقبول في الأسد.
+-- </p>
+-- <p>
+--     وفقًا لسياسة القبول التي تم تحديثها في الأول من مايو 2019 ، سيتعين إكمال أي عمليات قبول من خلال رسم حجز المقاعد بحد أدنى SAR. من 2000 حتى 31 يوليو 2019. جميع موافقات القبول من 1 أغسطس 2019 ستطبق على الدفع بالكامل من أجل إكمال القبول في Asadarah.
+--     بعد دفع الرسوم كاملة ، سوف يتلقى المتعلم Uniform & Books. حاشية يجب استلام كتب الهوية العربية والإسلامية والاجتماعية العربية / الوطنية من المدرسة السابقة من المسجلين الجدد وفقًا لتوجيهات وزارة التربية والتعليم وهي مسؤولية الأوصياء على استلامها.
+--     سيؤدي الانتهاء من قبول المسجل إلى إرسال رسالة نصية قصيرة إلى رقم الجوال Guardians المحفوظة في النظام باستخدام بيانات اعتماد تسجيل الدخول إلى حساب الصدارة (الباحث العلمي)
+-- </p>',
+--   '<h3>Registration Rules</h3>
+-- <ul>
+--   <li>Enter all details fully and correctly.</li>
+--   <li>Name and DoB must be according to the passport.</li>
+--   <li>At least two mobile numbers must be provided.</li>
+--   <li>The conditions will have to be agreed by the Guardian before acceptance.</li>
+-- </ul>
+-- <h3>Required Documents</h3>
+-- <ul>
+--   <li>Learners’ Passport Copy</li>
+--   <li>Learners’ National Identity Card / Residence Permit Card Copy</li>
+--   <li>Learners’ Birth Certificate Copy</li>
+--   <li>Two Guardians’ Passport Copy</li>
+--   <li>Two Guardians’ National Identity Card / Residence Permit Card Copy</li>
+--   <li>Financial Clearance Certificate / Letter from previous school</li>
+--   <li>School Leaving Certificate / Acceptance of the Learners’ Withdrawal from previous school</li>
+--   <li>Transfer request document on Noor system (In case of Transfer).</li>
+--   <li>Series of Result Cards from KG to last grade completed</li>
+--   <li>Vaccination Certification</li>
+--   <li>Medical Certificate</li>
+-- </ul>
+-- <h3>Notes</h3>
+-- <p>
+--     Every learner upon registration will be subject to an Admission Test, Assessment Exam or General Assessment as per Academic Board’s requirements. This can be annulled in certain cases upon discretion of the Academic Director or any one of the Academic Board members.
+--     Every learner upon registration & their parents will be subject to an Academic, Administrative, Medical as well as Psychological interview as per School’s Policy. This interview can be as annulled subject to Academic Boards’ discretion at any time prior to finalization of admission process and is subject to be convened at a later stage. The interview can be delegated to any one of the Academic Board’s members or any of the Academic Team members from Academic Advisors to Educators.
+--     In certain cases, Academic, Medical or any other whatsoever, the School might decide to set conditions prior to approving the admission of a registrant to schools.
+-- </p>
+-- <p>
+--     For learners coming from overseas; all learners will have to get filled equivalency card from Assadarah and get approved from Admissions & Examinations Office in Riyadh that works under the directorate of Ministry of Education, Kingdom of Saudi Arabia.
+--     Upon acceptance, a letter upon request of the Guardian can be issued for acceptance of Admission to Assadarah.
+-- </p>
+-- <p>
+--     As per Admissions Policy updated on 1st of May, 2019, any acceptances will have to be completed by a seat reservation fee of minimum SAR. 2,000 till the 31st of July, 2019. All admission acceptances from 1st of August, 2019 will be applicable to pay in full in order to complete the admission at Assadarah.
+--     After payment of full fee, the learner will receive Uniform & Books. N.B. Arabic, Islamic & Social Arabic / National Identity books have to be received from previous school from new registrants as per MoE directives and is guardians’ responsibility to receive.
+--     Finalization of acceptance of registrant will lead to an SMS sent to Guardians’ Mobile Number saved in system with Login Credentials to (Scholar) account.
+-- </p>',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   11
+-- ),
+-- (
+--   'الرسوم',
+--   'Fees',
+--   '<h3>رسوم الدراسة</h3>
+-- <ul>
+--   <li>رياض الأطفال 12000 ريال </li>
+--   <li>الابتدائي والمتوسط 18000</li>
+--   <li>الثانوي 24000 ريال </li>
+-- </ul>
+-- <h3>رسوم النقل</h3>
+-- <ul>
+--   <li>ذهاب وإياب: 5000</li>
+--   <li>ذهاب فقط: 3000</li>
+--   <li>إياب فقط: 3000</li>
+-- </ul>',
+--   '<h3>Study Fees</h3>
+-- <ul>
+--   <li>KG 12000 SR</li>
+--   <li>Primary and Intermediate Stages : 18000 SR </li>
+--   <li>Secondary Stage : 24000 SR</li>
+-- </ul>
+-- <h3>Transportation Fees</h3>
+-- <ul>
+--   <li>go and return: 5000 </li>
+--   <li>go only: 3000</li>
+--   <li>return only: 3000</li>
+-- </ul>',
+--   GETUTCDATE(),
+--   0,
+--   1,
+--   11
 -- )
 
 -- SELECT * FROM [dbo].[abouts]
