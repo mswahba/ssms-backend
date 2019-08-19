@@ -31,10 +31,6 @@
         "home",
         "الرئيسية"
       ],
-      "about": [
-        "About",
-        "حول المدرسة"
-      ],
       "sections": [
         "Sections",
         "الأقسام"
@@ -46,6 +42,22 @@
       "admission": [
         "Admission",
         "القبول والتسجيل"
+      ],
+      "policy": [
+        "Admission Policy",
+        "سياسة القبول"
+      ],
+      "procedures": [
+        "Admission Procedures",
+        "إجراءات التسجيل"
+      ],
+      "fees": [
+        "Fees",
+        "الرسوم والمصروفات"
+      ],
+      "about": [
+        "About",
+        "حول المدرسة"
       ],
       "visionMission": [
         "Vision & Mission",

@@ -1,7 +1,9 @@
 import Home from './home/Home'
 import Sections from './Sections'
 import Facilities from './Facilities'
-import Admission from './Admission'
+import AdmissionPolicy from './admission/AdmissionPolicy'
+import AdmissionProcedures from './admission/AdmissionProcedures'
+import Fees from './admission/Fees'
 import VisionMissionObjectives from './about/VisionMissionObjectives'
 import SupervisorMessage from './about/SupervisorMessage'
 import SchoolHistory from './about/SchoolHistory'
@@ -11,12 +13,22 @@ export const navLinks = (trans) => ([
   { path: '/home', text: trans('home.nav.home'), icon: 'fas fa-home', component: Home },
   { path: '/sections', text: trans('home.nav.sections'), icon: 'fas fa-landmark', component: Sections },
   { path: '/facilities', text: trans('home.nav.facilities'), icon: 'fas fa-flask', component: Facilities },
-  { path: '/admission', text: trans('home.nav.admission'), icon: 'fas fa-check-circle', component: Admission },
+  {
+    id: 'admission-dropdown',
+    path: '/admission',
+    icon: 'fas fa-check-circle',
+    text: trans('home.nav.admission'),
+    children: [
+      { path: '/admission/policy', text: trans("home.nav.policy"), component: AdmissionPolicy },
+      { path: '/admission/procedures', text: trans("home.nav.procedures"), component: AdmissionProcedures },
+      { path: '/admission/fees', text: trans("home.nav.fees"), component: Fees },
+    ]
+  },
   {
     id: 'about-dropdown',
+    path: '/about',
     icon: 'fas fa-info-circle',
     text: trans('home.nav.about'),
-    path: '/about',
     children: [
       { path: '/about/vision-mission', text: trans("home.nav.visionMission"), component: VisionMissionObjectives },
       { path: '/about/supervisor-message', text: trans("home.nav.supervisorMessage"), component: SupervisorMessage },
