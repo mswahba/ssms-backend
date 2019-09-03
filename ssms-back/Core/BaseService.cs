@@ -594,7 +594,7 @@ namespace SSMS
     public int Update<TEntity>(TEntity entity) where TEntity : class
     {
       //Attach the coming object to the db COntext
-      //Change the coming object state to modified so that saveChanges generates an update statment
+      //Change the coming object state to modified so that saveChanges generates an update statement
       _db.Entry(entity).State = EntityState.Modified;
       return _db.SaveChanges();
     }

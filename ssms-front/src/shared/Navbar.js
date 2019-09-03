@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { initSidenav, initDropdown } from '../helpers'
 
 const NavDropdown = styled.ul`
-  min-width: 100% !important;
+  min-width: 30% !important;
 `
 const NavDropdownItem = styled.li`
   margin: ${({ lang }) => lang === 'ar' ? "0 -1rem 0 0" : "0 0 0 -1rem"};

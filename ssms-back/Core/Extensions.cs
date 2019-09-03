@@ -57,8 +57,8 @@ namespace SSMS
 
     // an extension function that takes type that it will be attached to
     // and the property name which we want to get its value
-    // Normaly, we use item.[propName] if we know it exactly
-    // but here we dont know it as it comes as a parameter,
+    // Normally, we use item.[propName] if we know it exactly
+    // but here we don't know it as it comes as a parameter,
     // so we use reflection to get the property based on its name at runtime
     // 'this' keyword means this function becomes an extension function on the type given after it
     public static object GetValue(this object obj, string propName)

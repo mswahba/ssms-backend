@@ -893,6 +893,55 @@
 -- ON DELETE SET NULL
 -- GO
 
+-- Insert rows into table '[dbo].[albums]'
+-- INSERT INTO [dbo].[albums]
+-- ( -- columns to insert data into
+--  [albumTitleAr],
+--  [albumTitleEn],
+--  [albumDate],
+--  [forCompany],
+--  [displayAlsoAt],
+--  [schoolId],
+--  [approved],
+--  [enabled],
+--  [categoryId]
+-- )
+-- VALUES
+-- ( -- values for the columns in the list above
+--  'مبنى الإدارة العامة',
+--  'Administration Headquarter',
+--  GETUTCDATE(),
+--  0,
+--  'company',
+--  1,
+--  1,
+--  1,
+--  5
+-- ),
+-- ( -- values for the columns in the list above
+--  'المعامل و المختبرات',
+--  'Laboratories',
+--  GETUTCDATE(),
+--   0,
+--  'company',
+--  1,
+--  1,
+--  1,
+--  5
+-- ),
+-- ( -- values for the columns in the list above
+--  'الملاعب والصالات',
+--  'Playgrounds',
+--  GETUTCDATE(),
+--   0,
+--  'company',
+--  1,
+--  1,
+--  1,
+--  5
+-- )
+-- GO
+
 -------------------------------------------------------------------------------------
 -- CREATE TABLE [dbo].[photos] (
 -- 	[photoId] [int] identity(1,1) PRIMARY KEY,
@@ -979,7 +1028,142 @@
 -- )
 -- GO
 
+-- insert [Administration Headquarter Album] photos
+-- Insert rows into table '[dbo].[photos]'
+-- INSERT INTO [dbo].[photos]
+-- ( -- columns to insert data into
+--  [photoTitleAr],
+--  [photoTitleEn],
+--  [photoURL],
+--  [thumbURL],
+--  [photoDate], [approved], [enabled], [albumId]
+-- )
+-- VALUES
+-- ( -- values for the columns in the list above
+--  'مبني الإدارة العامة 01',
+--  'Administration Headquarter 01',
+--  'https://i.ibb.co/F4qWYXf/01.png',
+--  'https://i.ibb.co/GQ3JM91/01.png',
+--  GETUTCDATE(), 1, 1, 3
+-- ),
+-- ( -- values for the columns in the list above
+--  'مبني الإدارة العامة 02',
+--  'Administration Headquarter 02',
+--  'https://i.ibb.co/02qkZ9f/02.png',
+--  'https://i.ibb.co/mTJmtyH/02.png',
+--  GETUTCDATE(), 1, 1, 3
+-- ),
+-- ( -- values for the columns in the list above
+--  'مبني الإدارة العامة 03',
+--  'Administration Headquarter 03',
+--  'https://i.ibb.co/MfzzSXZ/03.png',
+--  'https://i.ibb.co/jzCCfpb/03.png',
+--  GETUTCDATE(), 1, 1, 3
+-- ),
+-- ( -- values for the columns in the list above
+--  'مبني الإدارة العامة 04',
+--  'Administration Headquarter 04',
+--  'https://i.ibb.co/fYtXzvn/04.png',
+--  'https://i.ibb.co/XZpWr83/04.png',
+--  GETUTCDATE(), 1, 1, 3
+-- ),
+-- ( -- values for the columns in the list above
+--  'مبني الإدارة العامة 05',
+--  'Administration Headquarter 05',
+--  'https://i.ibb.co/mzYS93H/05.png',
+--  'https://i.ibb.co/DK6L9Z7/05.png',
+--  GETUTCDATE(), 1, 1, 3
+-- )
+-- GO
+
+-- Update photo 05 in [Administration Headquarter Album]
+-- UPDATE [dbo].[photos]
+-- SET
+--  [photoTitleAr] = 'مبني الإدارة العامة 05',
+--  [photoTitleEn] = 'Administration Headquarter 05'
+-- WHERE [photoId] = 11
+-- GO
+
+-- Update photo 01 in [Laboratories Album]
+-- UPDATE [dbo].[photos]
+-- SET
+--  [photoTitleAr] = 'مختبر الأحياء',
+--  [photoTitleEn] = 'Biology Lab'
+-- WHERE [photoId] = 12
+-- GO
+
+-- Update photo 02 in [Laboratories Album]
+-- UPDATE [dbo].[photos]
+-- SET
+--  [photoTitleAr] = 'معمل الحاسب الآلي',
+--  [photoTitleEn] = 'Computer Lab'
+-- WHERE [photoId] = 13
+-- GO
+
+-- insert [Laboratories Album] photos
+-- Insert rows into table '[dbo].[photos]'
+-- INSERT INTO [dbo].[photos]
+-- ( -- columns to insert data into
+--  [photoTitleAr],
+--  [photoTitleEn],
+--  [photoURL],
+--  [thumbURL],
+--  [photoDate], [approved], [enabled], [albumId]
+-- )
+-- VALUES
+-- ( -- values for the columns in the list above
+--  'مختبر الأحياء',
+--  'Biology Lab',
+--  'https://i.ibb.co/1rk1vg5/01.jpg',
+--  'https://i.ibb.co/dPRFWTq/01.jpg',
+--  GETUTCDATE(), 1, 1, 4
+-- ),
+-- ( -- values for the columns in the list above
+--  'معمل الحاسب الآلي',
+--  'Computer Lab',
+--  'https://i.ibb.co/PhRLBcf/02.jpg',
+--  'https://i.ibb.co/qszSbNP/02.jpg',
+--  GETUTCDATE(), 1, 1, 4
+-- )
+-- GO
+
+-- insert [Playgrounds Album] photos
+-- Insert rows into table '[dbo].[photos]'
+-- INSERT INTO [dbo].[photos]
+-- ( -- columns to insert data into
+--  [photoTitleAr],
+--  [photoTitleEn],
+--  [photoURL],
+--  [thumbURL],
+--  [photoDate], [approved], [enabled], [albumId]
+-- )
+-- VALUES
+-- ( -- values for the columns in the list above
+--  'ملعب كرة القدم',
+--  'Football Playround',
+--  'https://i.ibb.co/Qk3hSj7/01.png',
+--  'https://i.ibb.co/BG5vWKH/01.png',
+--  GETUTCDATE(), 1, 1, 5
+-- ),
+-- ( -- values for the columns in the list above
+--  'حمام السباحة',
+--  'Swimming Pool',
+--  'https://i.ibb.co/9tCqX5T/02.png',
+--  'https://i.ibb.co/cL7N5nF/02.png',
+--  GETUTCDATE(), 1, 1, 5
+-- ),
+-- ( -- values for the columns in the list above
+--  'كوفي شوب',
+--  'Coffee Shop',
+--  'https://i.ibb.co/LYx5DkH/03.png',
+--  'https://i.ibb.co/5GrFXMw/03.png',
+--  GETUTCDATE(), 1, 1, 5
+-- )
+-- GO
+
 -- SELECT * from [dbo].[photos]
+-- WHERE [albumId] IN (3,4,5)
+-- GO
 
 -- insert photos instructions
 ------------------------------
