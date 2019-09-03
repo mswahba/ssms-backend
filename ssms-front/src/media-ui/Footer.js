@@ -149,14 +149,14 @@ function SectionContent ({ lang, item, id }) {
       return (
         <>
           <FooterIcon className={getItemIcon(item.aboutTitleEn)}></FooterIcon>
-          <SectionLink href={item.aboutTextEn}>
+          <SectionLink href={item.aboutTextEn} target='_blank'>
             {lang === 'ar' ? item.aboutTitleAr : item.aboutTitleEn}
           </SectionLink>
         </>
       )
     case 7:
       return (
-        <a href={item.aboutTextEn} className="flex-center">
+        <a className="flex-center" href={item.aboutTextEn} target='_blank'>
           <SocialIcon title={item.aboutTitleEn} className={getItemIcon(item.aboutTitleEn)}></SocialIcon>
         </a>
       )
