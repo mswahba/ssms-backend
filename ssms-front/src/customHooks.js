@@ -55,7 +55,9 @@ async function _request(requestId, request, successToast, errorToast) {
   }
 }
 
-async function getData({ requestId, request, localStorageKey, successToast, errorToast, timeout, setState }) {
+export const INITIAL_STATE = { loading: false, error: null, data: null }
+
+export async function getData({ requestId, request, localStorageKey, successToast, errorToast, timeout, setState }) {
   let data = null
   // setState to loading_state
   setState({ loading: true, error: null, data: null });
@@ -88,7 +90,7 @@ async function getData({ requestId, request, localStorageKey, successToast, erro
 };
 
 export function useFetch({ requestId, request, localStorageKey, successToast = null, errorToast = null, timeout = time.day, deps = [] }) {
-  const [state, setState] = useState({ loading: true, error: null, data: null });
+  const [state, setState] = useState({ ...INITIAL_STATE });
   useEffect( () => {
     getData({ requestId, request, localStorageKey, successToast, errorToast, timeout, setState });
   }, deps);

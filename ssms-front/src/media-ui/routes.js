@@ -1,6 +1,7 @@
 import Home from './home/Home'
 import Sections from './Sections'
 import Facilities from './Facilities'
+import Albums from './Albums'
 import AdmissionPolicy from './admission/AdmissionPolicy'
 import AdmissionProcedures from './admission/AdmissionProcedures'
 import Fees from './admission/Fees'
@@ -13,6 +14,7 @@ export const navLinks = (trans) => ([
   { path: '/home', text: trans('home.nav.home'), icon: 'fas fa-home', component: Home },
   { path: '/sections', text: trans('home.nav.sections'), icon: 'fas fa-landmark', component: Sections },
   { path: '/facilities', text: trans('home.nav.facilities'), icon: 'fas fa-flask', component: Facilities },
+  { path: '/albums', text: trans('home.nav.albums'), icon: 'fas fa-images', component: Albums },
   {
     id: 'admission-dropdown',
     path: '/admission',
