@@ -12,6 +12,14 @@ import Loading from '../../shared/Loading';
 const Slides = styled.ul`
   height: 100% !important;
 `
+const SlideCaption = styled.div`
+  background-color: rgba(0,0,0,0.3);
+  width: auto !important;
+  padding: 1rem 2rem;
+`
+const CaptionTitle = styled.h3`
+  margin: 0 0 0.5rem 0;
+`
 // the heroSlider materialize-css instance
 let heroSlider
 const captionAligns = [
@@ -35,14 +43,14 @@ const renderSlides = (lang, slides) => {
   return slides.map( (slide, i) => (
     <li key={i+1}>
       <img src={slide.photoURL} />
-      <div className={`caption ${captionAligns[Number.between(0,2)]}`}>
-        <h3>
+      <SlideCaption className={`caption ${captionAligns[Number.between(0,2)]}`}>
+        <CaptionTitle>
           {(lang === 'ar')? slide.photoTitleAr : slide.photoTitleEn}
-        </h3>
+        </CaptionTitle>
         <h5 className='light grey-text text-lighten-3'>
           {(lang === 'ar')? slide.descriptionAr : slide.descriptionEn}
         </h5>
-      </div>
+      </SlideCaption>
     </li>
   ))
 }
