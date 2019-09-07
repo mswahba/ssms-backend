@@ -4,6 +4,23 @@ import styled from 'styled-components'
 
 import { initSidenav, initDropdown } from '../helpers'
 
+const NavWrapper = styled.nav`
+  height: 110px;
+  line-height: 55px;
+`
+const LogoImg = styled.img`
+  display: block;
+  margin: 0 15%;
+  width: 70%;
+`
+const LogoText = styled.span`
+  font-size: 1.8rem;
+  position: relative;
+  top: -1rem;
+`
+const NavItemsWrapper = styled.ul`
+  height: 50%;
+`
 const NavDropdown = styled.ul`
   min-width: 30% !important;
 `
@@ -13,9 +30,9 @@ const NavDropdownItem = styled.li`
 
 const renderNavLinks = (id, className, navLinks, activeLink, setActiveLink) => {
   return (
-    <ul id={id} className={className}>
+    <NavItemsWrapper id={id} className={className}>
       {navLinks.map((link, i) => (
-        <li key={i + 1} className={activeLink.includes(link.path) ? 'active' : ''}>
+        <li key={i + 1} className={`h-100 ${activeLink.includes(link.path) ? 'active' : ''}`}>
           {(link.component)
             ? <NavLink to={link.path} onClick={() => setActiveLink(link.path)} >
                 <i className={`${link.icon} right`}></i>
@@ -29,7 +46,7 @@ const renderNavLinks = (id, className, navLinks, activeLink, setActiveLink) => {
           }
         </li>
       ))}
-    </ul>
+    </NavItemsWrapper>
   )
 }
 
@@ -72,13 +89,17 @@ function Navbar({ navTitle, navLinks, lang, defaultPath }) {
   return (
     <>
       <div className="navbar-fixed">
-        <nav>
+        <NavWrapper>
           <div className="nav-wrapper">
-            <Link to={navTitle.path} className="brand-logo">{navTitle.text}</Link>
+            <Link to={navTitle.path} className='brand-logo flex-column-center h-100'>
+              <LogoImg src='/images/assadara_logo.png' alt={navTitle.text} />
+              <LogoText>{navTitle.text}</LogoText>
+            </Link>
             <a data-target="mobile-nav" className="sidenav-trigger hide-on-large-only"><i className="material-icons">menu</i></a>
             {renderNavLinks("main-nav", "hide-on-med-and-down left", navLinks, activeLink, setActiveLink)}
+            {renderNavLinks("main-nav", "hide-on-med-and-down left", navLinks, activeLink, setActiveLink)}
           </div>
-        </nav>
+        </NavWrapper>
       </div>
       {renderNavLinks("mobile-nav", "sidenav", navLinks, activeLink, setActiveLink)}
       {renderNavSubLinks(lang, navLinks, activeLink, setActiveLink)}
