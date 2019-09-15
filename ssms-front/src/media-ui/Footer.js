@@ -13,14 +13,7 @@ const contactEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|9'
 const usefulEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|10'
 const socialEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|7'
 
-// const _socialColors = {
-//   'Facebook': '#002a82',
-//   'Youtube': '#b31217',
-//   'Instagram': '#003789',
-//   'Twitter': '#55acee',
-//   'Snapchat': '#fffc00'
-// }
-
+//#region styled components
 const FooterWrapper = styled.footer`
   margin-bottom: 0 !important;
   background-color: var(--main-bg-color);
@@ -53,7 +46,6 @@ const SocialWrapper = styled.div`
   align-items: center;
   flex-wrap: wrap;
 `
-// color: ${({ title }) => `${_socialColors[title]} !important`};
 const SocialIcon = styled.i`
   font-size: 3.5rem;
   margin: 0 0.5rem 1rem;
@@ -77,6 +69,7 @@ const SectionLink = styled.a`
     text-decoration: underline;
   }
 `
+//#endregion
 
 const getSectionTitle = (id, trans) => {
   switch (id) {
@@ -157,7 +150,10 @@ function SectionContent ({ lang, item, id }) {
     case 7:
       return (
         <a className="flex-center" href={item.aboutTextEn} target='_blank'>
-          <SocialIcon title={item.aboutTitleEn} className={getItemIcon(item.aboutTitleEn)}></SocialIcon>
+          <SocialIcon
+            title={lang === 'ar' ? item.aboutTitleAr : item.aboutTitleEn}
+            className={getItemIcon(item.aboutTitleEn)}
+          />
         </a>
       )
     default:

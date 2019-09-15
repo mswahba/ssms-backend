@@ -518,6 +518,7 @@
 -- )
 
 -- SELECT * FROM [dbo].[abouts]
+-- WHERE [categoryId] = 7
 -- GO
 
 -- Update rows in table '[dbo].[abouts]'

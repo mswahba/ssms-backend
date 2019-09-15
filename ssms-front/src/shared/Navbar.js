@@ -3,10 +3,35 @@ import { Link, NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { initSidenav, initDropdown } from '../helpers'
+import { useFetch } from '../customHooks'
+import { time } from '../helpers'
 
+import Loading from '../shared/Loading'
+
+const key = 'social_links'
+const socialEndpoint = '/abouts?filters=schoolId|=|1,categoryId|=|7'
+
+const getLinkIcon = (title) => {
+  switch(title) {
+    case 'Twitter':
+      return 'fab fa-twitter-square'
+    case 'Youtube':
+      return 'fab fa-youtube'
+    case 'Facebook':
+      return 'fab fa-facebook-square'
+    case 'Instagram':
+      return 'fab fa-instagram'
+    case 'Snapchat':
+      return 'fab fa-snapchat-square'
+    default:
+      return '';
+  }
+}
+
+//#region styled components
 const NavWrapper = styled.nav`
-  height: 110px;
-  line-height: 55px;
+  height: 100px;
+  line-height: 50px;
 `
 const LogoImg = styled.img`
   display: block;
@@ -27,6 +52,20 @@ const NavDropdown = styled.ul`
 const NavDropdownItem = styled.li`
   margin: ${({ lang }) => lang === 'ar' ? "0 -1rem 0 0" : "0 0 0 -1rem"};
 `
+const NavLinkIcon = styled.i`
+  line-height: 50px !important;
+`
+const SocialIcon = styled.i`
+  height: auto !important;
+  line-height: inherit !important;
+  font-size: 2rem;
+  color: #eaeaea !important;
+  transition: transform 0.2s ease-out;
+  &:hover {
+    transform: scale(1.3);
+  }
+`
+//#endregion
 
 const renderNavLinks = (id, className, navLinks, activeLink, setActiveLink) => {
   return (
@@ -35,13 +74,13 @@ const renderNavLinks = (id, className, navLinks, activeLink, setActiveLink) => {
         <li key={i + 1} className={`h-100 ${activeLink.includes(link.path) ? 'active' : ''}`}>
           {(link.component)
             ? <NavLink to={link.path} onClick={() => setActiveLink(link.path)} >
-                <i className={`${link.icon} right`}></i>
+                <NavLinkIcon className={`${link.icon} right`}></NavLinkIcon>
                 {link.text}
               </NavLink>
             : <a data-target={ (id === 'main-nav')? link.id+'-main' : link.id+'-mobile' } className="dropdown-trigger">
-                <i className={`${link.icon} right`}></i>
+                <NavLinkIcon className={`${link.icon} right`}></NavLinkIcon>
                 {link.text}
-                <i className="material-icons left">arrow_drop_down</i>
+                <NavLinkIcon className="material-icons left">arrow_drop_down</NavLinkIcon>
               </a>
           }
         </li>
@@ -78,6 +117,40 @@ const renderNavSubLinks = (lang, navLinks, activeLink, setActiveLink) => {
   ))
 }
 
+function SocialLink({ lang, aboutTitleAr, aboutTitleEn, aboutTextEn }) {
+  return (
+    <li className='h-100 flex-center'>
+      <a className='h-100 flex-center' href={aboutTextEn} target='_blank'>
+        <SocialIcon
+          title={lang === 'ar' ? aboutTitleAr : aboutTitleEn}
+          className={getLinkIcon(aboutTitleEn)}
+        />
+      </a>
+    </li>
+  )
+}
+
+function TopNavLinks ({ lang, id, className }) {
+  // get social links from LS OR Server
+  const { loading, error, data } = useFetch({
+    requestId: key,
+    request: ['get', socialEndpoint],
+    errorToast: ['error', 'something went wrong'],
+    localStorageKey: key,
+    timeout: time.day
+  })
+  return (
+    <NavItemsWrapper id={id} className={className}>
+      { (loading)
+          ? <Loading />
+          : (data)
+            ? data.map(link => <SocialLink key={link.aboutId} lang={lang} {...link} />)
+            : null
+      }
+    </NavItemsWrapper>
+  )
+}
+
 function Navbar({ navTitle, navLinks, lang, defaultPath }) {
   const [activeLink, setActiveLink] = React.useState(defaultPath)
   // after component mounted
@@ -96,7 +169,7 @@ function Navbar({ navTitle, navLinks, lang, defaultPath }) {
               <LogoText>{navTitle.text}</LogoText>
             </Link>
             <a data-target="mobile-nav" className="sidenav-trigger hide-on-large-only"><i className="material-icons">menu</i></a>
-            {renderNavLinks("main-nav", "hide-on-med-and-down left", navLinks, activeLink, setActiveLink)}
+            <TopNavLinks lang={lang} id='top-nav' className='hide-on-med-and-down left' />
             {renderNavLinks("main-nav", "hide-on-med-and-down left", navLinks, activeLink, setActiveLink)}
           </div>
         </NavWrapper>
