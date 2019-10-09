@@ -7,6 +7,8 @@
 @import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 /* font-awesome icons */
 @import 'https://use.fontawesome.com/releases/v5.8.1/css/all.css';
+/* flag-icon-css icons */
+@import 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/css/flag-icon.min.css';
 /* #endregion */
 
 /* #region css colors */
@@ -24,6 +26,9 @@
 /* #region helper classes */
 .hidden {
   display: none !important;
+}
+.rounded {
+  border-radius: 100%;
 }
 .flex {
   display: flex;

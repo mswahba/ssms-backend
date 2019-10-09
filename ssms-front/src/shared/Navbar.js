@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import styled from 'styled-components'
+import { withLocalize } from 'react-localize-redux'
 
 import { initSidenav, initDropdown } from '../helpers'
 import { useFetch } from '../customHooks'
@@ -43,6 +44,12 @@ const LogoText = styled.span`
   position: relative;
   top: -1rem;
 `
+const NavLinksContainer = styled.div( ({ lang }) => ({
+  width: '80%',
+  position: 'absolute',
+  [lang === 'ar' ? 'left' : 'right']: 0,
+}))
+
 const NavItemsWrapper = styled.ul`
   height: 50%;
 `
@@ -67,29 +74,80 @@ const SocialIcon = styled.i`
 `
 //#endregion
 
-const renderNavLinks = (id, className, navLinks, activeLink, setActiveLink) => {
+function SocialLink({ lang, aboutTitleAr, aboutTitleEn, aboutTextEn }) {
   return (
-    <NavItemsWrapper id={id} className={className}>
-      {navLinks.map((link, i) => (
-        <li key={i + 1} className={`h-100 ${activeLink.includes(link.path) ? 'active' : ''}`}>
-          {(link.component)
-            ? <NavLink to={link.path} onClick={() => setActiveLink(link.path)} >
-                <NavLinkIcon className={`${link.icon} right`}></NavLinkIcon>
-                {link.text}
-              </NavLink>
-            : <a data-target={ (id === 'main-nav')? link.id+'-main' : link.id+'-mobile' } className="dropdown-trigger">
-                <NavLinkIcon className={`${link.icon} right`}></NavLinkIcon>
-                {link.text}
-                <NavLinkIcon className="material-icons left">arrow_drop_down</NavLinkIcon>
-              </a>
-          }
-        </li>
-      ))}
-    </NavItemsWrapper>
+    <li className='h-100 flex-center'>
+      <a className='h-100 flex-center' href={aboutTextEn} target='_blank'>
+        <SocialIcon
+          title={lang === 'ar' ? aboutTitleAr : aboutTitleEn}
+          className={getLinkIcon(aboutTitleEn)}
+        />
+      </a>
+    </li>
   )
 }
 
-const renderDropdown = (link, id, activeLink, setActiveLink, lang) => {
+function TopNavLinks ({ lang, setActiveLanguage }) {
+  // get social links from LS OR Server
+  const { loading, error, data } = useFetch({
+    requestId: key,
+    request: ['get', socialEndpoint],
+    errorToast: ['error', 'something went wrong'],
+    localStorageKey: key,
+    timeout: time.day
+  })
+  return (
+    <li className='w-100 h-100 flex-between'>
+      <ul className='flex-b-25 h-100'>
+        <li className='h-100 flex-center'
+          onClick={ _ => void setActiveLanguage( lang === 'ar' ? 'en' : 'ar') }
+        >
+          <a className='h-100 flex-center'>
+            <i className={`flag-icon flag-icon-${lang === 'ar' ? 'sa' : 'us'}`}></i>
+            <span className={lang === 'ar' ? 'mr-1' : 'ml-1'}>
+              {lang === 'ar' ? 'العربية' : 'English'}
+            </span>
+          </a>
+        </li>
+      </ul>
+      <ul className='flex-b-70'>
+        { (loading)
+            ? <Loading />
+            : (data)
+              ? data.map(link => <SocialLink key={link.aboutId} lang={lang} {...link} />)
+              : null
+        }
+      </ul>
+    </li>
+  )
+}
+
+function NavLinks ({ id, className, lang, navLinks, activeLink, setActiveLink, setActiveLanguage }) {
+  return (
+    <NavLinksContainer className='h-100' lang={lang}>
+      <NavItemsWrapper id={id} className={className}>
+        <TopNavLinks lang={lang} setActiveLanguage={setActiveLanguage} />
+        {navLinks.map((link, i) => (
+          <li key={i + 1} className={`h-100 ${activeLink.includes(link.path) ? 'active' : ''}`}>
+            {(link.component)
+              ? <NavLink to={link.path} onClick={() => setActiveLink(link.path)} >
+                  <NavLinkIcon className={`${link.icon} right`}></NavLinkIcon>
+                  {link.text}
+                </NavLink>
+              : <a data-target={ (id === 'main-nav')? link.id+'-main' : link.id+'-mobile' } className="dropdown-trigger">
+                  <NavLinkIcon className={`${link.icon} right`}></NavLinkIcon>
+                  {link.text}
+                  <NavLinkIcon className="material-icons left">arrow_drop_down</NavLinkIcon>
+                </a>
+            }
+          </li>
+        ))}
+      </NavItemsWrapper>
+    </NavLinksContainer>
+  )
+}
+
+function NavLinkDropdown ({ id, lang, link, activeLink, setActiveLink }) {
   return (
     <NavDropdown id={`${link.id}-${id}`} className="dropdown-content">
       {link.children.map((item, i) => (
@@ -107,51 +165,17 @@ const renderDropdown = (link, id, activeLink, setActiveLink, lang) => {
   )
 }
 
-const renderNavSubLinks = (lang, navLinks, activeLink, setActiveLink) => {
+function NavSubLinks ({ lang, navLinks, activeLink, setActiveLink }) {
   const linksWithChildren = navLinks.filter( link => link.children && Array.isArray(link.children) )
   return linksWithChildren.map((link, index) => (
     <div key={index + 1} className="dropdown-contents">
-      { renderDropdown(link, 'main', activeLink, setActiveLink, lang) }
-      { renderDropdown(link, 'mobile', activeLink, setActiveLink, lang) }
+      <NavLinkDropdown id='main' lang={lang} link={link} activeLink={activeLink} setActiveLink={setActiveLink} />
+      <NavLinkDropdown id='mobile' lang={lang} link={link} activeLink={activeLink} setActiveLink={setActiveLink} />
     </div>
   ))
 }
 
-function SocialLink({ lang, aboutTitleAr, aboutTitleEn, aboutTextEn }) {
-  return (
-    <li className='h-100 flex-center'>
-      <a className='h-100 flex-center' href={aboutTextEn} target='_blank'>
-        <SocialIcon
-          title={lang === 'ar' ? aboutTitleAr : aboutTitleEn}
-          className={getLinkIcon(aboutTitleEn)}
-        />
-      </a>
-    </li>
-  )
-}
-
-function TopNavLinks ({ lang, id, className }) {
-  // get social links from LS OR Server
-  const { loading, error, data } = useFetch({
-    requestId: key,
-    request: ['get', socialEndpoint],
-    errorToast: ['error', 'something went wrong'],
-    localStorageKey: key,
-    timeout: time.day
-  })
-  return (
-    <NavItemsWrapper id={id} className={className}>
-      { (loading)
-          ? <Loading />
-          : (data)
-            ? data.map(link => <SocialLink key={link.aboutId} lang={lang} {...link} />)
-            : null
-      }
-    </NavItemsWrapper>
-  )
-}
-
-function Navbar({ navTitle, navLinks, lang, defaultPath }) {
+function Navbar({ navTitle, navLinks, lang, defaultPath, setActiveLanguage }) {
   const [activeLink, setActiveLink] = React.useState(defaultPath)
   // after component mounted
   React.useEffect(() => {
@@ -169,15 +193,14 @@ function Navbar({ navTitle, navLinks, lang, defaultPath }) {
               <LogoText>{navTitle.text}</LogoText>
             </Link>
             <a data-target="mobile-nav" className="sidenav-trigger hide-on-large-only"><i className="material-icons">menu</i></a>
-            <TopNavLinks lang={lang} id='top-nav' className='hide-on-med-and-down left' />
-            {renderNavLinks("main-nav", "hide-on-med-and-down left", navLinks, activeLink, setActiveLink)}
+            <NavLinks id="main-nav" className="hide-on-med-and-down left" lang={lang} navLinks={navLinks} activeLink={activeLink} setActiveLink={setActiveLink} setActiveLanguage={setActiveLanguage} />
           </div>
         </NavWrapper>
       </div>
-      {renderNavLinks("mobile-nav", "sidenav", navLinks, activeLink, setActiveLink)}
-      {renderNavSubLinks(lang, navLinks, activeLink, setActiveLink)}
+      <NavLinks id="mobile-nav" className="sidenav" lang={lang} navLinks={navLinks} activeLink={activeLink} setActiveLink={setActiveLink} setActiveLanguage={setActiveLanguage} />
+      <NavSubLinks lang={lang} navLinks={navLinks} activeLink={activeLink} setActiveLink={setActiveLink} />
     </>
   )
 }
 
-export default Navbar
+export default withLocalize(Navbar)
