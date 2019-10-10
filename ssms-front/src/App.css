@@ -23,6 +23,7 @@
   --third-fr-color: #ffffff;
 }
 /* #endregion */
+
 /* #region helper classes */
 .hidden {
   display: none !important;
@@ -412,6 +413,7 @@ ul.autocomplete-content li img {
   text-align: right;
 }
 /* #endregion */
+
 /* #region materialize dropdown */
 a.dropdown-trigger,
 a.sidenav-trigger {

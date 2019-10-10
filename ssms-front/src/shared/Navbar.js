@@ -54,10 +54,8 @@ const NavItemsWrapper = styled.ul`
   height: 50%;
 `
 const NavDropdown = styled.ul`
-  min-width: 30% !important;
-`
-const NavDropdownItem = styled.li`
-  margin: ${({ lang }) => lang === 'ar' ? "0 -1rem 0 0" : "0 0 0 -1rem"};
+  min-width: 200% !important;
+  top: 50px !important;
 `
 const NavLinkIcon = styled.i`
   line-height: 50px !important;
@@ -164,17 +162,15 @@ function NavLinks ({ id, className, lang, trans, navLinks, activeLink, setActive
 
 function NavLinkDropdown ({ id, lang, link, activeLink, setActiveLink }) {
   return (
-    <NavDropdown id={`${link.id}-${id}`} className="dropdown-content">
+    <NavDropdown id={`${link.id}-${id}`} lang={lang} className="dropdown-content">
       {link.children.map((item, i) => (
-        <NavDropdownItem
-          key={i + 1}
-          lang={lang}
+        <li key={i + 1}
           className={activeLink.includes(item.path) ? 'active' : ''}>
-          <NavLink to={item.path} onClick={() => setActiveLink(item.path)}>
-            <i className={`${item.icon || 'fas fa-file-alt'} right`}></i>
+          <NavLink to={item.path} onClick={_ => setActiveLink(item.path)}>
+            <i className={`${item.icon || 'fas fa-file-alt'} ${lang === 'ar' ? 'right' : 'left'}`}></i>
             {item.text}
           </NavLink>
-        </NavDropdownItem>
+        </li>
       ))}
     </NavDropdown>
   )

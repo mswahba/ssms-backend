@@ -9,11 +9,23 @@ div.spinner-container {
   height: 70vh;
 }
 /* #region navbar */
-.navbar-fixed {
-  overflow: hidden;
+header {
+  height: 100px;
 }
 header nav {
   background-color: var(--main-bg-color);
+}
+.navbar-fixed {
+  overflow: hidden;
+}
+div#root header .navbar-fixed {
+  height: 100%;
+}
+div#root .dropdown-content li>a>i {
+  margin: 0;
+}
+nav ul li {
+  position: relative;
 }
 header .dropdown-content li > a,
 header .dropdown-content li > span {
