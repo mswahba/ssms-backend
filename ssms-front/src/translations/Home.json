@@ -27,8 +27,20 @@
       ]
     },
     "nav": {
+      "language": [
+        "العربية",
+        "English"
+      ],
+      "signIn": [
+        "Sign In",
+        "تسجيل دخول"
+      ],
+      "signUp": [
+        "Sign Up",
+        "حساب جديد"
+      ],
       "home": [
-        "home",
+        "Home",
         "الرئيسية"
       ],
       "sections": [

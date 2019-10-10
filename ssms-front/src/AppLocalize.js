@@ -30,7 +30,7 @@ class AppLocalize extends Component {
       options: { renderInnerHtml: true, renderToStaticMarkup }
     });
     // set active language manually
-    props.setActiveLanguage('ar');
+    // props.setActiveLanguage('ar');
   }
   render() {
     const lang = getActiveLanguage(store.getState().localize).code;

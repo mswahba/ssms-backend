@@ -87,7 +87,7 @@ function SocialLink({ lang, aboutTitleAr, aboutTitleEn, aboutTextEn }) {
   )
 }
 
-function TopNavLinks ({ lang, setActiveLanguage }) {
+function TopNavLinks ({ lang, trans, setActiveLanguage }) {
   // get social links from LS OR Server
   const { loading, error, data } = useFetch({
     requestId: key,
@@ -98,19 +98,23 @@ function TopNavLinks ({ lang, setActiveLanguage }) {
   })
   return (
     <li className='w-100 h-100 flex-between'>
-      <ul className='flex-b-25 h-100'>
-        <li className='h-100 flex-center'
-          onClick={ _ => void setActiveLanguage( lang === 'ar' ? 'en' : 'ar') }
-        >
+      {/* User Account Links */}
+      <ul className='h-100'>
+        <li className='h-100 flex-center'>
           <a className='h-100 flex-center'>
-            <i className={`flag-icon flag-icon-${lang === 'ar' ? 'sa' : 'us'}`}></i>
-            <span className={lang === 'ar' ? 'mr-1' : 'ml-1'}>
-              {lang === 'ar' ? 'العربية' : 'English'}
-            </span>
+            <i className='fas fa-sign-in-alt'></i>
+            <span className={lang === 'ar' ? 'mr-1' : 'ml-1'}>{trans('home.nav.signIn')}</span>
+          </a>
+        </li>
+        <li className='h-100 flex-center'>
+          <a className='h-100 flex-center'>
+            <i className='fas fa-user-plus'></i>
+            <span className={lang === 'ar' ? 'mr-1' : 'ml-1'}>{trans('home.nav.signUp')}</span>
           </a>
         </li>
       </ul>
-      <ul className='flex-b-70'>
+      {/* Social Links */}
+      <ul className='h-100 flex-b-50 flex-center'>
         { (loading)
             ? <Loading />
             : (data)
@@ -118,26 +122,37 @@ function TopNavLinks ({ lang, setActiveLanguage }) {
               : null
         }
       </ul>
+      {/* Change Language */}
+      <ul className='h-100'>
+        <li className='h-100 flex-center'
+          onClick={ _ => void setActiveLanguage( lang === 'ar' ? 'en' : 'ar') }
+        >
+          <a className='h-100 flex-center'>
+            <span className={lang === 'ar' ? 'ml-1' : 'mr-1'}>{trans('home.nav.language')}</span>
+            <i className={`flag-icon flag-icon-${lang === 'ar' ? 'us' : 'sa'}`}></i>
+          </a>
+        </li>
+      </ul>
     </li>
   )
 }
 
-function NavLinks ({ id, className, lang, navLinks, activeLink, setActiveLink, setActiveLanguage }) {
+function NavLinks ({ id, className, lang, trans, navLinks, activeLink, setActiveLink, setActiveLanguage }) {
   return (
     <NavLinksContainer className='h-100' lang={lang}>
       <NavItemsWrapper id={id} className={className}>
-        <TopNavLinks lang={lang} setActiveLanguage={setActiveLanguage} />
+        <TopNavLinks lang={lang} setActiveLanguage={setActiveLanguage} trans={trans} />
         {navLinks.map((link, i) => (
           <li key={i + 1} className={`h-100 ${activeLink.includes(link.path) ? 'active' : ''}`}>
             {(link.component)
               ? <NavLink to={link.path} onClick={() => setActiveLink(link.path)} >
-                  <NavLinkIcon className={`${link.icon} right`}></NavLinkIcon>
+                  <NavLinkIcon className={`${link.icon} ${lang === 'ar' ? 'right' : 'left'}`}></NavLinkIcon>
                   {link.text}
                 </NavLink>
               : <a data-target={ (id === 'main-nav')? link.id+'-main' : link.id+'-mobile' } className="dropdown-trigger">
-                  <NavLinkIcon className={`${link.icon} right`}></NavLinkIcon>
+                  <NavLinkIcon className={`${link.icon} ${lang === 'ar' ? 'right' : 'left'}`}></NavLinkIcon>
                   {link.text}
-                  <NavLinkIcon className="material-icons left">arrow_drop_down</NavLinkIcon>
+                  <NavLinkIcon className={`material-icons ${lang === 'ar' ? 'left' : 'right'}`}>arrow_drop_down</NavLinkIcon>
                 </a>
             }
           </li>
@@ -175,7 +190,7 @@ function NavSubLinks ({ lang, navLinks, activeLink, setActiveLink }) {
   ))
 }
 
-function Navbar({ navTitle, navLinks, lang, defaultPath, setActiveLanguage }) {
+function Navbar({ navTitle, navLinks, lang, trans, defaultPath, setActiveLanguage }) {
   const [activeLink, setActiveLink] = React.useState(defaultPath)
   // after component mounted
   React.useEffect(() => {
@@ -193,11 +208,11 @@ function Navbar({ navTitle, navLinks, lang, defaultPath, setActiveLanguage }) {
               <LogoText>{navTitle.text}</LogoText>
             </Link>
             <a data-target="mobile-nav" className="sidenav-trigger hide-on-large-only"><i className="material-icons">menu</i></a>
-            <NavLinks id="main-nav" className="hide-on-med-and-down left" lang={lang} navLinks={navLinks} activeLink={activeLink} setActiveLink={setActiveLink} setActiveLanguage={setActiveLanguage} />
+            <NavLinks id="main-nav" className="hide-on-med-and-down left" lang={lang} trans={trans} navLinks={navLinks} activeLink={activeLink} setActiveLink={setActiveLink} setActiveLanguage={setActiveLanguage} />
           </div>
         </NavWrapper>
       </div>
-      <NavLinks id="mobile-nav" className="sidenav" lang={lang} navLinks={navLinks} activeLink={activeLink} setActiveLink={setActiveLink} setActiveLanguage={setActiveLanguage} />
+      <NavLinks id="mobile-nav" className="sidenav" lang={lang} trans={trans} navLinks={navLinks} activeLink={activeLink} setActiveLink={setActiveLink} setActiveLanguage={setActiveLanguage} />
       <NavSubLinks lang={lang} navLinks={navLinks} activeLink={activeLink} setActiveLink={setActiveLink} />
     </>
   )

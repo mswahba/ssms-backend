@@ -15,7 +15,7 @@ function MediaLayout ({ trans, lang }) {
 
   return (
     <div className='rtl'>
-      <Header navTitle={navTitle} navLinks={navLinks(trans)} lang={lang} defaultPath={defaultPath} />
+      <Header navTitle={navTitle} navLinks={navLinks(trans)} lang={lang} trans={trans} defaultPath={defaultPath} />
       <MediaRoutes navLinks={routes(trans)} defaultPath={defaultPath} />
       <Footer />
     </div>
