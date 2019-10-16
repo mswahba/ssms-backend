@@ -8,7 +8,7 @@ import { initSlider, getSlider } from '../../helpers'
 import { useFetch } from '../../customHooks'
 import Loading from '../../shared/Loading';
 
-// styles
+//#region styled components
 const Slides = styled.ul`
   height: 100% !important;
 `
@@ -20,14 +20,34 @@ const SlideCaption = styled.div`
 const CaptionTitle = styled.h3`
   margin: 0 0 0.5rem 0;
 `
-// the heroSlider materialize-css instance
+const SliderArrows = styled.div`
+  z-index: 100;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -80%);
+  direction: ltr;
+`
+const SliderArrow = styled.i`
+  font-size: 3.5rem !important;
+  color: #fff !important;
+  cursor: pointer !important;
+`
+//#endregion
+
+//#region local variables heroSlider materialize-css instance
 let heroSlider
 const captionAligns = [
   'left-align',
   'center-align',
   'right-align'
 ]
-// to move slides based on [lang, direction] using heroSlider instance [next(), prev()]
+//#endregion
+
+//#region to move slides based on [lang, direction] using heroSlider instance [next(), prev()]
 const moveSlider = (lang, dir) => (e) => {
   if (dir === 'backward')
     (lang === 'en')
@@ -38,7 +58,9 @@ const moveSlider = (lang, dir) => (e) => {
       ? heroSlider.prev()
       : heroSlider.next()
 }
-// render the slides data
+//#endregion
+
+//#region render the slides data
 const renderSlides = (lang, slides) => {
   return slides.map( (slide, i) => (
     <li key={i+1}>
@@ -54,7 +76,9 @@ const renderSlides = (lang, slides) => {
     </li>
   ))
 }
-// HeroSlider component
+//#endregion
+
+//#region HeroSlider component
 function HeroSlider ({ trans, lang }) {
   // get slides from LS OR Server
   const { loading, error, data: slides } = useFetch({
@@ -83,15 +107,21 @@ function HeroSlider ({ trans, lang }) {
         <Slides className='slides'>
           {renderSlides(lang, slides)}
         </Slides>
-        <div className='slider-buttons'>
-          <i className='material-icons forward'   onClick={moveSlider(lang, 'forward')}>arrow_forward_ios</i>
-          <i className='material-icons backward'  onClick={moveSlider(lang, 'backward')}>arrow_back_ios</i>
-        </div>
+        <SliderArrows>
+          <SliderArrow className='material-icons backward' onClick={moveSlider(lang, 'backward')}>
+            arrow_back_ios
+          </SliderArrow>
+          <SliderArrow className='material-icons forward' onClick={moveSlider(lang, 'forward')}>
+            arrow_forward_ios
+          </SliderArrow>
+        </SliderArrows>
       </div>
     )
 
   return null;
 }
+//#endregion
+
 // select the values needed form redux state [get the translate function from localize]
 const mapStateToProps = (state) => ({
   "trans": getTranslate(state.localize),

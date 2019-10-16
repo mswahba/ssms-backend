@@ -1,3 +1,4 @@
+/* #region main styles */
 .container-fluid {
   padding: 0 1rem;
 }
@@ -8,6 +9,8 @@ main, .main {
 div.spinner-container {
   height: 70vh;
 }
+/* #endregion */
+
 /* #region navbar */
 header {
   height: 100px;
@@ -41,28 +44,14 @@ header .dropdown-content li > span.active {
   color: var(--third-fr-color);
 }
 /* #endregion */
+
 /* #region hero-slider */
 .slider .indicators {
   bottom: 4.5rem !important;
   z-index: 100;
 }
-.slider-buttons {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 1.5rem;
-  position: absolute;
-  z-index: 100;
-  width: 100%;
-  top: 50%;
-  transform: translate(0, -80%);
-}
-i.material-icons.forward,
-i.material-icons.backward {
-  cursor: pointer;
-  font-size: 3.5rem;
-  color: #fff;
-}
 /* #endregion */
+
 /* #region Home styles */
 .card-header {
   padding: 1.2rem 1rem;
