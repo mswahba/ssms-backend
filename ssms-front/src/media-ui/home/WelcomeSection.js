@@ -21,6 +21,7 @@ const WelcomeCol = styled.section`
 `
 const WelcomeCard = styled.section`
   height: 100%;
+  overflow: auto;
   margin: 0 !important;
 `
 
@@ -28,7 +29,7 @@ function Welcome({ lang, aboutTitleAr, aboutTitleEn, aboutTextAr, aboutTextEn  }
   return (
     <>
       <WelcomeCol className='col l6 s12'>
-        <WelcomeCard className='card'>
+        <WelcomeCard className='card scroll'>
           <div className='card-content'>
             <span className='card-title content-title'>{lang === 'ar' ? aboutTitleAr : aboutTitleEn}</span>
             <p className='content-text-sm'>{lang === 'ar' ? aboutTextAr : aboutTextEn}</p>
