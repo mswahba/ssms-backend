@@ -114,6 +114,38 @@
         "... لا توجد أخبار حالياً"
       ]
     },
+    "contactUs": {
+      "title": [
+        "Contact Us",
+        "اتصل بنا"
+      ],
+      "fields": {
+        "senderName": [
+          "Name",
+          "الاسم"
+        ],
+        "email": [
+          "Email",
+          "البريد الالكتروني"
+        ],
+        "mobile": [
+          "Mobile",
+          "رقم الجوال"
+        ],
+        "messageTitle": [
+          "Message Title",
+          "العنوان"
+        ],
+        "messageText": [
+          "Message Text",
+          "الموضوع"
+        ],
+        "sendBtn": [
+          "Send",
+          "إرسال"
+        ]
+      }
+    },
     "footer": {
       "contact": [
         "Contact Details",

@@ -14,6 +14,7 @@
     "react-router-dom": "^4.3.1",
     "react-select": "^2.1.0",
     "react-toastify": "^4.2.3",
+    "react-twitter-embed": "^2.0.8",
     "@aspnet/signalr": "^1.0.4",
     "validator": "^10.7.0",
     "axios": "^0.18.0",
