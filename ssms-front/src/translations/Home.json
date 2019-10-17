@@ -144,6 +144,66 @@
           "Send",
           "إرسال"
         ]
+      },
+      "validations": {
+        "senderName": {
+          "required": [
+            "You must enter your name",
+            "يجب عليك كتابة اسمك"
+          ],
+          "alpha": [
+            "Your Name must be letters only",
+            "يجب أن يتكون اسمك من حروف فقط"
+          ],
+          "length": [
+            "Your Name length must be between 5 and 50",
+            "يجب أن يكون عدد حروف اسمك ما بين 5 و 50 حرف"
+          ]
+        },
+        "email": {
+          "required": [
+            "You must enter either email OR mobile",
+            "يجب إدخال بريد الكتروني أو رقم جوال"
+          ],
+          "isEmail": [
+            "Not a valid email address",
+            "صيغة البريد الالكتروني غير صحيحة"
+          ]
+        },
+        "mobile": {
+          "required": [
+            "You must enter either email OR mobile",
+            "يجب إدخال بريد الكتروني أو رقم جوال"
+          ],
+          "isNumeric": [
+            "Mobile must be numbers only",
+            "يجب أن يتكون رقم الجوال من أرقام فقط"
+          ],
+          "length": [
+            "Mobile must be 10 digits",
+            "يجب أن يكون رقم الجوال 10 أرقام"
+          ]
+        },
+        "messageTitle": {
+          "required": [
+            "You must enter a Message Title",
+            "يجب عليك كتابة عنوان للموضوع"
+          ],
+          "length": [
+            "Message Title length must be between 3 and 75",
+            "يجب أن يكون عدد حروف عنوان الموضوع ما بين 3 و 75 حرف"
+          ]
+        },
+        "messageText": {
+          "required": [
+            "You must enter a Message Text",
+            "يجب عليك كتابة محتوي للموضوع"
+          ],
+          "length": [
+            "Message Text length must be between 10 and 1500",
+            "يجب أن يكون عدد حروف محتوي الموضوع ما بين 10 و 1500 حرف"
+          ]
+        }
       }
     },
     "footer": {

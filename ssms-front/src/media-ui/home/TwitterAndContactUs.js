@@ -9,6 +9,10 @@ import { renderInput, Button } from '../../shared/FormInputs'
 
 import { store } from '../../AppStore'
 
+import isEmail from 'validator/lib/isEmail'
+import isLength from 'validator/lib/isLength'
+import isNumeric from 'validator/lib/isNumeric'
+
 function ContactUsForm({ className, trans, handleSubmit, pristine, submitting }) {
   return (
     <form className={`rtl ${className}`} onSubmit={handleSubmit(console.log)}>
@@ -48,20 +52,65 @@ function ContactUsForm({ className, trans, handleSubmit, pristine, submitting })
   )
 }
 
-// form validation
-const validate = ({ }) => {
+//#region form validation
+// senderName
+const validateSenderName = (trans, senderName) => {
+  if (!senderName)
+    return trans("home.contactUs.validations.senderName.required")
+  else if (!senderName.alpha('ar') && !senderName.alpha('en'))
+    return trans("home.contactUs.validations.senderName.alpha")
+  else if ( !isLength(senderName, { min: 5, max: 50 }) )
+    return trans("home.contactUs.validations.senderName.length")
+}
+// email
+const validateEmail = (trans, email, mobile) => {
+  if (!email && !mobile)
+    return trans("home.contactUs.validations.email.required")
+  else if (email && !isEmail(email) )
+    return trans("home.contactUs.validations.email.isEmail")
+}
+// mobile
+const validateMobile = (trans, mobile, email) => {
+  if (!mobile && !email)
+    return trans("home.contactUs.validations.mobile.required")
+  else if ( mobile && !isNumeric(mobile, { no_symbols: true }) )
+    return trans("home.contactUs.validations.mobile.isNumeric")
+  else if ( mobile && !isLength(mobile, { min: 10, max: 10 }) )
+    return trans("home.contactUs.validations.mobile.length")
+}
+// messageTitle
+const validateMessageTitle = (trans, messageTitle) => {
+  if (!messageTitle)
+    return trans("home.contactUs.validations.messageTitle.required")
+  else if ( !isLength(messageTitle, { min: 3, max: 75 }) )
+    return trans("home.contactUs.validations.messageTitle.length")
+}
+// messageText
+const validateMessageText = (trans, messageText) => {
+  if (!messageText)
+    return trans("home.contactUs.validations.messageText.required")
+  else if ( !isLength(messageText, { min: 10, max: 1500 }) )
+    return trans("home.contactUs.validations.messageText.length")
+}
+const validate = ({ senderName, email, mobile, messageTitle, messageText }) => {
   const trans = getTranslate(store.getState().localize);
   const errors = {};
-
+  errors.senderName = validateSenderName(trans, senderName)
+  errors.email = validateEmail(trans, email, mobile)
+  errors.mobile = validateMobile(trans, mobile, email)
+  errors.messageTitle = validateMessageTitle(trans, messageTitle)
+  errors.messageText = validateMessageText(trans, messageText)
   return errors;
 }
+//#endregion
 
-// define the redux form
+//#region define the redux form
 const ContactUs = reduxForm({
   form: 'contactUs',
   enableReinitialize: true,
   validate
 })(ContactUsForm)
+//#endregion
 
 function TwitterEmbed({ className, width, height, theme, accountName, sourceType, lang, buttonSize  }) {
   return (
