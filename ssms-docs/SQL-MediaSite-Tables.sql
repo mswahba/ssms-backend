@@ -1394,3 +1394,28 @@
 -- SET [mainPhotoURL] = 'https://i.ibb.co/wzZ1DN1/05.jpg'
 -- WHERE articleId = 8
 -- GO
+
+-- contactUsMessages table
+--------------------------
+-- CREATE TABLE [dbo].[contactUsMessages] (
+-- 	[messageId] [int] PRIMARY KEY,
+-- 	[senderName] [nvarchar](50) NOT NULL,
+--   [email] [nvarchar](max) NOT NULL,
+--   [mobile] [varchar](10) NOT NULL,
+--   [messageTitle] [nvarchar](75) NOT NULL,
+--   [messageText] [nvarchar](1500) NOT NULL,
+--   [empJobId] [int] NULL,
+--   [notes] [nvarchar](100) NULL,
+-- )
+-- GO
+
+-- Add contactUsMessages relations with employeesJobs
+-----------------------------------------------------
+-- ALTER TABLE [dbo].[contactUsMessages]
+-- ADD CONSTRAINT [FK_employeesJobs_contactUsMessages] FOREIGN KEY([empJobId])
+-- REFERENCES [dbo].[employeesJobs] ([empJobId])
+-- ON UPDATE NO ACTION
+-- ON DELETE NO ACTION
+-- GO
+
+-- SELECT * FROM [dbo].[contactUsMessages]
