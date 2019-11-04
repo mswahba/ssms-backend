@@ -18,6 +18,7 @@ namespace SSMS.EntityModels
             Articles = new HashSet<Article>();
             Albums = new HashSet<Album>();
             Photos = new HashSet<Photo>();
+            ContactUsMessages = new HashSet<ContactUsMessage>();
             IsDeleted = false;
         }
 
@@ -48,5 +49,6 @@ namespace SSMS.EntityModels
         public ICollection<Article> Articles { get; set; }
         public ICollection<Album> Albums { get; set; }
         public ICollection<Photo> Photos { get; set; }
+        public ICollection<ContactUsMessage> ContactUsMessages { get; set; }
     }
 }

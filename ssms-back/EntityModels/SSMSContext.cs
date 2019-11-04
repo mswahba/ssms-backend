@@ -16,6 +16,7 @@ namespace SSMS.EntityModels
     public virtual DbSet<Article> Articles { get; set; }
     public virtual DbSet<Album> Albums { get; set; }
     public virtual DbSet<Photo> Photos { get; set; }
+    public virtual DbSet<ContactUsMessage> ContactUsMessages { get; set; }
     public virtual DbSet<AcademicSemester> AcademicSemesters { get; set; }
     public virtual DbSet<AcademicWeek> AcademicWeeks { get; set; }
     public virtual DbSet<AcademicYear> AcademicYears { get; set; }
@@ -112,6 +113,7 @@ namespace SSMS.EntityModels
       modelBuilder.ApplyConfiguration(new ArticleConfig());
       modelBuilder.ApplyConfiguration(new AlbumConfig());
       modelBuilder.ApplyConfiguration(new PhotoConfig());
+      modelBuilder.ApplyConfiguration(new ContactUsMessageConfig());
       modelBuilder.ApplyConfiguration(new AcademicSemesterConfig());
       modelBuilder.ApplyConfiguration(new AcademicWeekConfig());
       modelBuilder.ApplyConfiguration(new AcademicYearConfig());
