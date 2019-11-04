@@ -1,3 +1,17 @@
+-- List columns in all tables whose name is like 'contactUsMessages'
+-- SELECT
+--   TableName = tbl.TABLE_SCHEMA + '.' + tbl.TABLE_NAME,
+--   ColumnName = col.COLUMN_NAME,
+--   DataType = col.DATA_TYPE,
+--   AllowNull = col.IS_NULLABLE,
+--   DataLength = col.CHARACTER_MAXIMUM_LENGTH
+-- FROM INFORMATION_SCHEMA.TABLES tbl
+-- INNER JOIN INFORMATION_SCHEMA.COLUMNS col
+--   ON col.TABLE_NAME = tbl.TABLE_NAME
+--   AND col.TABLE_SCHEMA = tbl.TABLE_SCHEMA
+-- WHERE tbl.TABLE_TYPE = 'BASE TABLE' and tbl.TABLE_NAME like '%contactUsMessages%'
+-- GO
+
 -- CREATE TABLE [dbo].[mediaCategories] (
 -- 	[categoryId] [tinyint] PRIMARY KEY,
 -- 	[categoryNameAr] [nvarchar](100) NOT NULL,
@@ -1397,15 +1411,19 @@
 
 -- contactUsMessages table
 --------------------------
+-- ALTER TABLE [dbo].[contactUsMessages] DROP CONSTRAINT [FK_employeesJobs_contactUsMessages]
+-- DROP TABLE [dbo].[contactUsMessages]
+
 -- CREATE TABLE [dbo].[contactUsMessages] (
--- 	[messageId] [int] PRIMARY KEY,
+-- 	[messageId] [int] identity(1,1) PRIMARY KEY,
 -- 	[senderName] [nvarchar](50) NOT NULL,
---   [email] [nvarchar](max) NOT NULL,
---   [mobile] [varchar](10) NOT NULL,
+--   [email] [nvarchar](max) NULL,
+--   [mobile] [varchar](10) NULL,
 --   [messageTitle] [nvarchar](75) NOT NULL,
 --   [messageText] [nvarchar](1500) NOT NULL,
 --   [empJobId] [int] NULL,
---   [notes] [nvarchar](100) NULL,
+--   [replayNotes] [nvarchar](100) NULL,
+--   [isDeleted] [bit] NOT NULL
 -- )
 -- GO
 
@@ -1419,3 +1437,4 @@
 -- GO
 
 -- SELECT * FROM [dbo].[contactUsMessages]
+-- SELECT * FROM [dbo].[employeesJobs]

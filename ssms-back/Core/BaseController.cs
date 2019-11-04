@@ -37,6 +37,7 @@ namespace SSMS
     private string _columnValues;
     private Dictionary<string, object> _deleteResult;
     private List<string> _BlockedFromAdd = new List<string>() { "User" };
+    private List<string> _BlockedFromAddGeneratedId = new List<string>() { "Article", "About", "Album", "Photo", "ContactUsMessage" };
 
     private void _SetDeleteResult(TEntity entity, int res, string deleteType)
     {
@@ -244,7 +245,10 @@ namespace SSMS
       // throw new Exception("something went wrong!!");
       // if autoId has value [ok] then generate newId and set keyName of this entity
       // otherwise the entity keyField [PK] has value [from User Input]
-      if (entity.GetValue(_keyName).ToString() == "0")
+      if (
+        !_BlockedFromAddGeneratedId.Any(name => name == typeof(TEntity).Name) &&
+        entity.GetValue(_keyName).ToString() == "0"
+      )
       {
         // get the comma separated column names
         _columnNames = entity.GetPrimitivePropsNames();
