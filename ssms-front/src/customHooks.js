@@ -92,7 +92,8 @@ export async function getData({ requestId, request, localStorageKey, successToas
 export function useFetch({ requestId, request, localStorageKey, successToast = null, errorToast = null, timeout = time.day, deps = [] }) {
   const [state, setState] = useState({ ...INITIAL_STATE });
   useEffect( () => {
-    getData({ requestId, request, localStorageKey, successToast, errorToast, timeout, setState });
+    if(!deps.length || deps.length && deps[0] !== null)
+      getData({ requestId, request, localStorageKey, successToast, errorToast, timeout, setState });
   }, deps);
   return state;
 }
