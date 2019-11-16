@@ -9,13 +9,36 @@ import { renderInput, Button } from '../../shared/FormInputs'
 
 import { store } from '../../AppStore'
 
+import { useFetch } from '../../customHooks'
+import { time } from '../../helpers'
+
 import isEmail from 'validator/lib/isEmail'
 import isLength from 'validator/lib/isLength'
 import isNumeric from 'validator/lib/isNumeric'
 
+const key = 'contactUs_message_added'
+const endpoint = '/contactUsMessages/add'
+
+const doSubmit = setMessage => values => {
+  console.log("TCL: doSubmit => values: ", values)
+  setMessage(values)
+}
+
 function ContactUsForm({ className, trans, handleSubmit, pristine, submitting }) {
+  const [message, setMessage] = React.useState(null);
+  // Add contactUsMessage to Server
+  const { loading, error, data } = useFetch({
+    requestId: key,
+    request: ['post', endpoint, message],
+    errorToast: ['error', 'something went wrong'],
+    localStorageKey: key,
+    timeout: time.day,
+    deps: [message]
+  })
+  console.log("TCL: ContactUsForm -> data", data)
+  console.log("TCL: ContactUsForm -> error", error)
   return (
-    <form className={`rtl ${className}`} onSubmit={handleSubmit(console.log)}>
+    <form className={`rtl ${className}`} onSubmit={handleSubmit(doSubmit(setMessage))}>
       {/* form title */}
       <h4 className="orange-text">{ trans("home.contactUs.title") }</h4>
       <div className="divider orange" />
