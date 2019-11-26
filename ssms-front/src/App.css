@@ -109,6 +109,21 @@
   font-size: 6rem !important;
   line-height: inherit !important;
 }
+.font-b-500 {
+  font-weight: 500 !important;
+}
+.font-b-600 {
+  font-weight: 600 !important;
+}
+.font-b-700 {
+  font-weight: 700 !important;
+}
+.font-b-800 {
+  font-weight: 800 !important;
+}
+.font-b-900 {
+  font-weight: 900 !important;
+}
 .px-1 {
   padding: 0 1rem;
 }

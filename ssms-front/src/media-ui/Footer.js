@@ -21,6 +21,9 @@ const FooterWrapper = styled.footer`
 `
 const Collection = styled.ul`
   border: none !important;
+  &.collection.with-header .collection-item {
+    padding-left: 0;
+  }
 `
 const SocialCollection = styled(Collection)`
   display: flex;
@@ -177,7 +180,7 @@ function FooterSection({ className = '', trans, lang, data  }) {
     <Collection className={`collection with-header ${className}`}>
       <SectionHeader trans={trans} categoryId={data[0].categoryId} />
       {data.map(item => (
-        <SectionItem key={item.aboutId} className='collection-item flex'>
+        <SectionItem key={item.aboutId} className='collection-item'>
           <SectionContent lang={lang} item={item} id={item.categoryId} />
         </SectionItem>
       ))}
@@ -207,8 +210,8 @@ function Footer({ trans, lang }) {
         ? <div className='card-panel red lighten-4'>{JSON.stringify(error)}</div>
         : (data && data.length)
           ? <>
-              <FooterSection className='col l5 m12' trans={trans} lang={lang} data={data[0]} />
-              <FooterSection  className='col l4 m12' trans={trans} lang={lang} data={data[1]} />
+              <FooterSection className='col l6 m12' trans={trans} lang={lang} data={data[0]} />
+              <FooterSection  className='col l3 m12' trans={trans} lang={lang} data={data[1]} />
               <FooterSection  className='col l3 m12' trans={trans} lang={lang} data={data[2]} />
             </>
           : <div className='card-panel red lighten-4'>{trans("home.emptyData")}</div>
