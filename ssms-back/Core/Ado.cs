@@ -44,7 +44,7 @@ namespace SSMS
         foreach (DataColumn col in table.Columns)
         {
           //First Check if the column has null value, set it to null
-          //(otherwise an anonymoys type will be created for column value instead of direct Value)
+          //(otherwise an anonymous type will be created for column value instead of direct Value)
           // If
           if (row[col] is DBNull)
             obj.Add(col.ColumnName, null);

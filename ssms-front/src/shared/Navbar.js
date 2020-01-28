@@ -112,7 +112,7 @@ function TopNavLinks ({ lang, trans, setActiveLanguage }) {
         </li>
       </ul>
       {/* Social Links */}
-      <ul className='h-100 flex-b-50 flex-center'>
+      <ul className='h-100 flex-b-40 flex-center'>
         { (loading)
             ? <Loading />
             : (data)

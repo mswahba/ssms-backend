@@ -9,6 +9,15 @@
 @import 'https://use.fontawesome.com/releases/v5.8.1/css/all.css';
 /* flag-icon-css icons */
 @import 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/css/flag-icon.min.css';
+/* google web font */
+@import url('https://fonts.googleapis.com/css?family=Mirza&display=swap');
+/* #endregion */
+
+/* #region Apply Generic font */
+html {
+  font-family: 'Mirza', 'Segoe UI' !important;
+  font-size: 1.1rem !important;
+}
 /* #endregion */
 
 /* #region css colors */
