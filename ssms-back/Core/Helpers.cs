@@ -85,7 +85,7 @@ namespace SSMS
       var tokenValidationOptions = GetTokenValidationOptions(validateLifetime: true);
       var tokenHandler = new JwtSecurityTokenHandler();
       SecurityToken securityToken;
-      // validate the token with the choosen Token Validation Options
+      // validate the token with the chosen Token Validation Options
       ClaimsPrincipal principal = tokenHandler.ValidateToken(accessToken, tokenValidationOptions, out securityToken);
       JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
       // checking that the algorithm used to sign the token is HmacSha256
