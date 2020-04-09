@@ -12,10 +12,7 @@ i18n
 		whitelist: ['ar', 'en'],
 		backend: {
 			loadPath: '/locales/{{lng}}/{{ns}}.json'
-		},
-		interpolation: {
-      escapeValue: false,
-    },
+		}
   })
 
 export default i18n
