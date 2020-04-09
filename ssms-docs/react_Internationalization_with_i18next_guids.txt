@@ -1,0 +1,9 @@
+#1 npm install i18next react-i18next i18next-xhr-backend
+#2 create the i18nextSetup.js and import it into index.tsx
+#3 connect the i18next to React using React.Suspense component in index.tsx
+#4 either create translation files manually OR use (i18next-parser)
+  #A npm install --save-dev i18next-parser
+  #B introduce a new npm script in your package.json file to do the extraction
+    ["extract": "i18next --config i18next-parser.config.js"]
+  #C create a i18next-parser.config.js configuration file for the extraction in root react app folder
+  #D execute the script with npm run [extract] to generate all translations files from your code

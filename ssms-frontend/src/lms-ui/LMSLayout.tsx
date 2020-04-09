@@ -2,11 +2,9 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 function LMSLayout() {
-  const { t } = useTranslation(['lmsHome'])
+  const { t } = useTranslation(['LMSHome'])
   return (
-    <div>
-      <h3>{t('lmsHome:title', 'Missing Key')}</h3>
-    </div>
+    <h3>{t('LMSHome:title', 'Missing Key')}</h3>
   )
 }
 

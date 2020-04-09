@@ -1,10 +1,10 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 function MediaLayout() {
+  const { t } = useTranslation(['MediaHome'])
   return (
-    <div>
-      Media Layout
-    </div>
+    <h3>{t('MediaHome:title', 'Missing Key')}</h3>
   )
 }
 

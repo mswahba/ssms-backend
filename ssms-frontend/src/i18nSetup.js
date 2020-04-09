@@ -11,7 +11,7 @@ i18n
 		fallbackLng: 'en',
 		whitelist: ['ar', 'en'],
 		backend: {
-			loadPath: '/locales/{{lng}}/{{ns}}.json'
+			loadPath: '/translations/{{lng}}/{{ns}}.json'
 		}
   })
 
