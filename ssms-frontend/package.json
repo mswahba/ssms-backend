@@ -18,6 +18,9 @@
     "react-router-dom": "^5.1.2",
     "styled-components": "^5.1.0",
     "react-toastify": "^5.5.0",
+    "i18next": "^19.4.0",
+    "i18next-xhr-backend": "^3.2.2",
+    "react-i18next": "^11.3.4",
     "axios": "^0.19.2",
     "mobx": "^5.15.4",
     "mobx-react-lite": "^2.0.5",
@@ -32,11 +35,15 @@
     "jss-rtl": "^0.3.0",
     "clsx": "^1.1.0"
   },
+  "devDependencies": {
+    "i18next-parser": "^1.0.2"
+  },
   "scripts": {
     "start": "set PORT=42020 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-lang-files": "i18next --config i18next-parser.config.js"
   },
   "eslintConfig": {
     "extends": "react-app"
