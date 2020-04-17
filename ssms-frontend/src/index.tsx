@@ -17,15 +17,15 @@ const theme = createMuiTheme({ direction: 'rtl' })
 
 render(
 	<React.StrictMode>
-		<BrowserRouter>
-			<StylesProvider jss={jss}>
-				<ThemeProvider theme={theme}>
-					<React.Suspense fallback={null}>
+		<StylesProvider jss={jss}>
+			<ThemeProvider theme={theme}>
+				<React.Suspense fallback={null}>
+					<BrowserRouter>
 						<App />
-					</React.Suspense>
-				</ThemeProvider>
-			</StylesProvider>
-		</BrowserRouter>
+					</BrowserRouter>
+				</React.Suspense>
+			</ThemeProvider>
+		</StylesProvider>
 	</React.StrictMode>,
 	document.getElementById('root')
 )

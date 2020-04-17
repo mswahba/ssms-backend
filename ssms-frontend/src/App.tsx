@@ -8,7 +8,7 @@ import '../node_modules/react-toastify/dist/ReactToastify.min.css'
 import styled from 'styled-components'
 
 import LMSLayout from './lms-ui/LMSLayout'
-import MediaLayout from './media-ui/MediaLayout'
+import MediaLayout from './media-ui/layout/MediaLayout'
 
 const AppWrapper = styled.div`
 	direction: ${ ({ lang }) => lang === 'ar' ? 'rtl' : 'ltr' };
