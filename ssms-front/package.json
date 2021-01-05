@@ -17,7 +17,7 @@
     "react-twitter-embed": "^2.0.8",
     "@aspnet/signalr": "^1.0.4",
     "validator": "^10.7.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "axios-cancel": "^0.2.2",
     "moment": "^2.22.2",
     "moment-hijri": "^2.1.1",
